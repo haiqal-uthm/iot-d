@@ -1,0 +1,60 @@
+.custom-shadow {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.notification-box {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 16px;
+    color: #1f2937;
+}
+
+.notification-box .arrow-icon {
+    font-size: 1.25rem;
+    color: #4b5563;
+}
+
+.notification-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.red {
+    background-color: #dc2626;
+}
+
+.status-dot.green {
+    background-color: #16a34a;
+}
+
+.timestamp {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.arrow-icon {
+    font-size: 1.25rem;
+    color: #4b5563; /* Adjust this color as needed for light/dark themes */
+}
+
+#weather-icon {
+    width: 50px;
+}
+
+
+/* CSS */
