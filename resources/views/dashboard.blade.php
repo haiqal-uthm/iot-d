@@ -15,7 +15,7 @@
                     <!-- Overview Box -->
                     <div
                         class="col-span-2 bg-gradient-to-r from-purple-500 to-indigo-500 p-6 rounded-lg text-black custom-shadow">
-                        <h3 class="text-lg font-bold text-center">Durian Production Breakdown</h3>
+                        <h3 class="text-lg font-bold text-center">Durian Production</h3>
                         <div style="max-width: 250px; margin: auto;">
                             <canvas id="pieChart"></canvas>
                         </div>
