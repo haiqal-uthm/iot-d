@@ -3,7 +3,9 @@ function loadScripts(callback) {
     const scripts = [
         "https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js",
         "https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js",
-        "https://cdn.jsdelivr.net/npm/chart.js"
+        "https://cdn.jsdelivr.net/npm/chart.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
+        "https://cdn.jsdelivr.net/npm/sweetalert2@11"
     ];
 
     let loadedScripts = 0;
@@ -55,6 +57,7 @@ function initializeDashboard() {
     renderDurianChart();
     renderPieChart(durianData);
     setupVibrationListeners();
+    checkAnimalDetection();
 }
 
 // Vibration Count Listener
@@ -150,28 +153,6 @@ function updateWeatherDisplay(data) {
     }
 }
 
-// Fetch detection counts
-function fetchCounts() {
-    fetch('http://127.0.0.1:5000/counts') // Replace with actual server URL
-        .then(response => response.json())
-        .then(updateDetectionCounts)
-        .catch(error => console.error("Error fetching detection counts:", error));
-}
-
-// Update Detection Counts UI
-function updateDetectionCounts(data) {
-    let countDisplay = document.getElementById('detectionCounts');
-    countDisplay.innerHTML = ""; // Clear previous data
-
-    if (Object.keys(data).length === 0) {
-        countDisplay.innerHTML = "0";
-    } else {
-        for (const [label, count] of Object.entries(data)) {
-            countDisplay.innerHTML += `<p>${label}: ${count}</p>`;
-        }
-    }
-}
-
 // Render Durian Chart
 function renderDurianChart() {
     const chartCanvas = document.getElementById('durianChart');
@@ -252,3 +233,35 @@ function renderPieChart(durianData) {
         }
     });
 }
+
+function checkAnimalDetection() {
+    $.ajax({
+        url: alertRoute,
+        type: "GET",
+        success: function(response) {
+            if (response.alert && response.log_id) {
+                let lastSeenLog = localStorage.getItem("last_seen_log");
+
+                // Show alert only if the log_id is new
+                if (lastSeenLog !== response.log_id.toString()) {
+                    Swal.fire({
+                        title: "⚠️ Animal Detected!",
+                        text: "An animal was detected near the durian trees!",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    }).then(() => {
+                        // Store the latest log_id after user acknowledges the alert
+                        localStorage.setItem("last_seen_log", response.log_id);
+                    });
+                }
+            }
+        },
+        error: function() {
+            console.error("Failed to check logs.");
+        }
+    });
+}
+
+// Run the check periodically (e.g., every 10 seconds)
+setInterval(checkAnimalDetection, 10000);
+setInterval(setupVibrationListeners, 5000);

@@ -6,6 +6,8 @@
     </x-slot>
 
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -39,25 +41,8 @@
                                 <a href="{{ route('durian') }}" class="arrow-icon">➔</a>
                             </div>
                             <div class="text-center mt-2">
-                                <table style="width: 100%; text-align: center;">
-                                    <tr>
-                                        <td>
-                                            <!-- Tilt Sensor -->
-                                            <img style="width: 50px; display: block; margin: auto;" src="{{ asset('images/durian.png') }}" alt="Tilt Sensor Icon">
-                                            <p id="vibration-count">Loading...</p>
-                                        </td>
-                                        <td>
-                                            <!-- Camera AI -->
-                                            <img style="width: 50px; display: block; margin: auto;" src="{{ asset('images/cctv-camera.png') }}" alt="Camera AI Icon">
-                                            <p id="detectionCounts">Loading...</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <p>Total Confirmed Durian: </p>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <img style="width: 50px; display: block; margin: auto;" src="{{ asset('images/durian.png') }}" alt="Tilt Sensor Icon">
+                                <p>Total Durian Fall: <span id="vibration-count">Loading...</span></p>
                             </div>
                         </div>
                     </div>
@@ -110,18 +95,21 @@
                     <ul class="notification-list mt-4">
                         @if($logs->isNotEmpty())
                             @foreach($logs as $log)
-                                <li class="notification-item mt-2">
-                                    <span class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }}"></span>
+                                <li class="notification-item mt-2 flex items-center">
+                                    <span class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
                                     <div>
-                                        <p class="text-sm">Device: {{ $log->device_id }} | Durian Fall</p>
-                                        <p class="timestamp">{{ $log->timestamp }}</p>
+                                        <p class="text-sm">
+                                            Device: {{ $log->device_id }} | 
+                                            {{ $log->log_type == 1 ? 'Durian Fall' : 'Animal Detected' }}
+                                        </p>
+                                        <p class="timestamp text-xs text-gray-500">{{ $log->timestamp }}</p>
                                     </div>
                                 </li>
                             @endforeach
                         @else
                             <li class="text-sm text-gray-500">No Vibration Logs Found</li>
                         @endif
-                    </ul>
+                    </ul>                    
                 </div>                                                         
             </div>
         </div>
@@ -133,6 +121,7 @@
 <script>
     var durianData = @json($durianData);
     var weatherRoute = "{{ route('weather.current') }}";
+    var alertRoute = "{{ route('checkAnimalDetection') }}";
 </script>
 
 

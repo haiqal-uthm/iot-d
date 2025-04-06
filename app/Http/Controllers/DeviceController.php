@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Device;
 use Google\Cloud\Firestore\FirestoreClient;
 
+
 class DeviceController extends Controller
 {
     protected $database;

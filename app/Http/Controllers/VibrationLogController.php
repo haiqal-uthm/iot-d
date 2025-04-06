@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\VibrationLog;
 use Illuminate\Support\Facades\Log;
 
+
 class VibrationLogController extends Controller
 {
     public function store(Request $request)

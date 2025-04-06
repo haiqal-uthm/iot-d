@@ -63,6 +63,8 @@ Route::middleware('auth')->group(function () {
 
     // dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/check-animal-detection', [DashboardController::class, 'checkAnimalDetection'])->name('checkAnimalDetection');
+
     
 });
 
