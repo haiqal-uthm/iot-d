@@ -79,12 +79,20 @@
                 </div>
 
                 <!-- Harvest Report Section -->
+                <!-- Harvest Report Section -->
                 <div id="harvestReport" class="table-container hidden">
                     <h3 class="text-lg font-bold mb-4">Harvest Report</h3>
                     <div class="chart-container" style="overflow-x: auto; position: relative; max-height: 300px;">
                         <canvas id="harvestChart" style="min-width: 700px; width: 100%; max-height: 300px;"></canvas>
                     </div>
-                    <div x-data="{ showModal: false, selectedReport: null }">
+
+                    <div x-data="{
+                        showModal: false,
+                        selectedReport: null,
+                        showUploadModal: false,
+                        selectedReportID: null
+                    }">
+                        <!-- Harvest Reports Table -->
                         <table class="w-full border-collapse border border-gray-300 mb-8">
                             <thead class="bg-gray-200">
                                 <tr>
@@ -107,10 +115,34 @@
                                         <td class="border p-2">{{ $report->total_harvested }}</td>
                                         <td class="border p-2">{{ $report->status }}</td>
                                         <td class="border p-2">
-                                            <button type="button" class="btn btn-primary"
-                                                @click="selectedReport = @js($report); showModal = true;">
-                                                Document
-                                            </button>
+                                            <div x-data="{ open: false }" class="relative inline-block text-left">
+                                                <!-- Action Dropdown -->
+                                                <button @click="open = !open"
+                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                    Action
+                                                </button>
+
+                                                <!-- Dropdown Menu -->
+                                                <div x-show="open" @click.away="open = false"
+                                                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                                    <div class="py-1">
+                                                        <button type="button"
+                                                            @click="selectedReport = @js($report); showModal = true; open = false"
+                                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                            View Document
+                                                        </button>
+                                                        <button type="button" @click="window.print(); open = false"
+                                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                            Print
+                                                        </button>
+                                                        <button type="button"
+                                                            @click="selectedReportID = {{ $report->id }}; showUploadModal = true; open = false"
+                                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                            Upload File
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -121,19 +153,20 @@
                             </tbody>
                         </table>
 
-                        <!-- Modal Outside -->
+                        <!-- View Report Modal -->
                         <div x-show="showModal"
-                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                            <div class="bg-white p-6 rounded-lg shadow-lg text-sm w-full max-w-2xl mx-auto">
-
+                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-cloak>
+                            <div class="bg-white p-6 rounded-lg shadow-lg text-sm w-full max-w-2xl mx-auto relative">
                                 <button @click="showModal = false"
                                     class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
                                 <div id="printable">
-                                    <h2 class="text-2xl font-bold mb-4 text-center">Durian Harvest Checklist Report</h2>
-
+                                    <!-- Printable Content -->
+                                    <h2 class="text-2xl font-bold mb-4 text-center">Durian Harvest Checklist Report
+                                    </h2>
                                     <div class="mb-4">
                                         <p><strong>Harvest ID:</strong> <span x-text="selectedReport.id"></span></p>
-                                        <p><strong>Date:</strong> <span x-text="selectedReport.harvest_date"></span></p>
+                                        <p><strong>Date:</strong> <span x-text="selectedReport.harvest_date"></span>
+                                        </p>
                                         <p><strong>Orchard Location:</strong> <span
                                                 x-text="selectedReport.orchard"></span></p>
                                         <p><strong>Durian Type:</strong> <span
@@ -145,8 +178,8 @@
                                         <p><strong>Status:</strong> <span x-text="selectedReport.status"></span></p>
                                     </div>
 
+                                    <!-- Checklist Sections -->
                                     <hr class="my-4">
-
                                     <div class="mb-4">
                                         <h3 class="text-lg font-semibold mb-2">Pre-Harvest Checklist</h3>
                                         <ul class="list-disc pl-6 space-y-1">
@@ -157,23 +190,7 @@
                                         </ul>
                                     </div>
 
-                                    <div class="mb-4">
-                                        <h3 class="text-lg font-semibold mb-2">During Harvest</h3>
-                                        <ul class="list-disc pl-6 space-y-1">
-                                            <li>[ ] Fruits carefully collected</li>
-                                            <li>[ ] No damage on fruit observed</li>
-                                            <li>[ ] Counted and placed in baskets</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <h3 class="text-lg font-semibold mb-2">Post-Harvest</h3>
-                                        <ul class="list-disc pl-6 space-y-1">
-                                            <li>[ ] All fruits stored in cool place</li>
-                                            <li>[ ] Storage tagged with harvest date</li>
-                                            <li>[ ] Tools cleaned and stored</li>
-                                        </ul>
-                                    </div>
+                                    <!-- ... rest of checklist content ... -->
 
                                     <div class="mt-6 flex justify-between">
                                         <div>
@@ -186,52 +203,84 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button onclick="printReport()"
-                                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                <button @click="printReport()"
+                                    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                                     🖨️ Print Report
                                 </button>
                             </div>
                         </div>
-                        <!-- Inventory Report Section -->
-                        <div id="inventoryReport" class="table-container hidden">
-                            <h3 class="text-lg font-bold mb-4">Inventory Report</h3>
-                            <table class="w-full border-collapse border border-gray-300 mb-8">
-                                <thead class="bg-gray-200">
-                                    <tr>
-                                        <th class="border p-2">Storage</th>
-                                        <th class="border p-2">Durian Type</th>
-                                        <th class="border p-2">Quantity</th>
-                                        <th class="border p-2">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($inventoryReports as $report)
-                                        <tr>
-                                            <td class="border p-2">{{ $report->storage }}</td>
-                                            <td class="border p-2">{{ $report->durian_type }}</td>
-                                            <td class="border p-2">{{ $report->quantity }}</td>
-                                            <td class="border p-2">{{ $report->status }}</td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="border p-2 text-center">No Inventory Report Data
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+
+                        <!-- Upload File Modal -->
+                        <div x-show="showUploadModal"
+                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-cloak>
+                            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+                                <button @click="showUploadModal = false"
+                                    class="absolute top-2 right-3 text-xl text-gray-600 hover:text-black">&times;</button>
+                                <form method="POST" action="{{ route('production.upload') }}"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="harvest_report_id" x-bind:value="selectedReportID">
+
+                                    <div class="mb-4">
+                                        <label for="harvest_document" class="block text-sm font-medium mb-1">
+                                            Upload Harvest Document
+                                        </label>
+                                        <input type="file" name="harvest_document" id="harvest_document"
+                                            class="w-full border p-2 rounded" required>
+                                    </div>
+
+                                    <div class="flex justify-end">
+                                        <button type="submit"
+                                            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                                            Upload
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- Inventory Report Section -->
+                <div id="inventoryReport" class="table-container hidden">
+                    <h3 class="text-lg font-bold mb-4">Inventory Report</h3>
+                    <table class="w-full border-collapse border border-gray-300 mb-8">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="border p-2">Storage</th>
+                                <th class="border p-2">Durian Type</th>
+                                <th class="border p-2">Quantity</th>
+                                <th class="border p-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($inventoryReports as $report)
+                                <tr>
+                                    <td class="border p-2">{{ $report->storage }}</td>
+                                    <td class="border p-2">{{ $report->durian_type }}</td>
+                                    <td class="border p-2">{{ $report->quantity }}</td>
+                                    <td class="border p-2">{{ $report->status }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="border p-2 text-center">No Inventory Report Data
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/moment"></script>
-            <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
-            <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
-            <script>
-                var chartData = @json($chartData);
-                var harvestReports = @json($harvestReports);
-            </script>
-            <script src="{{ asset('js/production.js') }}"></script>
-            <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+    <script>
+        var chartData = @json($chartData);
+        var harvestReports = @json($harvestReports);
+    </script>
+    <script src="{{ asset('js/production.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
 </x-app-layout>

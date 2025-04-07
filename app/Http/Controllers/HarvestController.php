@@ -16,9 +16,9 @@ class HarvestController extends Controller
         } else {
             $data = $request->all(); // ✅ Accept both JSON & form data
         }
-    
+
         $request->replace($data); // ✅ Ensure data is accessible
-    
+
         $request->validate([
             'orchard' => 'required|string|max:100',
             'durian_type' => 'required|string|max:50',
@@ -79,19 +79,19 @@ class HarvestController extends Controller
         }
     }
 
-    public function save(Request $request) {
+    public function save(Request $request)
+    {
         HarvestLog::create([
             'harvest_id' => $request->harvest_id,
             'harvest_date' => $request->harvest_date,
             'location' => $request->location,
             'durian_type' => $request->durian_type,
             'quantity' => $request->quantity,
-            'storage_location' => $request->storage_location
+            'storage_location' => $request->storage_location,
         ]);
-    
+
         return redirect()->back()->with('success', 'Harvest recorded successfully!');
     }
-    
 
     private function getOrchardId($orchardName)
     {
@@ -102,5 +102,23 @@ class HarvestController extends Controller
         ];
 
         return $orchardMapping[$orchardName] ?? null; // Return null if not found
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'harvest_document' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:2048',
+        ]);
+
+        $file = $request->file('harvest_document');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('harvest_documents', $filename, 'public');
+
+        HarvestLog::create([
+            'file_path' => $path, // You still need this column in your table
+            'status' => 'Pending', // Or 'Unverified', 'Uploaded', etc.
+        ]);
+
+        return back()->with('success', 'Harvest document uploaded successfully!');
     }
 }

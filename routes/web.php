@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
 
     //production
     Route::get('/production-report', [ProductionReportController::class, 'index'])->name('production-report');
+    Route::post('/production-upload', [HarvestController::class, 'upload'])->name('production.upload');
+
 
     //harvest
     Route::post('/harvest/save', [HarvestController::class, 'save'])->name('harvest.save');

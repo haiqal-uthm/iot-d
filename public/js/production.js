@@ -163,10 +163,21 @@ function openModal(id, date, orchard, durianType, totalHarvest) {
 }
 
 function printReport() {
-    let printContents = document.getElementById('printable').innerHTML;
-    let originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload(); // optional to reload back
+    const content = document.getElementById('printable').innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Harvest Report</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h2 { color: #111827; }
+                    ul { margin-top: 10px; }
+                </style>
+            </head>
+            <body>${content}</body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
 }
