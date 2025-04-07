@@ -161,3 +161,12 @@ function openModal(id, date, orchard, durianType, totalHarvest) {
     modal.__x.$data.durianType = durianType;
     modal.__x.$data.totalHarvest = totalHarvest;
 }
+
+function printReport() {
+    let printContents = document.getElementById('printable').innerHTML;
+    let originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+    location.reload(); // optional to reload back
+}
