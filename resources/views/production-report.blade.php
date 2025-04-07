@@ -182,12 +182,24 @@
                                     <hr class="my-4">
                                     <div class="mb-4">
                                         <h3 class="text-lg font-semibold mb-2">Pre-Harvest Checklist</h3>
-                                        <ul class="list-disc pl-6 space-y-1">
-                                            <li>[ ] Tools sanitized and ready</li>
-                                            <li>[ ] Protective gear worn</li>
-                                            <li>[ ] Weather conditions checked</li>
-                                            <li>[ ] Harvest route planned</li>
-                                        </ul>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" id="tools">
+                                                <label for="tools" class="ml-2">Tools sanitized and ready</label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" id="gear">
+                                                <label for="gear" class="ml-2">Protective gear worn</label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" id="weather">
+                                                <label for="weather" class="ml-2">Weather conditions checked</label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" id="route">
+                                                <label for="route" class="ml-2">Harvest route planned</label>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- ... rest of checklist content ... -->

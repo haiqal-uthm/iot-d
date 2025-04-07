@@ -103,22 +103,4 @@ class HarvestController extends Controller
 
         return $orchardMapping[$orchardName] ?? null; // Return null if not found
     }
-
-    public function upload(Request $request)
-    {
-        $request->validate([
-            'harvest_document' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:2048',
-        ]);
-
-        $file = $request->file('harvest_document');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $path = $file->storeAs('harvest_documents', $filename, 'public');
-
-        HarvestLog::create([
-            'file_path' => $path, // You still need this column in your table
-            'status' => 'Pending', // Or 'Unverified', 'Uploaded', etc.
-        ]);
-
-        return back()->with('success', 'Harvest document uploaded successfully!');
-    }
 }
