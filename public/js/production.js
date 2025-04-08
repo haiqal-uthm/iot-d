@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     renderFallChart();
     renderHarvestChart();
+    renderInventoryChart();
 });
 
 // 🟢 Durian Fall Line Graph (Last 30 Days)
@@ -209,9 +210,7 @@ function clearSignature(canvasId) {
 function saveHarvestDetails() {
     const form = document.getElementById('harvestDetailsForm');
     const formData = new FormData(form);
-    
 
-    // Send to server
     fetch('/harvest-details', {
         method: 'POST',
         body: formData,
@@ -222,19 +221,121 @@ function saveHarvestDetails() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Harvest details saved successfully!');
-            window.location.reload();
+            Swal.fire({
+                title: "✅ Success!",
+                text: "Harvest details saved successfully!",
+                icon: "success",
+                confirmButtonText: "OK",
+                customClass: {
+                    popup: 'dark:bg-gray-800 dark:text-white'
+                }
+            }).then(() => {
+                window.location.reload();
+            });
         } else {
-            alert('Error saving harvest details');
+            Swal.fire({
+                title: "⚠️ Error!",
+                text: data.message || "Error saving harvest details",
+                icon: "error",
+                confirmButtonText: "OK",
+                customClass: {
+                    popup: 'dark:bg-gray-800 dark:text-white'
+                }
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error saving harvest details');
+        Swal.fire({
+            title: "⚠️ Error!",
+            text: "Failed to save harvest details",
+            icon: "error",
+            confirmButtonText: "OK",
+            customClass: {
+                popup: 'dark:bg-gray-800 dark:text-white'
+            }
+        });
     });
 }
 
-// Add this at the beginning of your file
-let isSubmitting = false;
+// Add this function to your existing production.js file
+function renderInventoryChart() {
+    console.log('Inventory Data:', inventoryData); // Debug line
+    const ctx = document.getElementById('inventoryChart').getContext('2d');
+    
+    // Prepare data for the chart
+    const locations = inventoryData.map(item => `Storage ${item.storage_location}`);
+    const quantities = inventoryData.map(item => item.total_quantity);
 
-// Add this function to handle form submission
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: locations,
+            datasets: [{
+                label: 'Storage Quantity (kg)',
+                data: quantities,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Quantity (kg)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Storage Location'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Durian Storage Inventory'
+                }
+            }
+        }
+    });
+}
+
+// Update the existing showTable function
+function showTable(tableId) {
+    // Hide all table containers
+    document.querySelectorAll('.table-container').forEach(container => {
+        container.classList.add('hidden');
+    });
+
+    // Show the selected table container
+    const selectedTable = document.getElementById(tableId);
+    if (selectedTable) {
+        selectedTable.classList.remove('hidden');
+        
+        // Render appropriate chart based on the table shown
+        if (tableId === 'inventoryReport') {
+            renderInventoryChart();
+        } else if (tableId === 'recordFall') {
+            renderFallChart();
+        } else if (tableId === 'harvestReport') {
+            renderHarvestChart();
+        }
+    }
+}
+
+// Add to your DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    renderFallChart();
+    renderHarvestChart();
+    renderInventoryChart();
+});

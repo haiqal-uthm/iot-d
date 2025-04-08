@@ -11,6 +11,7 @@ use App\Models\Inventory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProductionReportController extends Controller
 {
@@ -113,7 +114,14 @@ class ProductionReportController extends Controller
             ->groupBy('durian_type');
     
         // Get storage reports
-        $storageReports = Storage::latest()->get();
+        $storageReports = Storage::select('storage_location', 
+            DB::raw('SUM(quantity) as total_quantity'),
+            DB::raw('MAX(updated_at) as updated_at'))
+            ->groupBy('storage_location')
+            ->get();
+    
+        // Debug line - add this temporarily
+Log::info('Storage Reports:', ['data' => $storageReports]);
     
         return view('production-report', compact(
             'vibrationLogs',
