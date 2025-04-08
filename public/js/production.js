@@ -145,11 +145,19 @@ function renderHarvestChart() {
 }
 
 // 🔵 Show/Hide Tables
+// Add this to your existing showTable function
 function showTable(tableId) {
-    document.querySelectorAll('.table-container').forEach(function (table) {
-        table.classList.add('hidden');
+    // Existing code for showing/hiding tables
+    document.querySelectorAll('.table-container').forEach(container => {
+        container.classList.add('hidden');
     });
     document.getElementById(tableId).classList.remove('hidden');
+
+    // Show/hide corresponding filter forms
+    document.querySelectorAll('form[id$="Filter"]').forEach(form => {
+        form.classList.add('hidden');
+    });
+    document.getElementById(tableId + 'Filter').classList.remove('hidden');
 }
 
 function openModal(id, date, orchard, durianType, totalHarvest) {
@@ -181,3 +189,52 @@ function printReport() {
     printWindow.document.close();
     printWindow.print();
 }
+
+// Initialize signature pad
+let harvesterPad;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('harvesterSignature');
+    if (canvas) {
+        harvesterPad = new SignaturePad(canvas);
+    }
+});
+
+function clearSignature(canvasId) {
+    if (harvesterPad) {
+        harvesterPad.clear();
+    }
+}
+
+function saveHarvestDetails() {
+    const form = document.getElementById('harvestDetailsForm');
+    const formData = new FormData(form);
+    
+
+    // Send to server
+    fetch('/harvest-details', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Harvest details saved successfully!');
+            window.location.reload();
+        } else {
+            alert('Error saving harvest details');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving harvest details');
+    });
+}
+
+// Add this at the beginning of your file
+let isSubmitting = false;
+
+// Add this function to handle form submission

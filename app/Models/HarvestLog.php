@@ -9,7 +9,10 @@ class HarvestLog extends Model
     protected $table = 'harvest_logs';
 
     protected $casts = [
-        'harvest_date' => 'date:Y-m-d', // More explicit format
+        'harvest_date' => 'date:Y-m-d',
+        'grade' => 'array',
+        'condition' => 'array',
+        'storage_location' => 'array',
     ];
 
     protected $fillable = [
@@ -17,13 +20,17 @@ class HarvestLog extends Model
         'durian_type', 
         'harvest_date', 
         'total_harvested', 
-        'status'
+        'status',
+        'estimated_weight',
+        'grade',
+        'condition',
+        'storage_location',
+        'remarks',
+        'harvester_signature'
     ];
 
-    // Fixed relationship (assuming orchards table exists)
     public function orchard()
     {
-        // If using orchard codes (A, B, C) as primary key in orchards table
         return $this->belongsTo(Orchard::class, 'orchard', 'code');
     }
 }

@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
 
     //harvest
     Route::post('/harvest/save', [HarvestController::class, 'save'])->name('harvest.save');
+    Route::post('/harvest-details', [ProductionReportController::class, 'saveHarvestDetails'])->name('harvest.save-details');
 
     // dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
