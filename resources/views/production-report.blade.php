@@ -119,29 +119,61 @@
                         selectedReport: null
                     }">
                         <!-- Harvest Reports Table -->
-                         <table class="w-full border-collapse border border-gray-300 mb-8">
+                        <table class="w-full border-collapse border border-gray-300 mb-8">
                             <thead class="bg-gray-200">
                                 <tr>
-                                    <th class="border p-2">Storage Location</th>
-                                    <th class="border p-2">Total Quantity</th>
-                                    <th class="border p-2">Last Updated</th>
+                                    <th class="border p-2">No.</th>
+                                    <th class="border p-2">Orchard</th>
+                                    <th class="border p-2">Durian Type</th>
+                                    <th class="border p-2">Harvest Date</th>
+                                    <th class="border p-2">Total Harvested</th>
+                                    <th class="border p-2">Status</th>
+                                    <th class="border p-2">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($storageReports as $report)
+                                @forelse($harvestReports as $index => $report)
                                     <tr>
-                                        <td class="border p-2">Storage {{ $report->storage_location }}</td>
-                                        <td class="border p-2">{{ $report->total_quantity }} kg</td>
-                                        <td class="border p-2">{{ $report->updated_at ? $report->updated_at->format('Y-m-d H:i:s') : 'Not Available' }}</td>
+                                        <td class="border p-2">{{ $index + 1 }}</td>
+                                        <td class="border p-2">{{ $report->orchard }}</td>
+                                        <td class="border p-2">{{ $report->durian_type }}</td>
+                                        <td class="border p-2">{{ $report->harvest_date->format('Y-m-d') }}</td>
+                                        <td class="border p-2">{{ $report->total_harvested }}</td>
+                                        <td class="border p-2">{{ $report->status }}</td>
+                                        <td class="border p-2">
+                                            <!-- Action Dropdown -->
+                                            <div x-data="{ open: false }" class="relative inline-block text-left">
+                                                <!-- Action Dropdown -->
+                                                <button @click="open = !open"
+                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                    Action
+                                                </button>
+
+                                                <!-- Dropdown Menu -->
+                                                <div x-show="open" @click.away="open = false"
+                                                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                                    <div class="py-1">
+                                                        <button type="button"
+                                                            @click="selectedReport = @js($report); showModal = true; open = false"
+                                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                            View Document
+                                                        </button>
+                                                        <button type="button" @click="printReport(); open = false"
+                                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                            Print
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="border p-2 text-center">No Storage Data</td>
+                                        <td colspan="7" class="text-center">No Harvest Report Data</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
-
                         <!-- View Report Modal -->
                         <div x-show="showModal"
                             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-cloak>
@@ -328,12 +360,12 @@
                     <!-- Inventory Report Section -->
                     <div id="inventoryReport" class="table-container hidden">
                         <h3 class="text-lg font-bold mb-4">Inventory Report</h3>
-                        
+
                         <!-- Add Chart Canvas for Inventory -->
                         <div class="chart-container mb-6" style="height: 400px;">
                             <canvas id="inventoryChart"></canvas>
                         </div>
-                    
+
                         <table class="w-full border-collapse border border-gray-300 mb-8">
                             <thead class="bg-gray-200">
                                 <tr>
@@ -347,7 +379,9 @@
                                     <tr>
                                         <td class="border p-2">Storage {{ $report->storage_location }}</td>
                                         <td class="border p-2">{{ $report->total_quantity }} kg</td>
-                                        <td class="border p-2">{{ $report->updated_at ? $report->updated_at->format('Y-m-d H:i:s') : 'Not Available' }}</td>
+                                        <td class="border p-2">
+                                            {{ $report->updated_at ? $report->updated_at->format('Y-m-d H:i:s') : 'Not Available' }}
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -374,19 +408,18 @@
         <!-- Add this at the bottom of the file before closing x-app-layout -->
         <div class="fixed bottom-4 right-4 space-y-2" id="toast-container">
             <!-- Template for toast notification -->
-            <div class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-300" 
-                 x-data="{ show: false }" 
-                 x-show="show" 
-                 x-init="setTimeout(() => show = false, 3000)" 
-                 x-transition:enter="transform ease-out duration-300 transition"
-                 x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-                 x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-                 x-transition:leave="transition ease-in duration-100"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0">
+            <div class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-300"
+                x-data="{ show: false }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+                x-transition:enter="transform ease-out duration-300 transition"
+                x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0">
                 <div class="flex items-center">
                     <svg class="h-6 w-6 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
                     </svg>
                     <span class="font-medium" id="toast-message"></span>
                 </div>
