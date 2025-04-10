@@ -1,4 +1,4 @@
-    // 🔁 Global Chart instances (to avoid duplicates)
+// 🔁 Global Chart instances (to avoid duplicates)
     let fallChart = null;
     let harvestChart = null;
     let inventoryChart = null;
@@ -6,9 +6,22 @@
 
     // ⏳ Wait for page load
     document.addEventListener("DOMContentLoaded", function () {
-        renderFallChart();
-        renderHarvestChart();
-        renderInventoryChart();
+        // Only render the chart for the initially visible table
+        // Instead of rendering all charts at once
+        const visibleTable = document.querySelector('.table-container:not(.hidden)');
+        if (visibleTable) {
+            const tableId = visibleTable.id;
+            if (tableId === 'recordFall') {
+                renderFallChart();
+            } else if (tableId === 'harvestReport') {
+                renderHarvestChart();
+            } else if (tableId === 'inventoryReport') {
+                renderInventoryChart();
+            }
+        } else {
+            // Default to record fall if no table is visible
+            renderFallChart();
+        }
 
         // Initialize signature pad if canvas exists
         const canvas = document.getElementById('harvesterSignature');
@@ -245,18 +258,38 @@
     }
 
     // 📋 Show Table + Trigger Corresponding Chart
+    // Update the showTable function
     function showTable(tableId) {
-        document.querySelectorAll('.table-container').forEach(container => container.classList.add('hidden'));
-        document.querySelectorAll('form[id$="Filter"]').forEach(form => form.classList.add('hidden'));
-
-        const selectedTable = document.getElementById(tableId);
-        if (selectedTable) {
-            selectedTable.classList.remove('hidden');
-            document.getElementById(tableId + 'Filter')?.classList.remove('hidden');
-
-            if (tableId === 'inventoryReport') renderInventoryChart();
-            else if (tableId === 'recordFall') renderFallChart();
-            else if (tableId === 'harvestReport') renderHarvestChart();
+        // Destroy all charts first to prevent conflicts
+        if (fallChart) fallChart.destroy();
+        if (harvestChart) harvestChart.destroy();
+        if (inventoryChart) inventoryChart.destroy();
+        
+        // Hide all table containers
+        document.querySelectorAll('.table-container').forEach(container => {
+            container.classList.add('hidden');
+        });
+        
+        // Show the selected table container
+        document.getElementById(tableId).classList.remove('hidden');
+        
+        // Show/hide corresponding filter forms
+        document.querySelectorAll('form[id$="Filter"]').forEach(form => {
+            form.classList.add('hidden');
+        });
+        
+        const filterId = tableId + 'Filter';
+        if (document.getElementById(filterId)) {
+            document.getElementById(filterId).classList.remove('hidden');
+        }
+        
+        // Render appropriate chart based on the table shown
+        if (tableId === 'inventoryReport') {
+            renderInventoryChart();
+        } else if (tableId === 'recordFall') {
+            renderFallChart();
+        } else if (tableId === 'harvestReport') {
+            renderHarvestChart();
         }
     }
 

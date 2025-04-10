@@ -113,8 +113,33 @@ class ProductionReportController extends Controller
             ->get()
             ->groupBy('durian_type');
     
+        // Get storage reports with filtering
+        $storageQuery = Storage::query();
+        
+        // Apply inventory filters if they exist
+        if ($request->filled('inventory_search')) {
+            $search = $request->inventory_search;
+            $storageQuery->where('storage_location', 'LIKE', "%{$search}%");
+        }
+        
+        if ($request->filled('storage_location')) {
+            $storageQuery->where('storage_location', $request->storage_location);
+        }
+        
+        if ($request->filled('quantity_range')) {
+            $range = $request->quantity_range;
+            if ($range == '0-100') {
+                $storageQuery->where('quantity', '<=', 100);
+            } else if ($range == '101-500') {
+                $storageQuery->where('quantity', '>', 100)
+                             ->where('quantity', '<=', 500);
+            } else if ($range == '501+') {
+                $storageQuery->where('quantity', '>', 500);
+            }
+        }
+        
         // Get storage reports
-        $storageReports = Storage::select('storage_location', 
+        $storageReports = $storageQuery->select('storage_location', 
             DB::raw('SUM(quantity) as total_quantity'),
             DB::raw('MAX(updated_at) as updated_at'))
             ->groupBy('storage_location')

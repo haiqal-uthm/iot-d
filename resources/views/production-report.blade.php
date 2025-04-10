@@ -61,6 +61,33 @@
                         <input type="date" name="date" class="border rounded p-2" value="{{ request('date') }}">
                         <button type="submit" class="bg-blue-500 text-black rounded p-2">Filter</button>
                     </form>
+                    <!-- Inventory Report Filter -->
+                    <form method="GET" action="{{ route('production-report') }}"
+                        class="flex flex-wrap gap-4 items-center mb-4 hidden" id="inventoryReportFilter">
+                        <div class="flex-1 min-w-[200px]">
+                            <input type="text" name="inventory_search" placeholder="Search..."
+                                class="w-full border rounded p-2" value="{{ request('inventory_search') }}">
+                        </div>
+                        <select name="storage_location" class="border rounded p-2">
+                            <option value="">All Storage Locations</option>
+                            @foreach ($storageReports->unique('storage_location') as $report)
+                                <option value="{{ $report->storage_location }}"
+                                    {{ request('storage_location') == $report->storage_location ? 'selected' : '' }}>
+                                    Storage {{ $report->storage_location }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <select name="quantity_range" class="border rounded p-2">
+                            <option value="">All Quantities</option>
+                            <option value="0-100" {{ request('quantity_range') == '0-100' ? 'selected' : '' }}>0-100
+                                kg</option>
+                            <option value="101-500" {{ request('quantity_range') == '101-500' ? 'selected' : '' }}>
+                                101-500 kg</option>
+                            <option value="501+" {{ request('quantity_range') == '501+' ? 'selected' : '' }}>>500 kg
+                            </option>
+                        </select>
+                        <button type="submit" class="bg-blue-500 text-black rounded p-2">Filter</button>
+                    </form>
                 </div>
 
                 <div class="mb-6">
@@ -85,7 +112,7 @@
                             <tr>
                                 <th class="border p-2">No.</th>
                                 <th class="border p-2">Device ID</th>
-                                <th class="border p-2">Vibration Count</th>
+                                <th class="border p-2">Durian Fall</th>
                                 <th class="border p-2">Log Type</th>
                                 <th class="border p-2">Timestamp</th>
                             </tr>
@@ -355,74 +382,70 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <!-- Inventory Report Section -->
+                <div id="inventoryReport" class="table-container hidden">
+                    <h3 class="text-lg font-bold mb-4">Inventory Report</h3>
 
-                    <!-- Upload File Modal -->
-                    <!-- Inventory Report Section -->
-                    <div id="inventoryReport" class="table-container hidden">
-                        <h3 class="text-lg font-bold mb-4">Inventory Report</h3>
+                    <!-- Add Chart Canvas for Inventory -->
+                    <div class="chart-container mb-6" style="height: 400px;">
+                        <canvas id="inventoryChart"></canvas>
+                    </div>
 
-                        <!-- Add Chart Canvas for Inventory -->
-                        <div class="chart-container mb-6" style="height: 400px;">
-                            <canvas id="inventoryChart"></canvas>
-                        </div>
-
-                        <table class="w-full border-collapse border border-gray-300 mb-8">
-                            <thead class="bg-gray-200">
+                    <table class="w-full border-collapse border border-gray-300 mb-8">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="border p-2">Storage Location</th>
+                                <th class="border p-2">Total Quantity</th>
+                                <th class="border p-2">Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($storageReports as $report)
                                 <tr>
-                                    <th class="border p-2">Storage Location</th>
-                                    <th class="border p-2">Total Quantity</th>
-                                    <th class="border p-2">Last Updated</th>
+                                    <td class="border p-2">Storage {{ $report->storage_location }}</td>
+                                    <td class="border p-2">{{ $report->total_quantity }} kg</td>
+                                    <td class="border p-2">
+                                        {{ $report->updated_at ? $report->updated_at->format('Y-m-d H:i:s') : 'Not Available' }}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($storageReports as $report)
-                                    <tr>
-                                        <td class="border p-2">Storage {{ $report->storage_location }}</td>
-                                        <td class="border p-2">{{ $report->total_quantity }} kg</td>
-                                        <td class="border p-2">
-                                            {{ $report->updated_at ? $report->updated_at->format('Y-m-d H:i:s') : 'Not Available' }}
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="border p-2 text-center">No Storage Data</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="border p-2 text-center">No Storage Data</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+                <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+                <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+                <script>
+                    var chartData = @json($chartData);
+                    var harvestReports = @json($harvestReports);
+                    var inventoryData = @json($storageReports);
+                </script>
+                <script src="{{ asset('js/production.js') }}"></script>
+                <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <!-- Add this at the bottom of the file before closing x-app-layout -->
+                <div class="fixed bottom-4 right-4 space-y-2" id="toast-container">
+                    <!-- Template for toast notification -->
+                    <div class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-300"
+                        x-data="{ show: false }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+                        x-transition:enter="transform ease-out duration-300 transition"
+                        x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                        x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                        x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0">
+                        <div class="flex items-center">
+                            <svg class="h-6 w-6 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span class="font-medium" id="toast-message"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/moment"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
-        <script>
-            var chartData = @json($chartData);
-            var harvestReports = @json($harvestReports);
-            var inventoryData = @json($storageReports);
-        </script>
-        <script src="{{ asset('js/production.js') }}"></script>
-        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <!-- Add this at the bottom of the file before closing x-app-layout -->
-        <div class="fixed bottom-4 right-4 space-y-2" id="toast-container">
-            <!-- Template for toast notification -->
-            <div class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-300"
-                x-data="{ show: false }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
-                x-transition:enter="transform ease-out duration-300 transition"
-                x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-                x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-                x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0">
-                <div class="flex items-center">
-                    <svg class="h-6 w-6 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <span class="font-medium" id="toast-message"></span>
-                </div>
-            </div>
-        </div>
 </x-app-layout>
