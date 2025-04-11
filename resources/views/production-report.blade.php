@@ -7,7 +7,16 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6" 
+                 x-data="{ 
+                    showModal: false, 
+                    selectedReport: null,
+                    harvestId: null,
+                    harvestDate: null,
+                    orchard: null,
+                    durianType: null,
+                    totalHarvest: null
+                 }">
                 <div class="mb-4">
                     <!-- Record Fall Filter -->
                     <form method="GET" action="{{ route('production-report') }}"
@@ -102,7 +111,6 @@
                 <!-- Record Fall Section with Chart -->
                 <div id="recordFall" class="table-container">
                     <h3 class="text-lg font-bold mb-4">Record Fall</h3>
-
                     <!-- Add Chart Canvas -->
                     <div class="chart-container" style="overflow-x: auto; position: relative;">
                         <canvas id="fallChart" style="min-width: 700px; width: 100%; height: 400px;"></canvas>
@@ -133,265 +141,204 @@
                             @endforelse
                         </tbody>
                     </table>
+                    <!-- Pagination for Record Fall -->
+                    <div class="mt-4">
+                        {{ $vibrationLogs->appends(request()->except('page'))->links() }}
+                    </div>
                 </div>
+
                 <!-- Harvest Report Section -->
                 <div id="harvestReport" class="table-container hidden">
                     <h3 class="text-lg font-bold mb-4">Harvest Report</h3>
                     <div class="chart-container" style="overflow-x: auto; position: relative; max-height: 300px;">
                         <canvas id="harvestChart" style="min-width: 700px; width: 100%; max-height: 300px;"></canvas>
                     </div>
-
-                    <div x-data="{
-                        showModal: false,
-                        selectedReport: null
-                    }">
-                        <!-- Harvest Reports Table -->
-                        <table class="w-full border-collapse border border-gray-300 mb-8">
-                            <thead class="bg-gray-200">
+                    <table class="w-full border-collapse border border-gray-300 mb-8">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="border p-2">No.</th>
+                                <th class="border p-2">Orchard</th>
+                                <th class="border p-2">Durian Type</th>
+                                <th class="border p-2">Harvest Date</th>
+                                <th class="border p-2">Total Harvested</th>
+                                <th class="border p-2">Status</th>
+                                <th class="border p-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($harvestReports as $index => $report)
                                 <tr>
-                                    <th class="border p-2">No.</th>
-                                    <th class="border p-2">Orchard</th>
-                                    <th class="border p-2">Durian Type</th>
-                                    <th class="border p-2">Harvest Date</th>
-                                    <th class="border p-2">Total Harvested</th>
-                                    <th class="border p-2">Status</th>
-                                    <th class="border p-2">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($harvestReports as $index => $report)
-                                    <tr>
-                                        <td class="border p-2">{{ $index + 1 }}</td>
-                                        <td class="border p-2">{{ $report->orchard }}</td>
-                                        <td class="border p-2">{{ $report->durian_type }}</td>
-                                        <td class="border p-2">{{ $report->harvest_date->format('Y-m-d') }}</td>
-                                        <td class="border p-2">{{ $report->total_harvested }}</td>
-                                        <td class="border p-2">{{ $report->status }}</td>
-                                        <td class="border p-2">
-                                            <!-- Action Dropdown -->
-                                            <div x-data="{ open: false }" class="relative inline-block text-left">
-                                                <!-- Action Dropdown -->
-                                                <button @click="open = !open"
-                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                                                    Action
-                                                </button>
-
-                                                <!-- Dropdown Menu -->
-                                                <div x-show="open" @click.away="open = false"
-                                                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                                    <div class="py-1">
-                                                        <button type="button"
-                                                            @click="selectedReport = @js($report); showModal = true; open = false"
-                                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                                                            View Document
-                                                        </button>
-                                                        <button type="button" @click="printReport(); open = false"
-                                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                                                            Print
-                                                        </button>
-                                                    </div>
+                                    <td class="border p-2">{{ $index + 1 }}</td>
+                                    <td class="border p-2">{{ $report->orchard }}</td>
+                                    <td class="border p-2">{{ $report->durian_type }}</td>
+                                    <td class="border p-2">{{ $report->harvest_date->format('Y-m-d') }}</td>
+                                    <td class="border p-2">{{ $report->total_harvested }}</td>
+                                    <td class="border p-2">{{ $report->status }}</td>
+                                    <td class="border p-2">
+                                        <!-- Action Dropdown -->
+                                        <div x-data="{ open: false }" class="relative inline-block text-left">
+                                            <button @click="open = !open"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                Action
+                                            </button>
+                                            <div x-show="open" @click.away="open = false"
+                                                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                                <div class="py-1">
+                                                    <!-- Inside the action dropdown -->
+                                                    <button type="button"
+                                                        @click="selectedReport = {{ json_encode($report) }}; showModal = true; open = false"
+                                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                        View Document
+                                                    </button>
+                                                    <button type="button" @click="printReport(); open = false"
+                                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                                        Print
+                                                    </button>
                                                 </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center">No Harvest Report Data</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                        <!-- View Report Modal -->
-                        <div x-show="showModal"
-                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-cloak>
-                            <div class="bg-white p-6 rounded-lg shadow-lg text-sm w-full max-w-2xl mx-auto relative">
-                                <button @click="showModal = false"
-                                    class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
-                                <form @submit.prevent="saveHarvestDetails()" id="harvestDetailsForm"
-                                    x-data="{ isSubmitting: false }">
-                                    <div id="printable">
-                                        <!-- Basic Info (unchanged) -->
-                                        <h2 class="text-2xl font-bold mb-4 text-center">Durian Harvest Checklist Report
-                                        </h2>
-                                        <div class="mb-4">
-                                            <input type="hidden" x-model="selectedReport.id" name="harvest_id">
-                                            <p><strong>Harvest ID:</strong> <span x-text="selectedReport.id"></span>
-                                            </p>
-                                            <p><strong>Date:</strong> <span
-                                                    x-text="selectedReport.harvest_date"></span>
-                                            </p>
-                                            <p><strong>Orchard Location:</strong> <span
-                                                    x-text="selectedReport.orchard"></span></p>
-                                            <p><strong>Durian Type:</strong> <span
-                                                    x-text="selectedReport.durian_type"></span></p>
-                                            <p><strong>Total Harvested:</strong> <span
-                                                    x-text="selectedReport.total_harvested"></span> fruits</p>
-                                            <p><strong>Status:</strong> <span x-text="selectedReport.status"></span>
-                                            </p>
                                         </div>
-
-                                        <!-- Checklist Sections -->
-                                        <hr class="my-4">
-                                        <div class="mb-4">
-                                            <h3 class="text-lg font-semibold mb-2">Durian Details</h3>
-                                            <div class="space-y-4">
-                                                <div class="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label for="estimated_weight"
-                                                            class="block text-sm font-medium mb-1">Estimated Weight
-                                                            (kg)</label>
-                                                        <input type="number" id="estimated_weight"
-                                                            name="estimated_weight" class="w-full border rounded p-2"
-                                                            step="0.01" required
-                                                            x-bind:value="selectedReport.estimated_weight">
-                                                    </div>
-                                                    <div>
-                                                        <label class="block text-sm font-medium mb-2">Grade</label>
-                                                        <div class="grid grid-cols-3 gap-4">
-                                                            <div class="flex items-center">
-                                                                <input type="checkbox" id="grade_a" name="grade[]"
-                                                                    value="A"
-                                                                    class="form-checkbox h-4 w-4 text-blue-600"
-                                                                    x-bind:checked="selectedReport.grade && selectedReport.grade
-                                                                        .includes('A')">
-                                                                <label for="grade_a" class="ml-2">Grade A</label>
-                                                            </div>
-                                                            <div class="flex items-center">
-                                                                <input type="checkbox" id="grade_b" name="grade[]"
-                                                                    value="B"
-                                                                    class="form-checkbox h-4 w-4 text-blue-600"
-                                                                    x-bind:checked="selectedReport.grade && selectedReport.grade
-                                                                        .includes('B')">
-                                                                <label for="grade_b" class="ml-2">Grade B</label>
-                                                            </div>
-                                                            <div class="flex items-center">
-                                                                <input type="checkbox" id="grade_c" name="grade[]"
-                                                                    value="C"
-                                                                    class="form-checkbox h-4 w-4 text-blue-600"
-                                                                    x-bind:checked="selectedReport.grade && selectedReport.grade
-                                                                        .includes('C')">
-                                                                <label for="grade_c" class="ml-2">Grade C</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">No Harvest Report Data</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                    <!-- Pagination for Harvest Report -->
+                    <div class="mt-4">
+                        {{ $harvestReports->appends(request()->except('page'))->links() }}
+                    </div>
+                    <div x-show="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-cloak>
+                        <div class="bg-white p-6 rounded-lg shadow-lg text-sm w-full max-w-2xl mx-auto relative">
+                            <button @click="showModal = false" class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
+                            <form @submit.prevent="saveHarvestDetails()" id="harvestDetailsForm" x-data="{ isSubmitting: false }">
+                                <div id="printable">
+                                    <!-- Basic Info -->
+                                    <h2 class="text-2xl font-bold mb-4 text-center">Durian Harvest Checklist Report</h2>
+                                    <div class="mb-4">
+                                        <input type="hidden" x-model="selectedReport.id" name="harvest_id">
+                                        <p><strong>Harvest ID:</strong> <span x-text="selectedReport.id"></span></p>
+                                        <p><strong>Date:</strong> <span x-text="selectedReport.harvest_date"></span></p>
+                                        <p><strong>Orchard Location:</strong> <span x-text="selectedReport.orchard"></span></p>
+                                        <p><strong>Durian Type:</strong> <span x-text="selectedReport.durian_type"></span></p>
+                                        <p><strong>Total Harvested:</strong> <span x-text="selectedReport.total_harvested"></span> fruits</p>
+                                        <p><strong>Status:</strong> <span x-text="selectedReport.status"></span></p>
+                                    </div>
+                    
+                                    <!-- Durian Details -->
+                                    <hr class="my-4">
+                                    <div class="mb-4">
+                                        <h3 class="text-lg font-semibold mb-2">Durian Details</h3>
+                                        <div class="space-y-4">
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label for="estimated_weight" class="block text-sm font-medium mb-1">Estimated Weight (kg)</label>
+                                                    <input type="number" id="estimated_weight" name="estimated_weight" class="w-full border rounded p-2" step="0.01" required x-bind:value="selectedReport.estimated_weight">
                                                 </div>
                                                 <div>
-                                                    <label for="condition"
-                                                        class="block text-sm font-medium mb-1">Condition</label>
+                                                    <label class="block text-sm font-medium mb-2">Grade</label>
                                                     <div class="grid grid-cols-3 gap-4">
                                                         <div class="flex items-center">
-                                                            <input type="checkbox" id="condition_excellent"
-                                                                name="condition[]" value="excellent"
-                                                                class="form-checkbox h-4 w-4 text-blue-600"
-                                                                x-bind:checked="selectedReport.condition && selectedReport.condition
-                                                                    .includes('excellent')">
-                                                            <label for="condition_excellent"
-                                                                class="ml-2">Excellent</label>
+                                                            <input type="checkbox" id="grade_a" name="grade[]" value="A" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.grade && selectedReport.grade.includes('A')">
+                                                            <label for="grade_a" class="ml-2">Grade A</label>
                                                         </div>
                                                         <div class="flex items-center">
-                                                            <input type="checkbox" id="condition_good"
-                                                                name="condition[]" value="good"
-                                                                class="form-checkbox h-4 w-4 text-blue-600"
-                                                                x-bind:checked="selectedReport.condition && selectedReport.condition
-                                                                    .includes('good')">
-                                                            <label for="condition_good" class="ml-2">Good</label>
+                                                            <input type="checkbox" id="grade_b" name="grade[]" value="B" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.grade && selectedReport.grade.includes('B')">
+                                                            <label for="grade_b" class="ml-2">Grade B</label>
                                                         </div>
                                                         <div class="flex items-center">
-                                                            <input type="checkbox" id="condition_damaged"
-                                                                name="condition[]" value="damaged"
-                                                                class="form-checkbox h-4 w-4 text-blue-600"
-                                                                x-bind:checked="selectedReport.condition && selectedReport.condition
-                                                                    .includes('damaged')">
-                                                            <label for="condition_damaged"
-                                                                class="ml-2">Damaged</label>
+                                                            <input type="checkbox" id="grade_c" name="grade[]" value="C" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.grade && selectedReport.grade.includes('C')">
+                                                            <label for="grade_c" class="ml-2">Grade C</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <!-- Pre-Harvest Checklist section remains unchanged -->
-
-                                        <!-- Post-Harvest Handling Section -->
-                                        <hr class="my-4">
-                                        <div class="mb-4">
-                                            <h3 class="text-lg font-semibold mb-2">Post-Harvest Handling</h3>
-                                            <div class="space-y-3">
-                                                <div class="space-y-2">
-                                                    <p class="font-medium">Storage Location:</p>
-                                                    <div class="grid grid-cols-2 gap-2">
-                                                        <div class="flex items-center">
-                                                            <input type="checkbox" id="storage_a"
-                                                                name="storage_location[]" value="A"
-                                                                class="form-checkbox h-4 w-4 text-blue-600"
-                                                                x-bind:checked="selectedReport.storage_location && selectedReport
-                                                                    .storage_location.includes('A')">
-                                                            <label for="storage_a" class="ml-2">Storage A</label>
-                                                        </div>
-                                                        <div class="flex items-center">
-                                                            <input type="checkbox" id="storage_b"
-                                                                name="storage_location[]" value="B"
-                                                                class="form-checkbox h-4 w-4 text-blue-600"
-                                                                x-bind:checked="selectedReport.storage_location && selectedReport
-                                                                    .storage_location.includes('B')">
-                                                            <label for="storage_b" class="ml-2">Storage B</label>
-                                                        </div>
-                                                        <div class="flex items-center">
-                                                            <input type="checkbox" id="storage_c"
-                                                                name="storage_location[]" value="C"
-                                                                class="form-checkbox h-4 w-4 text-blue-600"
-                                                                x-bind:checked="selectedReport.storage_location && selectedReport
-                                                                    .storage_location.includes('C')">
-                                                            <label for="storage_c" class="ml-2">Storage C</label>
-                                                        </div>
-                                                        <div class="flex items-center">
-                                                            <input type="checkbox" id="storage_d"
-                                                                name="storage_location[]" value="D"
-                                                                class="form-checkbox h-4 w-4 text-blue-600"
-                                                                x-bind:checked="selectedReport.storage_location && selectedReport
-                                                                    .storage_location.includes('D')">
-                                                            <label for="storage_d" class="ml-2">Storage D</label>
-                                                        </div>
+                    
+                                            <div>
+                                                <label for="condition" class="block text-sm font-medium mb-1">Condition</label>
+                                                <div class="grid grid-cols-3 gap-4">
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="condition_excellent" name="condition[]" value="excellent" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.condition && selectedReport.condition.includes('excellent')">
+                                                        <label for="condition_excellent" class="ml-2">Excellent</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="condition_good" name="condition[]" value="good" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.condition && selectedReport.condition.includes('good')">
+                                                        <label for="condition_good" class="ml-2">Good</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="condition_damaged" name="condition[]" value="damaged" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.condition && selectedReport.condition.includes('damaged')">
+                                                        <label for="condition_damaged" class="ml-2">Damaged</label>
                                                     </div>
                                                 </div>
-                                                <div>
-                                                    <label for="remarks"
-                                                        class="block text-sm font-medium mb-1">Remarks</label>
-                                                    <textarea id="remarks" name="remarks" rows="3" class="w-full border rounded p-2"
-                                                        class="w-full border rounded p-2" placeholder="Enter any additional notes or observations..."
-                                                        x-text="selectedReport.remarks"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-6 flex justify-between">
-                                            <div class="w-1/2">
-                                                <p class="mb-1 font-semibold">Harvested By:</p>
-                                                <p>_______________________</p>
-                                            </div>
-                                            <div class="w-1/2 text-right">
-                                                <p class="mb-1 font-semibold">Verified By:</p>
-                                                <p>_______________________</p>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="submit" :disabled="isSubmitting"
-                                        class="bg-green-600 text-black px-4 py-2 rounded hover:bg-green-700">
-                                        Save Details
-                                    </button>
-                            </div>
+                    
+                                    <!-- Post-Harvest Handling -->
+                                    <hr class="my-4">
+                                    <div class="mb-4">
+                                        <h3 class="text-lg font-semibold mb-2">Post-Harvest Handling</h3>
+                                        <div class="space-y-3">
+                                            <div class="space-y-2">
+                                                <p class="font-medium">Storage Location:</p>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="storage_a" name="storage_location[]" value="A" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.storage_location && selectedReport.storage_location.includes('A')">
+                                                        <label for="storage_a" class="ml-2">Storage A</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="storage_b" name="storage_location[]" value="B" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.storage_location && selectedReport.storage_location.includes('B')">
+                                                        <label for="storage_b" class="ml-2">Storage B</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="storage_c" name="storage_location[]" value="C" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.storage_location && selectedReport.storage_location.includes('C')">
+                                                        <label for="storage_c" class="ml-2">Storage C</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="storage_d" name="storage_location[]" value="D" class="form-checkbox h-4 w-4 text-blue-600" x-bind:checked="selectedReport.storage_location && selectedReport.storage_location.includes('D')">
+                                                        <label for="storage_d" class="ml-2">Storage D</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                    
+                                            <div>
+                                                <label for="remarks" class="block text-sm font-medium mb-1">Remarks</label>
+                                                <textarea id="remarks" name="remarks" rows="3" class="w-full border rounded p-2" placeholder="Enter any additional notes or observations..." x-text="selectedReport.remarks"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                                    <!-- Signature Area -->
+                                    <div class="mt-6 flex justify-between">
+                                        <div class="w-1/2">
+                                            <p class="mb-1 font-semibold">Harvested By:</p>
+                                            <p>_______________________</p>
+                                        </div>
+                                        <div class="w-1/2 text-right">
+                                            <p class="mb-1 font-semibold">Verified By:</p>
+                                            <p>_______________________</p>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <button type="submit" :disabled="isSubmitting" class="bg-green-600 text-black px-4 py-2 rounded hover:bg-green-700 mt-4">
+                                    Save Details
+                                </button>
+                            </form>
                         </div>
-                    </div>
+                    </div>                    
                 </div>
+        
+
                 <!-- Inventory Report Section -->
                 <div id="inventoryReport" class="table-container hidden">
                     <h3 class="text-lg font-bold mb-4">Inventory Report</h3>
-
                     <!-- Add Chart Canvas for Inventory -->
                     <div class="chart-container mb-6" style="height: 400px;">
                         <canvas id="inventoryChart"></canvas>
                     </div>
-
                     <table class="w-full border-collapse border border-gray-300 mb-8">
                         <thead class="bg-gray-200">
                             <tr>
@@ -416,36 +363,52 @@
                             @endforelse
                         </tbody>
                     </table>
-                </div>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/moment"></script>
-                <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
-                <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
-                <script>
-                    var chartData = @json($chartData);
-                    var harvestReports = @json($harvestReports);
-                    var inventoryData = @json($storageReports);
-                </script>
-                <script src="{{ asset('js/production.js') }}"></script>
-                <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <!-- Add this at the bottom of the file before closing x-app-layout -->
-                <div class="fixed bottom-4 right-4 space-y-2" id="toast-container">
-                    <!-- Template for toast notification -->
-                    <div class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-300"
-                        x-data="{ show: false }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
-                        x-transition:enter="transform ease-out duration-300 transition"
-                        x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-                        x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-                        x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0">
-                        <div class="flex items-center">
-                            <svg class="h-6 w-6 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="font-medium" id="toast-message"></span>
-                        </div>
+                    <!-- Pagination for Inventory Report -->
+                    <div class="mt-4">
+                        {{ $storageReports->appends(request()->except('page'))->links() }}
                     </div>
                 </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+        <script>
+            var chartData = @json($chartData);
+            var harvestChartData = @json($harvestChartData);
+            var inventoryData = @json($inventoryChartData);
+        </script>
+        <script src="{{ asset('js/production.js') }}"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- Add this at the bottom of the file before closing x-app-layout -->
+        <div class="fixed bottom-4 right-4 space-y-2" id="toast-container">
+            <!-- Template for toast notification -->
+            <div class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-300"
+                x-data="{ show: false }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+                x-transition:enter="transform ease-out duration-300 transition"
+                x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0">
+                <div class="flex items-center">
+                    <svg class="h-6 w-6 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span class="font-medium" id="toast-message"></span>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const activeTab = sessionStorage.getItem('activeTab') || 'recordFall';
+                const paginationLinks = document.querySelectorAll('.pagination a');
+                
+                paginationLinks.forEach(link => {
+                    const url = new URL(link.href);
+                    url.searchParams.set('activeTab', activeTab);
+                    link.href = url.toString();
+                });
+            });
+        </script>
 </x-app-layout>

@@ -46,45 +46,18 @@ class ProductionReportController extends Controller
             $vibrationQuery->whereDate('timestamp', $request->date);
         }
     
-        $vibrationLogs = $vibrationQuery->orderBy('timestamp', 'desc')->paginate(10);
+        // Vibration Logs (Record Fall)
+        $vibrationLogs = $vibrationQuery->orderBy('timestamp', 'desc')->paginate(5);
     
         // Harvest Reports
-        $harvestQuery = HarvestLog::query();
+        $harvestReports = HarvestLog::orderBy('harvest_date', 'desc')->paginate(5);
     
-        // Search functionality for Harvest Report
-        if ($request->filled('search') && $request->has('orchard')) {
-            $search = $request->search;
-            $harvestQuery->where(function($query) use ($search) {
-                $query->where('orchard', 'LIKE', "%{$search}%")
-                      ->orWhere('durian_type', 'LIKE', "%{$search}%")
-                      ->orWhere('total_harvested', 'LIKE', "%{$search}%");
-            });
-        }
-    
-        // Specific filters for Harvest Report
-        if ($request->filled('orchard')) {
-            $harvestQuery->where('orchard', $request->orchard);
-        }
-    
-        if ($request->filled('durian_type')) {
-            $harvestQuery->where('durian_type', $request->durian_type);
-        }
-    
-        if ($request->filled('date')) {
-            $harvestQuery->whereDate('harvest_date', $request->date);
-        }
-    
-        // Modify the harvest query to include all details
-        $harvestQuery = HarvestLog::query()->select([
-            'harvest_logs.*',
-            'estimated_weight',
-            'grade',
-            'condition',
-            'storage_location',
-            'remarks'
-        ]);
-    
-        $harvestReports = $harvestQuery->orderBy('harvest_date', 'desc')->get();
+        // Get storage reports with pagination
+        $storageReports = Storage::select('storage_location', 
+            DB::raw('SUM(quantity) as total_quantity'),
+            DB::raw('MAX(updated_at) as updated_at'))
+            ->groupBy('storage_location')
+            ->paginate(5);
     
         // Chart Data for Last 30 Days (Vibration)
         $startDate = now()->subDays(30);
@@ -97,7 +70,7 @@ class ProductionReportController extends Controller
             ->get()
             ->keyBy('date');
     
-        // Generate complete date range
+        // Generate complete date range for chart data
         $chartData = [];
         $currentDate = $startDate->copy();
     
@@ -107,46 +80,18 @@ class ProductionReportController extends Controller
             $currentDate->addDay();
         }
     
-        // Harvest Timeline Data
-        $harvestTimeline = HarvestLog::select('durian_type', 'harvest_date', 'total_harvested')
-            ->orderBy('harvest_date')
-            ->get()
-            ->groupBy('durian_type');
+        // Chart Data for Harvest Report
+        $harvestChartData = HarvestLog::select('durian_type', DB::raw('SUM(total_harvested) as total_harvested'))
+            ->groupBy('durian_type')
+            ->get();
     
-        // Get storage reports with filtering
-        $storageQuery = Storage::query();
-        
-        // Apply inventory filters if they exist
-        if ($request->filled('inventory_search')) {
-            $search = $request->inventory_search;
-            $storageQuery->where('storage_location', 'LIKE', "%{$search}%");
-        }
-        
-        if ($request->filled('storage_location')) {
-            $storageQuery->where('storage_location', $request->storage_location);
-        }
-        
-        if ($request->filled('quantity_range')) {
-            $range = $request->quantity_range;
-            if ($range == '0-100') {
-                $storageQuery->where('quantity', '<=', 100);
-            } else if ($range == '101-500') {
-                $storageQuery->where('quantity', '>', 100)
-                             ->where('quantity', '<=', 500);
-            } else if ($range == '501+') {
-                $storageQuery->where('quantity', '>', 500);
-            }
-        }
-        
-        // Get storage reports
-        $storageReports = $storageQuery->select('storage_location', 
-            DB::raw('SUM(quantity) as total_quantity'),
-            DB::raw('MAX(updated_at) as updated_at'))
+        // Chart Data for Inventory Report
+        $inventoryChartData = Storage::select('storage_location', DB::raw('SUM(quantity) as total_quantity'))
             ->groupBy('storage_location')
             ->get();
     
         // Debug line - add this temporarily
-Log::info('Storage Reports:', ['data' => $storageReports]);
+        Log::info('Storage Reports:', ['data' => $storageReports]);
     
         return view('production-report', compact(
             'vibrationLogs',
@@ -154,8 +99,9 @@ Log::info('Storage Reports:', ['data' => $storageReports]);
             'storageReports',
             'orchards',
             'durianTypes',
-            'chartData',
-            'harvestTimeline'
+            'harvestChartData',
+            'inventoryChartData',
+            'chartData'
         ));
     }
 

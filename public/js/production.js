@@ -87,63 +87,76 @@
         if (harvestChart) harvestChart.destroy();
 
         const ctx = document.getElementById("harvestChart").getContext("2d");
-        const rawData = harvestReports;
+        
+        // Group data by durian type and month using reduce
+        const groupedData = harvestChartData.reduce((acc, item) => {
+            const type = item.durian_type;
+            if (!acc[type]) acc[type] = {};
+            acc[type][type] = item.total_harvested;
+            return acc;
+        }, {});
 
-        let groupedData = {};
-        rawData.forEach(report => {
-            let month = new Date(report.harvest_date).toISOString().slice(0, 7); // YYYY-MM
-            let type = report.durian_type;
-
-            groupedData[type] = groupedData[type] || {};
-            groupedData[type][month] = (groupedData[type][month] || 0) + report.total_harvested;
+        // Get unique durian types
+        const durianTypes = [...new Set(harvestChartData.map(item => item.durian_type))];
+        
+        // Create datasets using map
+        const datasets = durianTypes.map(type => {
+            const color = getRandomColor();
+            return {
+                label: type,
+                data: [harvestChartData.find(item => item.durian_type === type)?.total_harvested || 0],
+                borderColor: color,
+                backgroundColor: color.replace(')', ', 0.2)').replace('rgb', 'rgba'),
+                borderWidth: 2
+            };
         });
 
-        let allMonths = Object.values(groupedData).flatMap(obj => Object.keys(obj));
-        let uniqueMonths = [...new Set(allMonths)].sort();
-
-        let datasets = Object.keys(groupedData).map(type => ({
-            label: type,
-            data: uniqueMonths.map(month => groupedData[type][month] || 0),
-            borderColor: getRandomColor(),
-            backgroundColor: "transparent",
-            borderWidth: 2
-        }));
-
         harvestChart = new Chart(ctx, {
-            type: "line",
+            type: "bar",
             data: {
-                labels: uniqueMonths,
+                labels: ['Total Harvested'],
                 datasets: datasets
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
-                        type: "category",
-                        title: { display: true, text: "Month" }
+                        title: { display: true, text: "Durian Type" }
                     },
                     y: {
                         title: { display: true, text: "Total Harvested" },
                         beginAtZero: true
                     }
                 },
-                plugins: { legend: { position: "top" } }
+                plugins: { 
+                    legend: { position: "top" },
+                    title: { display: true, text: 'Durian Harvest by Type' }
+                }
             }
         });
 
         function getRandomColor() {
-            return `hsl(${Math.random() * 360}, 70%, 60%)`;
+            return `rgb(${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)})`;
         }
     }
 
     // 🧊 Inventory Bar Chart
+    // 🧊 Inventory Bar Chart
     function renderInventoryChart() {
         if (inventoryChart) inventoryChart.destroy();
-
+    
         const ctx = document.getElementById('inventoryChart').getContext('2d');
+        
+        // Check if inventoryData is an array and has items
+        if (!Array.isArray(inventoryData) || inventoryData.length === 0) {
+            console.warn('No inventory data available or data is not in the expected format');
+            return;
+        }
+        
         const locations = inventoryData.map(item => `Storage ${item.storage_location}`);
         const quantities = inventoryData.map(item => item.total_quantity);
-
+    
         inventoryChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -258,38 +271,31 @@
     }
 
     // 📋 Show Table + Trigger Corresponding Chart
-    // Update the showTable function
+    document.addEventListener("DOMContentLoaded", function () {
+        const activeTab = sessionStorage.getItem('activeTab') || 'recordFall';
+        showTable(activeTab);
+
+        const paginationLinks = document.querySelectorAll('.pagination a');
+        paginationLinks.forEach(link => {
+            const url = new URL(link.href);
+            url.searchParams.set('activeTab', activeTab);
+            link.href = url.toString();
+        });
+
+        renderHarvestChart();
+        renderInventoryChart();
+    });
+
     function showTable(tableId) {
-        // Destroy all charts first to prevent conflicts
-        if (fallChart) fallChart.destroy();
-        if (harvestChart) harvestChart.destroy();
-        if (inventoryChart) inventoryChart.destroy();
-        
         // Hide all table containers
         document.querySelectorAll('.table-container').forEach(container => {
             container.classList.add('hidden');
         });
-        
+
         // Show the selected table container
         document.getElementById(tableId).classList.remove('hidden');
-        
-        // Show/hide corresponding filter forms
-        document.querySelectorAll('form[id$="Filter"]').forEach(form => {
-            form.classList.add('hidden');
-        });
-        
-        const filterId = tableId + 'Filter';
-        if (document.getElementById(filterId)) {
-            document.getElementById(filterId).classList.remove('hidden');
-        }
-        
-        // Render appropriate chart based on the table shown
-        if (tableId === 'inventoryReport') {
-            renderInventoryChart();
-        } else if (tableId === 'recordFall') {
-            renderFallChart();
-        } else if (tableId === 'harvestReport') {
-            renderHarvestChart();
-        }
+
+        // Store the active tab in session storage to maintain state after page refresh
+        sessionStorage.setItem('activeTab', tableId);
     }
 
