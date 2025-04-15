@@ -39,6 +39,11 @@ class DashboardController extends Controller
 
         // Retrieve Vibration Logs (Latest 10 logs)
         $logs = VibrationLog::orderBy('timestamp', 'desc')->take(4)->get();
+        
+        // Get production statistics
+        $totalRecordFall = VibrationLog::where('log_type', 1)->count();
+        $totalHarvest = DB::table('harvest_logs')->sum('total_harvested');
+        $totalInventory = DB::table('storage')->sum('quantity');
 
         // Pass all variables to the dashboard view
         return view(
@@ -49,7 +54,10 @@ class DashboardController extends Controller
                 'totalDevice',
                 'totalOrchards',
                 'durianData',
-                'logs', // Pass logs to view
+                'logs',
+                'totalRecordFall',
+                'totalHarvest',
+                'totalInventory'
             ),
         );
     }

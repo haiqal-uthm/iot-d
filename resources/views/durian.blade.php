@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center space-x-2">
-            <a href="{{ route('dashboard') }}" class="text-lg text-gray-800 hover:text-blue-500">←</a>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Durian') }}
             </h2>

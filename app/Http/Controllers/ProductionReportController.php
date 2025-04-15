@@ -136,6 +136,7 @@ class ProductionReportController extends Controller
                 'condition' => $request->condition,
                 'storage_location' => $request->storage_location,
                 'remarks' => $request->remarks,
+                'status' => 'Completed' // Set status to Completed when details are saved
             ]);
     
             // Delete existing storage entries for this harvest log

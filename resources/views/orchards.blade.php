@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center space-x-2">
-            <a href="{{ route('dashboard') }}" class="text-lg text-gray-800 hover:text-blue-500">←</a>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Orchard Monitoring') }}
             </h2>
@@ -78,7 +77,7 @@
         </div>
 
         <!--orchards list-->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-10px" style="width: fit-content; margin-left: 230px">
             @foreach ($orchards as $orchard)
                 <div
                     class="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform transform hover:scale-105">

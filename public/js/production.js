@@ -88,56 +88,67 @@
 
         const ctx = document.getElementById("harvestChart").getContext("2d");
         
-        // Group data by durian type and month using reduce
-        const groupedData = harvestChartData.reduce((acc, item) => {
-            const type = item.durian_type;
-            if (!acc[type]) acc[type] = {};
-            acc[type][type] = item.total_harvested;
-            return acc;
-        }, {});
-
         // Get unique durian types
         const durianTypes = [...new Set(harvestChartData.map(item => item.durian_type))];
         
-        // Create datasets using map
-        const datasets = durianTypes.map(type => {
-            const color = getRandomColor();
-            return {
-                label: type,
-                data: [harvestChartData.find(item => item.durian_type === type)?.total_harvested || 0],
-                borderColor: color,
-                backgroundColor: color.replace(')', ', 0.2)').replace('rgb', 'rgba'),
-                borderWidth: 2
-            };
-        });
-
+        // Extract data for pie chart
+        const data = durianTypes.map(type => 
+            harvestChartData.find(item => item.durian_type === type)?.total_harvested || 0
+        );
+        
+        // Generate colors for each segment
+        const backgroundColors = durianTypes.map(() => getRandomColor());
+        const borderColors = backgroundColors.map(color => color.replace('0.7', '1'));
+        
         harvestChart = new Chart(ctx, {
-            type: "bar",
+            type: "pie",
             data: {
-                labels: ['Total Harvested'],
-                datasets: datasets
+                labels: durianTypes,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1,
+                    hoverOffset: 15
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        title: { display: true, text: "Durian Type" }
-                    },
-                    y: {
-                        title: { display: true, text: "Total Harvested" },
-                        beginAtZero: true
-                    }
-                },
                 plugins: { 
-                    legend: { position: "top" },
-                    title: { display: true, text: 'Durian Harvest by Type' }
+                    legend: { 
+                        position: "right",
+                        labels: {
+                            font: {
+                                size: 12
+                            },
+                            padding: 20
+                        }
+                    },
+                    title: { 
+                        display: true, 
+                        text: 'Durian Harvest by Type',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
                 }
             }
         });
 
         function getRandomColor() {
-            return `rgb(${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)})`;
+            return `rgba(${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, ${Math.floor(Math.random() * 200)}, 0.7)`;
         }
     }
 

@@ -10,6 +10,9 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link rel="icon" type="image/png" href="{{ asset('images/durian.png') }}">
 
         <!-- Scripts -->
@@ -23,7 +26,9 @@
             @isset($header)
                 <header class="bg-white dark:bg-gray-800 shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+                        <div class="font-poppins text-xl font-semibold tracking-wide text-gray-800 dark:text-gray-200" style="margin-left: 15px;">
+                            {{ $header }}
+                        </div>
                     </div>
                 </header>
             @endisset

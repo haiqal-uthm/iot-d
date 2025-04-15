@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center">
-            <a href="{{ route('dashboard') }}" class="arrow-icon text-lg text-gray-800 hover:text-blue-500">←</a>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Device Management') }}
             </h2>
