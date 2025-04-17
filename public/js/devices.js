@@ -58,10 +58,48 @@ function openEditModal(deviceId) {
 
     document.getElementById('editDeviceId').value = device.id;
     document.getElementById('editDeviceName').value = device.name;
-    document.getElementById('editDeviceOrchard').value = device.orchard_id;
+    
+    // Set the status value in the dropdown
+    if (document.getElementById('editDeviceStatus')) {
+        document.getElementById('editDeviceStatus').value = device.status || 'active';
+    }
+    
+    // Remove the orchard_id reference as it's no longer needed
     document.getElementById('editDeviceForm').action = `/devices/${device.id}`;
 
     openModal('editDeviceModal');
+}
+
+/**
+ * Toggle LED Status
+ */
+function toggleLed(deviceId, isChecked) {
+    // Implement LED toggle functionality with Firebase
+    const status = isChecked ? 'ON' : 'OFF';
+    
+    fetch('/devices/toggle-led', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            device_id: deviceId,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update the LED status display
+        const deviceElement = document.querySelector(`[data-device-id="${deviceId}"]`);
+        if (deviceElement) {
+            const statusElement = document.getElementById(`ledStatus-${deviceElement.id.split('-')[1]}`);
+            if (statusElement) {
+                statusElement.textContent = data.status;
+            }
+        }
+    })
+    .catch(error => console.error('Error toggling LED:', error));
 }
 
 /**

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('device_id');
             $table->integer('vibration_count');
             $table->tinyInteger('log_type'); // 1 = Harvest, 0 = Vibration
+            $table->timestamp('timestamp')->nullable(); // Add this line if you need a specific timestamp column
             $table->timestamps(); // auto created_at & updated_at
         });
     }

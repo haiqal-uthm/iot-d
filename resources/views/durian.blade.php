@@ -25,14 +25,6 @@
                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Total</label>
                     <input type="number" name="total" id="total" class="w-full mt-2 p-2 border rounded" required>
                 </div>
-                <div class="mb-4">
-                    <label for="editOrchard"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Orchard</label>
-                    <select id="editOrchard" name="orchard_id" class="w-full mt-2 p-2 border rounded" required>
-                        <option value="1">Orchard A</option>
-                        <option value="2">Orchard B</option>
-                    </select>
-                </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                         onclick="closeModal('addDurianModal')">Cancel</button>
@@ -61,14 +53,6 @@
                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Total</label>
                     <input type="number" id="editTotal" name="total" class="w-full mt-2 p-2 border rounded" required>
                 </div>
-                <div class="mb-4">
-                    <label for="editOrchard"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Orchard</label>
-                    <select id="editOrchard" name="orchard_id" class="w-full mt-2 p-2 border rounded" required>
-                        <option value="1">Orchard A</option>
-                        <option value="2">Orchard B</option>
-                    </select>
-                </div>
                 <div class="flex justify-end space-x-2">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                         onclick="closeModal('editDurianModal')">Cancel</button>
@@ -93,15 +77,11 @@
                     <div class="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg shadow">
                         <h3 class="text-lg font-semibold text-center">{{ $durian->name }}</h3>
                         <p class="text-center">Total Harvested: <span class="font-bold">{{ $durian->total }}</span></p>
-                        <p class="text-center">Orchard:
-                            <span class="font-bold">
-                                {{ $durian->orchard_id == 1 ? 'A' : ($durian->orchard_id == 2 ? 'B' : 'N/A') }}
-                            </span>
-                        </p>
+                        
                         <!-- Edit and Delete Buttons -->
                         <div class="flex mt-4 space-x-2 justify-center">
                             <button class="bg-blue-500 hover:bg-blue-600 text-black py-2 px-4 rounded"
-                                onclick="openEditModal('{{ $durian->id }}', '{{ $durian->name }}', {{ $durian->total }}, {{ $durian->orchard_id }})">
+                                onclick="openEditModal('{{ $durian->id }}', '{{ $durian->name }}', {{ $durian->total }})">
                                 Edit
                             </button>
                             <form method="POST" action="{{ route('durian.destroy', $durian->id) }}"

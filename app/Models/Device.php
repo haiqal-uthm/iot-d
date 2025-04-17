@@ -9,7 +9,11 @@ class Device extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'device_id', 'orchard_id'];
+    protected $fillable = [
+        'name',
+        'device_id',
+        'status',
+    ];
 
     protected $table = 'devices';
 

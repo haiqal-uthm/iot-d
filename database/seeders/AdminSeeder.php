@@ -15,6 +15,7 @@ class AdminSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => Hash::make('admin123'), // Now will work!
             'email_verified_at' => now(),
+            'role' => 'admin',
         ]);
 
         echo "✅ Admin Created | Email: admin@gmail.com | Password: admin123\n";

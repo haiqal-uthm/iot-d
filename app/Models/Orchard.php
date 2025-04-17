@@ -9,19 +9,25 @@ class Orchard extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['orchardName', 'numTree', 'device_id'];
+    protected $fillable = ['orchardName', 'numTree', 'device_id', 'user_id', 'durian_id'];
+    // Each Orchard belongs to one Durian
+    public function durian()
+    {
+        return $this->belongsTo(Durian::class);
+    }
 
     public function device()
     {
         return $this->belongsTo(Device::class, 'device_id');
     }
-    public function durian()
-    {
-        return $this->belongsTo(Durian::class, 'durian_id');
-    }
+    
     public function vibrationLogs()
     {
         return $this->hasMany(VibrationLog::class, 'device_id', 'device_id');
     }
-
+    
+    public function farmer()
+    {
+        return $this->belongsTo(Farmer::class, 'user_id');
+    }
 }

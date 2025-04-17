@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\DurianController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\UserController; // Add this line
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrchardController;
 use App\Http\Controllers\ProductionReportController;
@@ -19,6 +21,12 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+// Admin routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    // Add other admin-only routes here
+});
 
 Route::middleware('auth')->group(function () {
     // Profile routes
@@ -59,17 +67,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/production-report', [ProductionReportController::class, 'index'])->name('production-report');
     Route::post('/production-upload', [HarvestController::class, 'upload'])->name('production.upload');
 
-
     //harvest
     Route::post('/harvest/save', [HarvestController::class, 'save'])->name('harvest.save');
     Route::post('/harvest-details', [ProductionReportController::class, 'saveHarvestDetails'])->name('harvest.save-details');
 
     // dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/check-animal-detection', [DashboardController::class, 'checkAnimalDetection'])->name('checkAnimalDetection');
 
-    
+    Route::get('/check-animal-detection', [DashboardController::class, 'checkAnimalDetection'])->name('checkAnimalDetection');
 });
 
-
 require __DIR__ . '/auth.php';
+
+
+// User Management Routes (Admin only)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Add this route with the existing resource routes
+    // User Details
+    Route::resource('users', UserController::class)->except(['update']);
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    
+    // Orchard Assignment
+    // Change from PATCH to PUT
+    // Add this route above the update-orchards route
+    Route::get('/users/{user}/orchards', [UserController::class, 'showManageOrchards'])
+             ->name('users.manage-orchards');
+    
+    // Keep the existing PUT route
+    Route::put('/users/{user}/orchards', [UserController::class, 'updateOrchards'])
+             ->name('users.update-orchards');
+    // Add this route with your other user routes
+});

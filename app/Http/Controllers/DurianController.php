@@ -11,7 +11,7 @@ class DurianController extends Controller
 {
     public function index()
     {
-        $durians = Durian::with('orchard')->get();
+        $durians = Durian::with('orchards')->get();
         return view('durian', compact('durians'));
     }
 
@@ -20,15 +20,12 @@ class DurianController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'total' => 'required|integer|min:0',
-            'orchard' => 'nullable|array', // Validate the array of orchard values
-            'orchard.*' => 'in:1,2', // Ensure the orchard values are either 1 or 2
         ]);
 
-        // Save the durian with the first selected orchard
+        // Save the durian
         Durian::create([
             'name' => $request->name,
             'total' => $request->total,
-            'orchard_id' => $request->orchard[0] ?? null, // Use the first orchard selected
         ]);
 
         return redirect()->route('durian')->with('success', 'Durian added successfully!');
@@ -54,7 +51,6 @@ class DurianController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'total' => 'required|integer|min:0',
-            'orchard_id' => 'required|in:1,2',
         ]);
 
         // Find the durian by its ID and update it
@@ -62,7 +58,6 @@ class DurianController extends Controller
         $durian->update([
             'name' => $request->name,
             'total' => $request->total,
-            'orchard_id' => $request->orchard_id,
         ]);
 
         return redirect()->route('durian')->with('success', 'Durian updated successfully!');
@@ -71,16 +66,12 @@ class DurianController extends Controller
     public function updateTotal(Request $request)
     {
         $validated = $request->validate([
-            'orchard_id' => 'required|exists:orchards,id',
+            'durian_id' => 'required|exists:durians,id',
             'total' => 'required|integer|min:0',
         ]);
 
-        // Find the durian by orchard_id and update the total
-        $durian = Durian::where('orchard_id', $validated['orchard_id'])->first();
-
-        if (!$durian) {
-            return response()->json(['error' => 'Durian record not found'], 404);
-        }
+        // Find the durian and update the total
+        $durian = Durian::findOrFail($validated['durian_id']);
 
         // Update the total count
         $durian->total = $validated['total'];
@@ -93,25 +84,16 @@ class DurianController extends Controller
     {
         try {
             $validated = $request->validate([
-                'orchard_id' => 'required|exists:orchards,id',
+                'durian_id' => 'required|exists:durians,id',
                 'vibration_count' => 'required|integer|min:0',
             ]);
 
-            // Find the corresponding durian record for the orchard
-            $durian = Durian::where('orchard_id', $validated['orchard_id'])->first();
+            // Find the durian record
+            $durian = Durian::findOrFail($validated['durian_id']);
 
-            if ($durian) {
-                // Update the total with the vibration count
-                $durian->total += $validated['vibration_count'];
-                $durian->save();
-            } else {
-                // Create a new record if none exists
-                Durian::create([
-                    'orchard_id' => $validated['orchard_id'],
-                    'name' => 'Default Name', // Adjust this as needed
-                    'total' => $validated['vibration_count'],
-                ]);
-            }
+            // Update the total with the vibration count
+            $durian->total += $validated['vibration_count'];
+            $durian->save();
 
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {

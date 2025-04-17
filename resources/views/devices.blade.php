@@ -25,12 +25,13 @@
                         required>
                 </div>
 
-                <!-- Orchard Selection (Checkboxes for Orchard A, B, C) -->
+                <!-- Status Input -->
                 <div class="mb-4">
-                    <label for="editDeviceOrchard" class="block text-sm font-medium text-gray-700">Orchard</label>
-                    <select id="editDeviceOrchard" name="orchard_id" class="w-full mt-2 p-2 border rounded" required>
-                        <option value="1" id="orchardA">Orchard A</option>
-                        <option value="2" id="orchardB">Orchard B</option>
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select name="status" id="status" class="w-full mt-2 p-2 border rounded" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="maintenance">Maintenance</option>
                     </select>
                 </div>
 
@@ -58,14 +59,15 @@
                         required>
                 </div>
 
+                <!-- Status Input for Edit Form -->
                 <div class="mb-4">
-                    <label for="editDeviceOrchard" class="block text-sm font-medium text-gray-700">Orchard</label>
-                    <select id="editDeviceOrchard" name="orchard_id" class="w-full mt-2 p-2 border rounded" required>
-                        <option value="1" id="orchardA">Orchard A</option>
-                        <option value="2" id="orchardB">Orchard B</option>
+                    <label for="editDeviceStatus" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select id="editDeviceStatus" name="status" class="w-full mt-2 p-2 border rounded" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="maintenance">Maintenance</option>
                     </select>
                 </div>
-
 
                 <div class="flex justify-end space-x-2">
                     <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -93,8 +95,8 @@
                         </h1>
                         <!-- Device Information -->
                         <p class="text-gray-500 dark:text-gray-400 mb-4">
-                            <!-- Access Orchard and Device attributes individually -->
-                            Orchard Name: {{ $device->orchard->orchardName ?? 'No Orchard' }}<br>
+                            Device ID: {{ $device->device_id }}<br>
+                            Status: {{ $device->status ?? 'Active' }}
                         </p>
 
                         <!-- LED Toggle -->
@@ -102,8 +104,8 @@
                             <div class="relative">
                                 <!-- LED Toggle Checkbox -->
                                 <input type="checkbox" id="ledToggle-{{ $device->id }}" class="sr-only"
-                                    data-device-id="{{ $device->id }}"
-                                    onchange="toggleLed('{{ $device->id }}', this.checked)">
+                                    data-device-id="{{ $device->device_id }}"
+                                    onchange="toggleLed('{{ $device->device_id }}', this.checked)">
                                 <div class="block bg-gray-300 w-14 h-8 rounded-full peer-checked:bg-green-500"></div>
                                 <div
                                     class="top-1 left-1 bg-white w-6 h-6 rounded-full transition transform peer-checked:translate-x-6 shadow-md">

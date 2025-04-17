@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('storage', function (Blueprint $table) {
             $table->id();
+            $table->string('storage', 100);
+            $table->string('durian_type', 50);
+            $table->integer('quantity');
+            $table->string('status', 50);
             $table->timestamps();
+            
+            // Add index for frequently searched columns
+            $table->index('durian_type');
+            $table->index('status');
         });
     }
 
