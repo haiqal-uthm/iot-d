@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Orchard Management for ') }} {{ $user->name }}
             </h2>
-            <a href="{{ route('users.index') }}" class="text-sm text-gray-500 hover:text-gray-700">
+            <a href="{{ route('admin.users.index') }}" class="text-sm text-gray-500 hover:text-gray-700">
                 ← Back to Users
             </a>
         </div>
@@ -18,7 +18,7 @@
                         <!-- Orchard Selection Card -->
                         <div class="lg:col-span-2">
                             <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6">
-                                <form method="POST" action="{{ route('users.update-orchards', $user) }}">
+                                <form method="POST" action="{{ route('admin.users.update-orchards', $user) }}">
                                     @csrf
                                     @method('PUT')
 
@@ -54,7 +54,7 @@
                                             class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
                                             Save Assignments
                                         </button>
-                                        <a href="{{ route('users.index') }}" 
+                                        <a href="{{ route('admin.users.index') }}" 
                                             class="px-6 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
                                             Cancel
                                         </a>

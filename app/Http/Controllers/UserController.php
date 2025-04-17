@@ -20,33 +20,33 @@ class UserController extends Controller
                              ->orWhere('email', 'like', "%$search%");
             })
             ->paginate(5); // Changed from get() to paginate(2)
-            
-        return view('users.index', compact('users'));
+        // To this:
+        return view('admin.users.index', compact('users'));
     }
 
     // In create method
     public function create()
     {
-        $orchards = Orchard::all();
-        return view('users.create', compact('orchards'));
+        $orchards = Orchard::all(); // Add this line
+        return view('admin.users.create', compact('orchards'));
     }
 
     // In edit method
-    // Keep the existing edit method for user details
     public function edit(User $user)
     {
-        $orchards = Orchard::all();
+        $orchards = Orchard::all(); // Add this line to get orchards
         $selectedOrchards = $user->role === 'farmer' && $user->farmer ? $user->farmer->orchards->pluck('id')->toArray() : [];
-
-        return view('users.edit', compact('user', 'orchards'));
+        
+        return view('admin.users.edit', compact('user', 'orchards', 'selectedOrchards'));
     }
 
+    // In showManageOrchards method
     public function showManageOrchards(User $user)
     {
-        $orchards = Orchard::all();
-        $selectedOrchards = $user->role === 'farmer' && $user->farmer ? $user->farmer->orchards->pluck('id')->toArray() : [];
-
-        return view('users.manage-orchards', compact('user', 'orchards', 'selectedOrchards'));
+        $orchards = Orchard::all(); // Add orchards collection
+        $selectedOrchards = $user->farmer ? $user->farmer->orchards->pluck('id')->toArray() : [];
+        
+        return view('admin.users.manage-orchards', compact('user', 'orchards', 'selectedOrchards'));
     }
 
     public function update(Request $request, User $user)
@@ -124,22 +124,22 @@ class UserController extends Controller
             $farmer->orchards()->sync($orchards);
         }
 
-        return redirect()->route('users.index')->with('success', 'User created successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
     public function show(User $user)
     {
-        return view('users.show', compact('user'));
+        return view('admin.users.show', compact('user'));
     }
 
     public function destroy(User $user)
     {
         // Prevent deleting yourself
         if ($user->id === auth()->id()) {
-            return redirect()->route('users.index')->with('error', 'You cannot delete your own account');
+            return redirect()->route('admin.users.index')->with('error', 'You cannot delete your own account');
         }
 
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
 }

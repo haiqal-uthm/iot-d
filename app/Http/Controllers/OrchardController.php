@@ -32,6 +32,8 @@ class OrchardController extends Controller
         $validated = $request->validate([
             'orchardName' => 'required|string|max:255',
             'numTree' => 'required|integer|min:1',
+            'orchardSize' => 'required|numeric|min:0.1',
+            'location' => 'required|string|max:255',
             'device_id' => 'nullable|exists:devices,id',
             'durian_id' => 'nullable|exists:durians,id',
         ]);
@@ -59,5 +61,12 @@ class OrchardController extends Controller
         $orchard->save();
 
         return response()->json(['status' => 'success']);
+    }
+
+    public function destroy($id)
+    {
+        $orchard = Orchard::findOrFail($id);
+        $orchard->delete();
+        return redirect()->route('orchards')->with('success', 'Orchard deleted successfully!');
     }
 }

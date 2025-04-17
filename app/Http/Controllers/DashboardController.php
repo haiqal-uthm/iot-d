@@ -47,7 +47,7 @@ class DashboardController extends Controller
 
         // Pass all variables to the dashboard view
         return view(
-            'dashboard',
+            'farmer.dashboard',
             compact(
                 'weather',
                 'totalDurian',

@@ -1,6 +1,11 @@
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
 }
+function showDurianDetails(name, total) {
+    document.getElementById('viewDurianName').textContent = name;
+    document.getElementById('viewDurianTotal').textContent = total;
+    openModal('viewDurianModal');
+}
 
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');

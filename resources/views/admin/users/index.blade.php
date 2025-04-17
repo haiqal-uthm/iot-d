@@ -25,7 +25,7 @@
 
                     <div class="overflow-x-auto">
                         <div class="flex justify-between items-center mb-4">
-                            <form method="GET" action="{{ route('users.index') }}" class="w-full max-w-md">
+                            <form method="GET" action="{{ route('admin.users.index') }}" class="w-full max-w-md">
                                 <div class="flex gap-2">
                                     <input type="text" name="search" placeholder="Search users..."
                                         value="{{ request('search') }}"
@@ -36,7 +36,7 @@
                                     </button>
                                 </div>
                             </form>
-                            <a href="{{ route('users.create') }}"
+                            <a href="{{ route('admin.users.create') }}"
                                 class="px-4 py-2 bg-blue-500 text-black rounded-md hover:bg-blue-600 whitespace-nowrap">
                                 Add New User
                             </a>
@@ -99,7 +99,7 @@
                                     <td class="py-3 px-4">
                                         <div class="flex space-x-2">
                                             <!-- User Details Edit -->
-                                            <a href="{{ route('users.edit', $user) }}"
+                                            <a href="{{ route('admin.users.edit', $user) }}"
                                                 class="px-2 py-1 bg-blue-500 text-black rounded hover:bg-blue-600 text-sm">
                                                 Edit Details
                                             </a>
@@ -107,7 +107,7 @@
                                             <!-- Orchard Assignment -->
                                             <!-- Change from link to form -->
                                             @if ($user->role === 'farmer')
-                                                <a href="{{ route('users.manage-orchards', $user) }}"
+                                                <a href="{{ route('admin.users.manage_orchards', $user) }}"
                                                     class="px-2 py-1 bg-green-500 text-black rounded hover:bg-green-600 text-sm">
                                                     Manage Orchards
                                                 </a>
@@ -115,7 +115,7 @@
 
                                             <!-- Delete -->
                                             @if ($user->id !== auth()->id())
-                                                <form method="POST" action="{{ route('users.destroy', $user) }}"
+                                                <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
                                                     onsubmit="return confirm('Are you sure you want to delete this user?');">
                                                     @csrf
                                                     @method('DELETE')

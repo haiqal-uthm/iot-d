@@ -24,10 +24,10 @@
                                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
                                 </svg>
-                                {{ __('Admin Dashboard') }}
+                                {{ __('Dashboard') }}
                             </div>
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('durian')" :active="request()->routeIs('durian')" class="block px-3 py-2 rounded-md text-base font-medium">
+                        <x-responsive-nav-link :href="route('admin.durian')" :active="request()->routeIs('admin.durian')" class="block px-3 py-2 rounded-md text-base font-medium">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -35,23 +35,31 @@
                                 {{ __('Durian') }}
                             </div>
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('orchards')" :active="request()->routeIs('orchards')" class="block px-3 py-2 rounded-md text-base font-medium">
+                        <x-responsive-nav-link :href="route('admin.orchards')" :active="request()->routeIs('admin.orchards')" class="block px-3 py-2 rounded-md text-base font-medium">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
                                 </svg>
-                                {{ __('Orchard Monitoring') }}
+                                {{ __('Orchard') }}
                             </div>
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('devices')" :active="request()->routeIs('devices')" class="block px-3 py-2 rounded-md text-base font-medium">
+                        <x-responsive-nav-link :href="route('admin.devices')" :active="request()->routeIs('admin.devices')" class="block px-3 py-2 rounded-md text-base font-medium">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
                                 </svg>
-                                {{ __('Devices Controller') }}
+                                {{ __('Devices') }}
                             </div>
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('production-report')" :active="request()->routeIs('production-report')" class="block px-3 py-2 rounded-md text-base font-medium">
+                        <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')" class="block px-3 py-2 rounded-md text-base font-medium">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                {{ __('User') }}
+                            </div>
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.production-report')" :active="request()->routeIs('admin.production-report')" class="block px-3 py-2 rounded-md text-base font-medium">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -59,19 +67,16 @@
                                 {{ __('Production') }}
                             </div>
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" class="block px-3 py-2 rounded-md text-base font-medium">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                </svg>
-                                {{ __('Farmer Management') }}
-                            </div>
-                        </x-responsive-nav-link>
                     @elseif(Auth::user()->role === 'Farmer')
                     <!-- Regular User Links -->
-                    <div class="px-3 pt-2 pb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Farmer Panel
-                    </div>
+                    <x-responsive-nav-link :href="route('farmer.dashboard')" :active="request()->routeIs('farmer.dashboard')" class="block px-3 py-2 rounded-md text-base font-medium">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                            </svg>
+                            {{ __('Dashboard') }}
+                        </div>
+                    </x-responsive-nav-link>
                     @endif
                 @endauth
             </div>

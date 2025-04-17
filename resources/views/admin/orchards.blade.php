@@ -111,18 +111,10 @@
                             class="bg-blue-500 text-black px-4 py-2 rounded hover:bg-blue-700">
                             Collect & Reset
                         </button>
-                        <button onclick="openViewModal({{ $orchard->id }})" 
-                            class="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded">
-                            View Details
+                        <button onclick="openViewModal({{ $orchard->id }})"
+                            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">
+                            View Orchard Details
                         </button>
-                        <form method="POST" action="{{ route('orchards.destroy', $orchard->id) }}" 
-                              onsubmit="return confirm('Are you sure you want to delete this orchard?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-black px-4 py-2 rounded">
-                                Delete
-                            </button>
-                        </form>
                     </div>
                 </div>
             @endforeach

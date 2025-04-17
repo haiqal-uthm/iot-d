@@ -11,8 +11,9 @@ class DurianController extends Controller
 {
     public function index()
     {
+        // To:
         $durians = Durian::with('orchards')->get();
-        return view('durian', compact('durians'));
+        return view('admin.durian', compact('durians'));
     }
 
     public function store(Request $request)

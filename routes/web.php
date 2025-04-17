@@ -13,19 +13,43 @@ use App\Http\Controllers\ProductionReportController;
 use App\Http\Controllers\VibrationLogController;
 use App\Http\Controllers\HarvestController;
 use App\Models\HarvestDurianLog;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Add farmer routes group
+Route::middleware(['auth', 'role:farmer'])->name('farmer.')->prefix('farmer')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Add other farmer-specific routes here
+});
+
+// Keep existing dashboard route for other roles
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
 // Admin routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
-    // Add other admin-only routes here
+// In the admin routes group:
+Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->group(function () {
+    // Change this line:
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    // To this:
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    
+    // Update other admin routes similarly:
+    Route::get('/orchards', [OrchardController::class, 'index'])->name('orchards');
+    Route::get('/durian', [DurianController::class, 'index'])->name('durian');
+    Route::get('/devices', [DeviceController::class, 'index'])->name('devices');
+    Route::get('/production-report', [ProductionReportController::class, 'index'])->name('production-report');
+    Route::get('/users', [UserController::class, 'index'])->name('users.');
+    Route::resource('users', UserController::class)->except(['update']);
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::get('/users/{user}/orchards', [UserController::class, 'showManageOrchards'])
+             ->name('users.manage_orchards');
+    Route::put('/users/{user}/orchards', [UserController::class, 'updateOrchards'])
+             ->name('users.update-orchards');
 });
 
 Route::middleware('auth')->group(function () {
@@ -51,6 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/update-total', [DurianController::class, 'updateTotal'])->name('updateTotal');
     Route::get('/orchards/create', [OrchardController::class, 'create'])->name('orchards.create');
     Route::post('/orchards', [OrchardController::class, 'store'])->name('orchards.store');
+    Route::delete('/orchards/{orchard}', [OrchardController::class, 'destroy'])->name('orchards.destroy');
 
     //devices routes
     Route::get('/devices', [DeviceController::class, 'index'])->name('devices');
@@ -78,22 +103,3 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-
-// User Management Routes (Admin only)
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    // Add this route with the existing resource routes
-    // User Details
-    Route::resource('users', UserController::class)->except(['update']);
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    
-    // Orchard Assignment
-    // Change from PATCH to PUT
-    // Add this route above the update-orchards route
-    Route::get('/users/{user}/orchards', [UserController::class, 'showManageOrchards'])
-             ->name('users.manage-orchards');
-    
-    // Keep the existing PUT route
-    Route::put('/users/{user}/orchards', [UserController::class, 'updateOrchards'])
-             ->name('users.update-orchards');
-    // Add this route with your other user routes
-});

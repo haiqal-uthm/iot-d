@@ -9,7 +9,15 @@ class Orchard extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['orchardName', 'numTree', 'device_id', 'user_id', 'durian_id'];
+    protected $fillable = [
+        'orchardName', 
+        'numTree', 
+        'device_id', 
+        'user_id', 
+        'durian_id',
+        'orchardSize', // Add if missing in migration
+        'location'     // Add if missing in migration
+    ];
     // Each Orchard belongs to one Durian
     public function durian()
     {
