@@ -14,6 +14,7 @@ use App\Http\Controllers\VibrationLogController;
 use App\Http\Controllers\HarvestController;
 use App\Models\HarvestDurianLog;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\FarmerHarvestController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -22,6 +23,12 @@ Route::get('/', function () {
 // Add farmer routes group
 Route::middleware(['auth', 'role:farmer'])->name('farmer.')->prefix('farmer')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orchards', [OrchardController::class, 'index'])->name('orchards');
+    Route::get('/harvest-entry', [FarmerHarvestController::class, 'create'])->name('harvestEntry');
+    Route::post('/harvest', [FarmerHarvestController::class, 'store'])->name('harvest.store');
+    Route::get('/harvest/{id}/edit', [FarmerHarvestController::class, 'edit'])->name('harvest.edit');
+    Route::get('/harvest-report', [FarmerHarvestController::class, 'show'])
+         ->name('harvest.report');
     // Add other farmer-specific routes here
 });
 

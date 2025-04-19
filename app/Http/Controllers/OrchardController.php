@@ -11,20 +11,18 @@ class OrchardController extends Controller
 {
     public function index()
     {
-        // Fetch all orchards with their related 'durians' and 'devices'
-        $devices = Device::all(); 
-        $durians = Durian::all(); 
-        $orchards = Orchard::with(['durian', 'device'])->get();
-
-        // Ensure your Blade file is correctly named (e.g., "resources/views/orchards/index.blade.php")
-        return view('orchards', compact('orchards', 'devices', 'durians'));
-    }
-
-    public function create()
-    {
-        $devices = Device::all(); // Fetch available devices
-        $durians = Durian::all(); // Fetch available durians
-        return view('orchards.create', compact('devices', 'durians'));
+        $devices = Device::all();
+        $durians = Durian::all();
+        
+        $orchards = auth()->user()->role === 'farmer'
+            ? auth()->user()->farmer->orchards()->with(['durian', 'device'])->get()
+            : Orchard::with(['durian', 'device'])->get();
+    
+        $view = auth()->user()->role === 'farmer' 
+            ? 'farmer.orchards' 
+            : 'admin.orchards';
+    
+        return view($view, compact('orchards', 'devices', 'durians'));
     }
 
     public function store(Request $request)
@@ -36,12 +34,17 @@ class OrchardController extends Controller
             'location' => 'required|string|max:255',
             'device_id' => 'nullable|exists:devices,id',
             'durian_id' => 'nullable|exists:durians,id',
+            'user_id' => 'required|exists:users,id'  // Add user_id validation
         ]);
 
-        Orchard::create($validated);
+        $orchard = Orchard::create($validated);
+        
+        // Attach to farmer if farmer is creating
+        if (auth()->user()->role === 'farmer') {
+            auth()->user()->farmer->orchards()->attach($orchard->id);
+        }
 
-        // Ensure the correct route name is used
-        return redirect()->route('orchards')->with('success', 'Orchard added successfully!');
+        return redirect()->route('farmer.orchards')->with('success', 'Orchard added successfully!');
     }
 
     public function updateTotalDurianFall(Request $request, $orchardId)

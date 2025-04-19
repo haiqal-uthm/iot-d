@@ -49,8 +49,11 @@ class ProductionReportController extends Controller
         // Vibration Logs (Record Fall)
         $vibrationLogs = $vibrationQuery->orderBy('timestamp', 'desc')->paginate(5);
     
-        // Harvest Reports
-        $harvestReports = HarvestLog::orderBy('harvest_date', 'desc')->paginate(5);
+        // Modified Harvest Reports query
+        $harvestReports = HarvestLog::where('farmer_id', auth()->id())
+            ->with('orchard')
+            ->orderBy('harvest_date', 'desc')
+            ->paginate(5);
     
         // Get storage reports with pagination
         $storageReports = Storage::select('storage_location', 

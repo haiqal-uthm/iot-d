@@ -9,11 +9,14 @@
 
     <div class="container mx-auto px-4 py-6">
         <!-- Add New Orchard Button -->
-        <div class="flex justify-end mb-4">
-            <button onclick="openModal('addOrchardModal')" class="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600">
-                Add New Orchard
-            </button>
-        </div>
+        <!-- Conditional button display -->
+        @if(auth()->user()->role !== 'farmer')
+            <div class="flex justify-end mb-4">
+                <button onclick="openModal('addOrchardModal')" class="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600">
+                    Add New Orchard
+                </button>
+            </div>
+        @endif
 
         <!-- Modal for Adding a New Orchard -->
         <div id="addOrchardModal"
@@ -106,21 +109,20 @@
                     </p>
 
                     <div class="flex space-x-4 mt-4">
-                        <button
-                            onclick="saveVibrationCount('{{ $orchard->id }}', document.getElementById('vibration-count-sensor-{{ $orchard->id }}').innerText)"
+                        @if(auth()->user()->role === 'admin')
+                            <!-- Admin Actions -->
+                           
+                        @endif
+                        
+                        <!-- Shared Actions for All Roles -->
+                        <button onclick="saveVibrationCount('{{ $orchard->id }}', document.getElementById('vibration-count-sensor-{{ $orchard->id }}').innerText)"
                             class="bg-blue-500 text-black px-4 py-2 rounded hover:bg-blue-700">
                             Collect & Reset
                         </button>
-                        <button onclick="openViewModal({{ $orchard->id }})"
-                            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700">
-                            View Orchard Details
+                        <button onclick="openViewModal({{ $orchard->id }})" 
+                            class="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded">
+                            View Details
                         </button>
-                        <form method="POST" action="{{ route('orchards.destroy', $orchard->id) }}">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-black px-4 py-2 rounded">
-                                Delete
-                            </button>
-                        </form>
                     </div>
                 </div>
             @endforeach

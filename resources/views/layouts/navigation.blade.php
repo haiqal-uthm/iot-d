@@ -67,7 +67,10 @@
                                 {{ __('Production') }}
                             </div>
                         </x-responsive-nav-link>
-                    @elseif(Auth::user()->role === 'Farmer')
+                    @elseif(Auth::user()->role === 'farmer')
+                    <div class="px-3 pt-2 pb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        Farmer Panel
+                    </div>
                     <!-- Regular User Links -->
                     <x-responsive-nav-link :href="route('farmer.dashboard')" :active="request()->routeIs('farmer.dashboard')" class="block px-3 py-2 rounded-md text-base font-medium">
                         <div class="flex items-center">
@@ -75,6 +78,30 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
                             </svg>
                             {{ __('Dashboard') }}
+                        </div>
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('farmer.orchards')" :active="request()->routeIs('farmer.orchards')" class="block px-3 py-2 rounded-md text-base font-medium">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                            </svg>
+                            {{ __('Orchard Monitoring') }}
+                        </div>
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('farmer.harvestEntry')" :active="request()->routeIs('farmer.harvestEntry')" class="block px-3 py-2 rounded-md text-base font-medium">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            {{ __('Harvest Entry') }}
+                        </div>
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('farmer.harvest.report')" :active="request()->routeIs('farmer.harvest.report')">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            {{ __('Harvest Report') }}
                         </div>
                     </x-responsive-nav-link>
                     @endif

@@ -76,7 +76,7 @@ class UserController extends Controller
             'profile_image' => $profileImage,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
     public function updateOrchards(Request $request, User $user)
