@@ -109,7 +109,7 @@
                                 <label class="block text-sm font-medium mb-2">Storage Location</label>
                                 <div class="grid grid-cols-2 gap-4">
                                     <label class="flex items-center">
-                                        <input type="checkbox" name="storage[]" value="cold_storage" class="mr-2">
+                                        <input type="checkbox" name="storage[]" value="Cold storage" class="mr-2">
                                         Cold Storage
                                     </label>
                                     <label class="flex items-center">

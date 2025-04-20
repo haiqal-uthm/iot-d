@@ -82,6 +82,19 @@ class FarmerHarvestController extends Controller
         return view('farmer.harvest-edit', compact('harvestLog', 'durians')); // Update this line
     }
 
+    public function showDetail($id)
+    {
+        $harvestLog = HarvestLog::with(['farmer.user', 'orchard', 'durian'])->findOrFail($id);
+        
+        // Security check - ensure the farmer only views their own records
+        if ($harvestLog->farmer_id != auth()->user()->farmer->id) {
+            return redirect()->route('farmer.harvest.report')
+                ->with('error', 'You are not authorized to view this record.');
+        }
+        
+        return view('farmer.harvest-show', compact('harvestLog'));
+    }
+
     public function update(Request $request, $id)
     {
         $harvestLog = HarvestLog::findOrFail($id);
