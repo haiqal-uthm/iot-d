@@ -16,6 +16,8 @@ use App\Models\HarvestDurianLog;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\FarmerHarvestController;
 use App\Http\Controllers\FarmerInventoryController;
+use App\Http\Controllers\AdminInventoryController;
+use App\Http\Controllers\StorageController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -33,6 +35,7 @@ Route::middleware(['auth', 'role:farmer'])->name('farmer.')->prefix('farmer')->g
     Route::get('/harvest-entry', [FarmerHarvestController::class, 'create'])->name('harvestEntry');
     Route::post('/harvest', [FarmerHarvestController::class, 'store'])->name('harvest.store');
     Route::get('/harvest/{id}/edit', [FarmerHarvestController::class, 'edit'])->name('harvest.edit');
+    Route::put('/harvest/{id}', [FarmerHarvestController::class, 'update'])->name('harvest.update');
     Route::get('/harvest/{id}', [FarmerHarvestController::class, 'showDetail'])
      ->name('harvest.show');
     Route::get('/harvest-report', [FarmerHarvestController::class, 'show'])
@@ -52,12 +55,15 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->grou
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     // To this:
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-    
-    // Update other admin routes similarly:
     Route::get('/orchards', [OrchardController::class, 'index'])->name('orchards');
     Route::get('/durian', [DurianController::class, 'index'])->name('durian');
     Route::get('/devices', [DeviceController::class, 'index'])->name('devices');
     Route::get('/production-report', [ProductionReportController::class, 'index'])->name('production-report');
+    
+    // Add inventory management routes
+    Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/inventory', [AdminInventoryController::class, 'store'])->name('inventory.store');
+    Route::delete('/inventory/{transaction}', [AdminInventoryController::class, 'destroy'])->name('inventory.destroy');
     Route::get('/users', [UserController::class, 'index'])->name('users.');
     Route::resource('users', UserController::class)->except(['update']);
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
@@ -65,6 +71,12 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->grou
              ->name('users.manage_orchards');
     Route::put('/users/{user}/orchards', [UserController::class, 'updateOrchards'])
              ->name('users.update-orchards');
+    
+    // Storage Management Routes
+    Route::get('/storage', [StorageController::class, 'index'])->name('storage.index');
+    Route::post('/storage', [StorageController::class, 'store'])->name('storage.store');
+    Route::put('/storage/{storage}', [StorageController::class, 'update'])->name('storage.update');
+    Route::delete('/storage/{storage}', [StorageController::class, 'destroy'])->name('storage.destroy');
 });
 
 Route::middleware('auth')->group(function () {

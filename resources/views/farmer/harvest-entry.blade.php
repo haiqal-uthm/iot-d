@@ -69,54 +69,36 @@
                             <!-- Grade Selection -->
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Durian Grade</label>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="grade[]" value="A" class="mr-2">
-                                        Grade A
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="grade[]" value="B" class="mr-2">
-                                        Grade B
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="grade[]" value="C" class="mr-2">
-                                        Grade C
-                                    </label>
-                                </div>
+                                <select name="grade" class="w-full border rounded p-2" required>
+                                    <option value="">Select Grade</option>
+                                    <option value="A">Grade A</option>
+                                    <option value="B">Grade B</option>
+                                    <option value="C">Grade C</option>
+                                </select>
                             </div>
 
-                            <!-- Condition Checklist -->
+                            <!-- Condition Selection -->
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Condition</label>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="condition[]" value="excellent" class="mr-2">
-                                        Excellent
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="condition[]" value="good" class="mr-2">
-                                        Good
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="condition[]" value="damaged" class="mr-2">
-                                        Damaged
-                                    </label>
-                                </div>
+                                <select name="condition" class="w-full border rounded p-2" required>
+                                    <option value="">Select Condition</option>
+                                    <option value="excellent">Excellent</option>
+                                    <option value="good">Good</option>
+                                    <option value="damaged">Damaged</option>
+                                </select>
                             </div>
 
                             <!-- Storage Selection -->
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Storage Location</label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="storage[]" value="Cold storage" class="mr-2">
-                                        Cold Storage
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="storage[]" value="warehouse" class="mr-2">
-                                        Warehouse
-                                    </label>
-                                </div>
+                                <select name="storage" class="w-full border rounded p-2">
+                                    <option value="">Select Storage Location</option>
+                                    @if(isset($storageLocations) && count($storageLocations) > 0)
+                                        @foreach($storageLocations as $id => $name)
+                                            <option value="{{ $id }}">{{ $name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
                         </div>
 

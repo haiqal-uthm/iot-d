@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Models\InventoryTransaction;
 
 class ProductionReportController extends Controller
 {
@@ -49,16 +50,49 @@ class ProductionReportController extends Controller
         // Vibration Logs (Record Fall)
         $vibrationLogs = $vibrationQuery->orderBy('timestamp', 'desc')->paginate(5);
     
-        // Modified Harvest Reports query
-        $harvestReports = HarvestLog::where('farmer_id', auth()->id())
-            ->with('orchard')
-            ->orderBy('harvest_date', 'desc')
-            ->paginate(5);
+        // For admin, fetch all harvest logs; for farmers, only fetch their own
+        $harvestQuery = HarvestLog::query()
+            ->with(['farmer.user', 'orchard', 'durian'])
+            ->orderBy('harvest_date', 'desc');
+        
+        // Apply filters if provided
+        if ($request->filled('orchard')) {
+            $harvestQuery->whereHas('orchard', function($query) use ($request) {
+                $query->where('orchardName', 'like', "%{$request->orchard}%");
+            });
+        }
+        
+        if ($request->filled('durian_type')) {
+            $harvestQuery->whereHas('durian', function($query) use ($request) {
+                $query->where('name', 'like', "%{$request->durian_type}%");
+            });
+        }
+        
+        if ($request->filled('date')) {
+            $harvestQuery->whereDate('harvest_date', $request->date);
+        }
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $harvestQuery->where(function($query) use ($search) {
+                $query->whereHas('orchard', function($q) use ($search) {
+                    $q->where('orchardName', 'like', "%{$search}%");
+                })
+                ->orWhereHas('durian', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+        
+        $harvestReports = $harvestQuery->paginate(5)->withQueryString();
     
         // Get storage reports with pagination
-        $storageReports = Storage::select('storage_location', 
+        $storageReports = InventoryTransaction::select(
+            'storage_location',  // Changed from 'inventory_transactions'
             DB::raw('SUM(quantity) as total_quantity'),
-            DB::raw('MAX(updated_at) as updated_at'))
+            DB::raw('MAX(updated_at) as updated_at')
+        )
             ->groupBy('storage_location')
             ->paginate(5);
     
@@ -84,19 +118,29 @@ class ProductionReportController extends Controller
         }
     
         // Chart Data for Harvest Report
-        $harvestChartData = HarvestLog::select('durian_type', DB::raw('SUM(total_harvested) as total_harvested'))
-            ->groupBy('durian_type')
+        $harvestChartData = HarvestLog::select('durian_id', DB::raw('SUM(total_harvested) as total_harvested'))
+            ->groupBy('durian_id')
             ->get();
     
+        // Add durian name to the chart data
+        $harvestChartData = $harvestChartData->map(function ($item) {
+            $durian = Durian::find($item->durian_id);
+            $item->durian_type = $durian ? $durian->name : 'Unknown';
+            return $item;
+        });
+    
         // Chart Data for Inventory Report
-        $inventoryChartData = Storage::select('storage_location', DB::raw('SUM(quantity) as total_quantity'))
+        $inventoryChartData = InventoryTransaction::select(
+            'storage_location', 
+            DB::raw('SUM(quantity) as total_quantity')
+        )
             ->groupBy('storage_location')
             ->get();
     
         // Debug line - add this temporarily
         Log::info('Storage Reports:', ['data' => $storageReports]);
     
-        return view('production-report', compact(
+        return view('admin.production-report', compact(
             'vibrationLogs',
             'harvestReports',
             'storageReports',

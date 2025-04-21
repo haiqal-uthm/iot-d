@@ -35,22 +35,13 @@
                             <tr class="border-b">
                                 <td>{{ $log->durian ? $log->durian->name : $log->durian_type }}</td>
                                 <td>{{ $log->harvest_date->format('M d, Y') }}</td>
+                                <td>{{ $log->grade }}</td>
+                                <td>{{ $log->condition }}</td>
                                 <td>
                                     @php
-                                        $grades = is_string($log->grade) ? json_decode($log->grade, true) : $log->grade;
-                                        echo implode(', ', (array)$grades);
-                                    @endphp
-                                </td>
-                                <td>
-                                    @php
-                                        $conditions = is_string($log->condition) ? json_decode($log->condition, true) : $log->condition;
-                                        echo implode(', ', (array)$conditions);
-                                    @endphp
-                                </td>
-                                <td>
-                                    @php
-                                        $storage = is_string($log->storage_location) ? json_decode($log->storage_location, true) : $log->storage_location;
-                                        echo implode(', ', (array)$storage);
+                                        // Get storage name from storage table using the storage_location as foreign key
+                                        $storageName = App\Models\Storage::find($log->storage_location)->name ?? 'N/A';
+                                        echo $storageName;
                                     @endphp
                                 </td>
                                 <td>

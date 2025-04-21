@@ -17,4 +17,10 @@ class Durian extends Model
     {
         return $this->hasMany(Orchard::class);
     }
+    
+    // Relationship with inventory transactions
+    public function inventoryTransactions()
+    {
+        return $this->hasMany(InventoryTransaction::class, 'durian_id');
+    }
 }

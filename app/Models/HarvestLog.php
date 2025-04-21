@@ -13,9 +13,7 @@ class HarvestLog extends Model
 
     protected $casts = [
         'harvest_date' => 'date:Y-m-d',
-        'grade' => 'array',
-        'condition' => 'array',
-        'storage_location' => 'array',
+        // Removed array casts for grade, condition, and storage_location
     ];
 
     protected $fillable = [
@@ -57,19 +55,5 @@ class HarvestLog extends Model
         })->with(['orchard', 'durian']);
     }
 
-    // Accessors for JSON fields - fixed ternary operators
-    public function getGradeAttribute($value)
-    {
-        return is_array($value) ? $value : (json_decode($value, true) ?: []);
-    }
-    
-    public function getConditionAttribute($value)
-    {
-        return is_array($value) ? $value : (json_decode($value, true) ?: []);
-    }
-    
-    public function getStorageLocationAttribute($value)
-    {
-        return is_array($value) ? $value : (json_decode($value, true) ?: []);
-    }
+    // Removed JSON accessors for grade, condition, and storage_location
 }

@@ -43,7 +43,7 @@ class DashboardController extends Controller
         // Get production statistics
         $totalRecordFall = VibrationLog::where('log_type', 1)->count();
         $totalHarvest = DB::table('harvest_logs')->sum('total_harvested');
-        $totalInventory = DB::table('storage')->sum('quantity');
+        $totalInventory = DB::table('inventory_transactions')->sum('quantity');
 
         // Pass all variables to the dashboard view
         return view(

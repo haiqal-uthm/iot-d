@@ -158,6 +158,7 @@
                 <table class="w-full mb-8 min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden shadow-sm rounded-lg">
                     <thead class="bg-gray-50 dark:bg-gray-800">
                         <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Farmer</th>
                             <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Orchard</th>
                             <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Durian Type</th>
                             <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Harvest Date</th>
@@ -169,13 +170,14 @@
                     <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($harvestReports as $index => $report)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->orchard }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->durian_type }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->farmer->user->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->orchard->orchardName }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->durian->name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->harvest_date->format('Y-m-d') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->total_harvested }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium  {{ $report->status == 'Completed' ? 'text-green-600 bg-green-100 border border-green-300' : 'text-orange-600 bg-orange-100 border border-orange-300' }}">
-                                        <span class="w-2 h-2 mr-2 rounded-full {{ $report->status == 'Pending' ? 'bg-green-500' : 'bg-orange-500' }}"></span>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $report->status == 'Completed' ? 'text-green-600 bg-green-100 border border-green-300' : 'text-orange-600 bg-orange-100 border border-orange-300' }}">
+                                        <span class="w-2 h-2 mr-2 rounded-full {{ $report->status == 'Completed' ? 'bg-green-500' : 'bg-orange-500' }}"></span>
                                         {{ $report->status }}
                                     </span>
                                 </td>
@@ -193,7 +195,7 @@
                                                 <button type="button"
                                                     @click="selectedReport = {{ json_encode($report) }}; showModal = true; open = false"
                                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                                                    View Document
+                                                    View Details
                                                 </button>
                                                 <button type="button" @click="printReport(); open = false"
                                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">

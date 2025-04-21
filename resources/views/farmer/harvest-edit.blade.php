@@ -21,7 +21,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('farmer.harvest.edit', $harvestLog->id) }}" method="POST">
+                    <form action="{{ route('farmer.harvest.update', $harvestLog->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -59,77 +59,48 @@
                             <!-- Grade Selection -->
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Durian Grade</label>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <label class="flex items-center">
-                                        @php
-                                            $grades = is_string($harvestLog->grade) 
-                                                ? json_decode($harvestLog->grade, true) 
-                                                : $harvestLog->grade;
-                                        @endphp
-                                        <input type="checkbox" name="grade[]" value="A" class="mr-2"
-                                            {{ in_array('A', $grades) ? 'checked' : '' }}>
-                                        Grade A
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="grade[]" value="B" class="mr-2"
-                                            {{ in_array('B', $grades) ? 'checked' : '' }}>
-                                        Grade B
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="grade[]" value="C" class="mr-2"
-                                            {{ in_array('C', $grades) ? 'checked' : '' }}>
-                                        Grade C
-                                    </label>
-                                </div>
+                                <select name="grade" class="w-full border rounded p-2" required>
+                                    <option value="">Select Grade</option>
+                                    <option value="A" {{ $harvestLog->grade == 'A' ? 'selected' : '' }}>Grade A</option>
+                                    <option value="B" {{ $harvestLog->grade == 'B' ? 'selected' : '' }}>Grade B</option>
+                                    <option value="C" {{ $harvestLog->grade == 'C' ? 'selected' : '' }}>Grade C</option>
+                                </select>
                             </div>
 
-                            <!-- Condition Checklist -->
+                            <!-- Condition Selection -->
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Condition</label>
-                                <div class="grid grid-cols-3 gap-4">
-                                    @php
-                                        $conditions = is_string($harvestLog->condition)
-                                            ? json_decode($harvestLog->condition, true)
-                                            : $harvestLog->condition;
-                                    @endphp
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="condition[]" value="excellent" class="mr-2"
-                                            {{ in_array('excellent', $conditions) ? 'checked' : '' }}>
-                                        Excellent
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="condition[]" value="good" class="mr-2"
-                                            {{ in_array('good', $conditions) ? 'checked' : '' }}>
-                                        Good
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="condition[]" value="damaged" class="mr-2"
-                                            {{ in_array('damaged', $conditions) ? 'checked' : '' }}>
-                                        Damaged
-                                    </label>
-                                </div>
+                                <select name="condition" class="w-full border rounded p-2" required>
+                                    <option value="">Select Condition</option>
+                                    <option value="excellent" {{ $harvestLog->condition == 'excellent' ? 'selected' : '' }}>Excellent</option>
+                                    <option value="good" {{ $harvestLog->condition == 'good' ? 'selected' : '' }}>Good</option>
+                                    <option value="damaged" {{ $harvestLog->condition == 'damaged' ? 'selected' : '' }}>Damaged</option>
+                                </select>
                             </div>
-
+                            
                             <!-- Storage Selection -->
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-2">Storage Location</label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    @php
-                                        $storage = is_string($harvestLog->storage_location)
-                                            ? json_decode($harvestLog->storage_location, true)
-                                            : $harvestLog->storage_location;
-                                    @endphp
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="storage[]" value="cold_storage" class="mr-2"
-                                            {{ in_array('cold_storage', $storage) ? 'checked' : '' }}>
-                                        Cold Storage
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="storage[]" value="warehouse" class="mr-2"
-                                            {{ in_array('warehouse', $storage) ? 'checked' : '' }}>
-                                        Warehouse
-                                    </label>
-                                </div>
+                                <select name="storage" class="w-full border rounded p-2">
+                                    <option value="">Select Storage Location</option>
+                                    @foreach(App\Models\Storage::getLocations() as $id => $name)
+                                        <option value="{{ $id }}" {{ $harvestLog->storage_location == $id ? 'selected' : '' }}>
+                                            {{ $name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <!-- Status Selection -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium mb-2">Status</label>
+                                <select name="status" class="w-full border rounded p-2" required>
+                                    <option value="pending" {{ $harvestLog->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="complete" {{ $harvestLog->status == 'complete' ? 'selected' : '' }}>Complete</option>
+                                </select>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Setting status to "Complete" will add items to inventory.
+                                </p>
                             </div>
                         </div>
 

@@ -33,15 +33,11 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-600">Grades</label>
-                            <p class="mt-1">{{ implode(', ', $harvestLog->grade) }}</p>
+                            <p class="mt-1">{{ $harvestLog->grade }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-600">Conditions</label>
-                            <p class="mt-1">{{ implode(', ', $harvestLog->condition) }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Storage Locations</label>
-                            <p class="mt-1">{{ implode(', ', $harvestLog->storage_location) }}</p>
+                            <p class="mt-1">{{ $harvestLog->condition }}</p>
                         </div>
                         @if($harvestLog->remarks)
                         <div>
