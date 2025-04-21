@@ -55,7 +55,7 @@
                                 <option value="">All Locations</option>
                                 @foreach($storageLocations as $location)
                                     <option value="{{ $location }}" {{ request('storage_location') == $location ? 'selected' : '' }}>
-                                        {{ ucfirst(str_replace('_', ' ', $location)) }}
+                                        {{ $storageNames[$location] ?? ucfirst(str_replace('_', ' ', $location)) }}
                                     </option>
                                 @endforeach
                             </select>
@@ -103,7 +103,7 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Farmer</th>
                                     @foreach($storageLocations as $location)
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            {{ ucfirst(str_replace('_', ' ', $location)) }}
+                                            {{ $storageNames[$location] ?? ucfirst(str_replace('_', ' ', $location)) }}
                                         </th>
                                     @endforeach
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -144,6 +144,11 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h3 class="text-lg font-medium mb-3">Add New Inventory Transaction</h3>
+                    <div class="md:col-span-3 mb-4">
+                        <a href="{{ route('admin.storage.index') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            Add New Inventory
+                        </a>
+                    </div>
                     <form action="{{ route('admin.inventory.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         @csrf
                         <div>
@@ -166,24 +171,20 @@
                             </select>
                         </div>
                         
-                        <!-- In the storage location dropdown -->
-                        <select name="storage_location" id="storage_location_new" required>
-                            <option value="">Select Location</option>
-                            @foreach($storageLocations as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
+                        <!-- Updated storage location dropdown -->
+                        <div>
+                            <label for="storage_location_new" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Storage Location</label>
+                            <select name="storage_location" id="storage_location_new" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">Select Location</option>
+                                @foreach($storageLocations as $location)
+                                <option value="{{ $location }}" {{ request('storage_location') == $location ? 'selected' : '' }}>
+                                    {{ $storageNames[$location] ?? ucfirst(str_replace('_', ' ', $location)) }}
+                                </option>
                             @endforeach
-                            <option value="new_location">Add New Location...</option>
-                        </select>
-                        
-                        <!-- Update stock display to use storage name -->
-                        @foreach($storageLocations as $id => $name)
-                            <th>{{ $name }}</th>
-                        @endforeach
-                        
-                        <div id="new_location_container" class="hidden">
-                            <label for="new_location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">New Location Name</label>
-                            <input type="text" name="new_location" id="new_location" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </select>
                         </div>
+                        
+                        <!-- Removed the new_location_container div -->
                         
                         <div>
                             <label for="type_new" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Transaction Type</label>

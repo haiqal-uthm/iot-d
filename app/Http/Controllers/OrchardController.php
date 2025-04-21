@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Orchard;
 use App\Models\Device;
 use App\Models\Durian;
+use App\Models\VibrationLog;
 
 class OrchardController extends Controller
 {
@@ -17,12 +18,29 @@ class OrchardController extends Controller
         $orchards = auth()->user()->role === 'farmer'
             ? auth()->user()->farmer->orchards()->with(['durian', 'device'])->get()
             : Orchard::with(['durian', 'device'])->get();
+        
+        // Fetch vibration logs for the orchards
+        $orchardDeviceIds = $orchards->pluck('device_id')->filter()->toArray();
+        
+        // Filter vibration logs based on user role
+        if (auth()->user()->role === 'farmer') {
+            // For farmers, only show logs from their assigned orchards
+            $vibrationLogs = VibrationLog::whereIn('device_id', $orchardDeviceIds)
+                ->orderBy('timestamp', 'desc')
+                ->take(10)
+                ->get();
+        } else {
+            // For admins, show all logs
+            $vibrationLogs = VibrationLog::orderBy('timestamp', 'desc')
+                ->take(10)
+                ->get();
+        }
     
         $view = auth()->user()->role === 'farmer' 
             ? 'farmer.orchards' 
             : 'admin.orchards';
     
-        return view($view, compact('orchards', 'devices', 'durians'));
+        return view($view, compact('orchards', 'devices', 'durians', 'vibrationLogs'));
     }
 
     public function store(Request $request)

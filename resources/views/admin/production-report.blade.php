@@ -424,7 +424,7 @@
                 var chartData = @json($chartData);
                 var harvestChartData = @json($harvestChartData);
                 var inventoryData = @json($inventoryChartData);
-            </script>
+s            </script>
             <script src="{{ asset('js/production.js') }}"></script>
             <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <!-- Add this at the bottom of the file before closing x-app-layout -->

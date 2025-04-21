@@ -142,4 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error("Orchards array is undefined or not an array.");
     }
+    
+    // Set up auto-refresh for the vibration log notifications every 30 seconds
+    setInterval(() => {
+        if (document.visibilityState === 'visible') {
+            location.reload();
+        }
+    }, 30000);
 });

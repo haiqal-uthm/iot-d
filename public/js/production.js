@@ -36,6 +36,34 @@
 
         const ctx = document.getElementById("fallChart").getContext("2d");
         const rawData = chartData; // Laravel variable
+        
+        console.log("Chart Data:", rawData); // Add debugging
+        
+        // Check if data exists and has entries
+        if (!rawData || Object.keys(rawData).length === 0) {
+            console.error("No chart data available");
+            // Display a message on the canvas when no data
+            const noDataText = "No vibration data available for the selected period";
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [noDataText],
+                    datasets: [{
+                        data: [0],
+                        backgroundColor: 'rgba(200, 200, 200, 0.2)',
+                        borderColor: 'rgb(200, 200, 200)',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            return;
+        }
 
         const dates = Object.keys(rawData);
         const counts = Object.values(rawData);
@@ -293,6 +321,7 @@
             link.href = url.toString();
         });
 
+        renderFallChart();
         renderHarvestChart();
         renderInventoryChart();
     });

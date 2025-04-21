@@ -13,8 +13,8 @@ class AdminInventoryController extends Controller
 {
     public function index(Request $request)
     {
-        // Get storage locations from Storage model
-        $storageLocations = Storage::getLocations();
+        // Get all active storage locations from Storage model
+        $storageLocations = Storage::where('status', 'active')->pluck('id');
         
         // Get all farmers for the dropdown
         $farmers = Farmer::with('user')->get();
@@ -49,15 +49,6 @@ class AdminInventoryController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
         
-        // Get all storage locations
-        $storageLocations = InventoryTransaction::distinct('storage_location')
-            ->pluck('storage_location');
-            
-        // If no storage locations exist yet, provide defaults
-        if ($storageLocations->isEmpty()) {
-            $storageLocations = collect(['cold_storage', 'warehouse']);
-        }
-        
         // Get transactions with pagination
         $transactions = $query->paginate(10)->withQueryString();
         
@@ -70,10 +61,18 @@ class AdminInventoryController extends Controller
             }
         }
         
+        // Get storage names for display
+        $storageNames = [];
+        foreach ($storageLocations as $id) {
+            $storage = Storage::find($id);
+            $storageNames[$id] = $storage ? $storage->name : 'Unknown Storage';
+        }
+        
         return view('admin.inventory.index', [
             'farmers' => $farmers,
             'durianTypes' => $durianTypes,
             'storageLocations' => $storageLocations,
+            'storageNames' => $storageNames,
             'inventoryTransactions' => $transactions,
             'stockLevels' => $stockLevels
         ]);
@@ -88,17 +87,10 @@ class AdminInventoryController extends Controller
             'quantity' => 'required|numeric|min:0.1',
             'type' => 'required|in:in,out',
             'remarks' => 'nullable|string|max:255',
-            'new_location' => 'nullable|string|max:255|unique:storage,name',
+            // Removed the new_location validation
         ]);
     
-        // Handle new storage location creation
-        if ($request->storage_location === 'new_location' && $request->filled('new_location')) {
-            $storage = Storage::create([
-                'name' => $request->new_location,
-                'status' => 'active'
-            ]);
-            $validated['storage_location'] = $storage->id;
-        }
+        // Removed the new location creation code
 
         // Start a database transaction to ensure data consistency
         DB::beginTransaction();

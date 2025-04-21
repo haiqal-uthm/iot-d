@@ -54,7 +54,7 @@
                                 <label class="block text-sm font-medium mb-2">Storage Location</label>
                                 <select name="storage_location" class="w-full border rounded p-2" required>
                                     @foreach ($storageLocations as $location)
-                                        <option value="{{ $location }}">Storage {{ $location }}</option>
+                                        <option value="{{ $location }}">{{ $storageNames[$location] ?? 'Storage '.$location }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -108,7 +108,7 @@
                                         </span>
                                     </td>
                                     <td>{{ $transaction->durian->name ?? 'Unknown' }}</td>
-                                    <td>Storage {{ $transaction->storage_location }}</td>
+                                    <td>{{ $storageNames[$transaction->storage_location] ?? 'Storage '.$transaction->storage_location }}</td>
                                     <td>{{ abs($transaction->quantity) }} kg</td>
                                     <td>{{ $transaction->created_at->format('M d, Y H:i') }}</td>
                                     <td>{{ $transaction->remarks ?? '-' }}</td>
