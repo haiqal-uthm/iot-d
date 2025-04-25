@@ -48,6 +48,11 @@ class HarvestLog extends Model
         return $this->belongsTo(Durian::class, 'durian_id');
     }
 
+    public function storage()
+    {
+        return $this->belongsTo(Storage::class, 'storage_location');
+    }
+
     public function scopeForFarmer($query, $userId)
     {
         return $query->whereHas('farmer', function($q) use ($userId) {

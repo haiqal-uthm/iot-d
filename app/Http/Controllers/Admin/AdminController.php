@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;  // Changed from 'App\Http\Controllers'
 
 use App\Models\Device;
 use App\Models\Orchard;
-use App\Models\VibrationLog; // Add VibrationLog model
+use App\Models\VibrationLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use App\Services\FirebaseService;
 
 class AdminController extends Controller

@@ -51,4 +51,30 @@ class InventoryTransaction extends Model
     {
         return $this->belongsTo(Storage::class, 'storage_location');
     }
+    
+    // Get total stock for all durian types
+    public static function getTotalDurianStock($durianId = null)
+    {
+        $query = self::query();
+        
+        if ($durianId) {
+            $query->where('durian_id', $durianId);
+        }
+        
+        return $query->sum('quantity');
+    }
+    
+    // Get stock levels by storage location
+    public static function getStockByStorage($storageId = null)
+    {
+        $query = self::query();
+        
+        if ($storageId) {
+            $query->where('storage_location', $storageId);
+        }
+        
+        return $query->groupBy('storage_location')
+            ->selectRaw('storage_location, SUM(quantity) as total_quantity')
+            ->pluck('total_quantity', 'storage_location');
+    }
 }

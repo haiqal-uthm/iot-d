@@ -105,4 +105,21 @@ class DurianController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function create()
+    {
+        return view('admin.durian.create');
+    }
+
+    public function show($id)
+    {
+        $durian = Durian::findOrFail($id);
+        return view('admin.durian.show', compact('durian'));
+    }
+
+    public function edit($id)
+    {
+        $durian = Durian::findOrFail($id);
+        return view('admin.durian.edit', compact('durian'));
+    }
 }

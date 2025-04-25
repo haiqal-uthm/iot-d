@@ -18,6 +18,7 @@ use App\Http\Controllers\FarmerHarvestController;
 use App\Http\Controllers\FarmerInventoryController;
 use App\Http\Controllers\AdminInventoryController;
 use App\Http\Controllers\StorageController;
+use App\Http\Controllers\DurianFallController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -51,19 +52,22 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 // Admin routes
 // In the admin routes group:
 Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->group(function () {
-    // Change this line:
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    // To this:
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
     Route::get('/orchards', [OrchardController::class, 'index'])->name('orchards');
+    
+    // Durian routes
     Route::get('/durian', [DurianController::class, 'index'])->name('durian');
+    Route::get('/durian/create', [DurianController::class, 'create'])->name('durian.create');
+    Route::get('/durian/{id}', [DurianController::class, 'show'])->name('durian.show');
+    Route::get('/durian/{id}/edit', [DurianController::class, 'edit'])->name('durian.edit');
+    
     Route::get('/devices', [DeviceController::class, 'index'])->name('devices');
     Route::get('/production-report', [ProductionReportController::class, 'index'])->name('production-report');
     
     // Add inventory management routes
-    Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
-    Route::post('/inventory', [AdminInventoryController::class, 'store'])->name('inventory.store');
-    Route::delete('/inventory/{transaction}', [AdminInventoryController::class, 'destroy'])->name('inventory.destroy');
+    Route::get('/inventory', [App\Http\Controllers\Admin\AdminInventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/inventory', [App\Http\Controllers\Admin\AdminInventoryController::class, 'store'])->name('inventory.store');
+    Route::delete('/inventory/{transaction}', [App\Http\Controllers\Admin\AdminInventoryController::class, 'destroy'])->name('inventory.destroy');
     Route::get('/users', [UserController::class, 'index'])->name('users.');
     Route::resource('users', UserController::class)->except(['update']);
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
@@ -77,6 +81,27 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->grou
     Route::post('/storage', [StorageController::class, 'store'])->name('storage.store');
     Route::put('/storage/{storage}', [StorageController::class, 'update'])->name('storage.update');
     Route::delete('/storage/{storage}', [StorageController::class, 'destroy'])->name('storage.destroy');
+});
+
+// Add these routes to your web.php file
+Route::middleware(['auth', 'role:manager'])->prefix('manager')->name('manager.')->group(function () {
+    Route::get('/durian-fall', [App\Http\Controllers\Manager\DurianFallController::class, 'index'])->name('durian-fall.index');
+    Route::get('/manager/durian-fall/data', [DurianFallController::class, 'getData'])->name('durian-fall.data');
+    Route::get('/notifications', [App\Http\Controllers\Manager\NotificationController::class, 'index'])->name('notification.index');
+    Route::post('/notifications/mark-as-read', [App\Http\Controllers\Manager\NotificationController::class, 'markAsRead'])->name('notification.mark-as-read');
+    Route::get('/performance', [App\Http\Controllers\Manager\PerformanceController::class, 'index'])->name('performance.index');
+    Route::get('/performance/{farmer}', [App\Http\Controllers\Manager\PerformanceController::class, 'show'])->name('performance.show');
+    Route::get('/performance/{farmer}/harvest-data', [App\Http\Controllers\Manager\PerformanceController::class, 'getHarvestDataJson'])->name('performance.harvest-data');
+    
+    // Inventory routes
+    Route::get('/inventory', [App\Http\Controllers\Manager\InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('/inventory/transactions', [App\Http\Controllers\Manager\InventoryController::class, 'getTransactions'])->name('inventory.transactions');
+    
+    // Report routes
+    Route::get('/reports', [App\Http\Controllers\Manager\ReportController::class, 'index'])->name('report.index');
+    Route::get('/reports/harvest', [App\Http\Controllers\Manager\ReportController::class, 'harvestReport'])->name('report.harvest');
+    Route::get('/reports/fall-monitoring', [App\Http\Controllers\Manager\ReportController::class, 'fallMonitoringReport'])->name('report.fall-monitoring');
+    Route::get('/reports/inventory', [App\Http\Controllers\Manager\ReportController::class, 'inventoryReport'])->name('report.inventory');
 });
 
 Route::middleware('auth')->group(function () {

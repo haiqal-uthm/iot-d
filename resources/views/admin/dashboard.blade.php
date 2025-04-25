@@ -4,6 +4,18 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Dashboard') }}
             </h2>
+        </div>
+    </x-slot>
+
+    <!-- Add this in your <head> section -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" style="margin-left: 300px;">
             @auth
             <div class="ml-4">
                 <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -11,22 +23,10 @@
                 </p>
             </div>
             @endauth
-        </div>
-    </x-slot>
-
-    <!-- Add this in your <head> section -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" style="margin-left: 300px;">
             <!-- Main Layout -->
             <div class="grid grid-cols-2 lg:grid-cols-2 gap-6">
-                <!-- Overview Box -->
-                <div
-                    class="col-span-2 bg-gradient-to-r from-purple-500 to-indigo-500 p-6 rounded-lg text-black custom-shadow">
+                <!-- Overview Box - Changed from gradient to white -->
+                <div class="col-span-2 bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
                     <h3 class="text-lg font-bold">Durian Production</h3>
                     <div style="max-width: 250px; margin: auto;">
                         <canvas id="pieChart"></canvas>
@@ -35,16 +35,10 @@
 
                 <!-- Daily Logging Boxes -->
                 <div>
-                    <div class="bg-gradient-to-r from-pink-500 to-red-500 p-6 rounded-lg text-black custom-shadow mb-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-lg font-bold">Current Weather</h3>
-                            <a href="{{ route('weather') }}" class="arrow-icon">➔</a>
-                        </div>
-                        <div class="text-center">
-                            <div id="weather-info">Loading weather...</div>
-                        </div>
-                    </div>
-                    <div class="bg-gradient-to-r from-pink-500 to-red-500 p-6 rounded-lg text-black custom-shadow">
+                    <!-- Changed from gradient to white -->
+
+                    <!-- Changed from gradient to white -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-bold">Durian Fall Count</h3>
                             <a href="{{ route('durian') }}" class="arrow-icon">➔</a>
@@ -55,6 +49,32 @@
                             <p>Total Durian Fall: <span id="vibration-count">Loading...</span></p>
                         </div>
                     </div>
+                    <!-- Notifications -->
+            <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow mt-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold">Notifications</h3>
+                    <span class="arrow-icon">➔</span>
+                </div>
+                <ul class="notification-list mt-4">
+                    @if ($logs->isNotEmpty())
+                        @foreach ($logs as $log)
+                            <li class="notification-item mt-2 flex items-center">
+                                <span
+                                    class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
+                                <div>
+                                    <p class="text-sm">
+                                        Device: {{ $log->device_id }} |
+                                        {{ $log->log_type == 1 ? 'Durian Fall' : 'Animal Detected' }}
+                                    </p>
+                                    <p class="timestamp text-xs text-gray-500">{{ $log->timestamp }}</p>
+                                </div>
+                            </li>
+                        @endforeach
+                    @else
+                        <li class="text-sm text-gray-500">No Vibration Logs Found</li>
+                    @endif
+                </ul>
+            </div>
                 </div>
             </div>
 
@@ -126,37 +146,23 @@
                                 <span
                                     class="text-sm font-bold text-yellow-800 dark:text-yellow-100">{{ $totalInventory ?? 0 }}</span>
                             </div>
+                            
                         </div>
+                    </div>
+                </div>
+                <!-- Weather Card -->
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold">Current Weather</h3>
+                        <a href="{{ route('weather') }}" class="arrow-icon">➔</a>
+                    </div>
+                    <div class="text-center">
+                        <div id="weather-info">Loading weather...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Notifications -->
-            <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow mt-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-bold">Notifications</h3>
-                    <span class="arrow-icon">➔</span>
-                </div>
-                <ul class="notification-list mt-4">
-                    @if ($logs->isNotEmpty())
-                        @foreach ($logs as $log)
-                            <li class="notification-item mt-2 flex items-center">
-                                <span
-                                    class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
-                                <div>
-                                    <p class="text-sm">
-                                        Device: {{ $log->device_id }} |
-                                        {{ $log->log_type == 1 ? 'Durian Fall' : 'Animal Detected' }}
-                                    </p>
-                                    <p class="timestamp text-xs text-gray-500">{{ $log->timestamp }}</p>
-                                </div>
-                            </li>
-                        @endforeach
-                    @else
-                        <li class="text-sm text-gray-500">No Vibration Logs Found</li>
-                    @endif
-                </ul>
-            </div>
+            
         </div>
     </div>
 </x-app-layout>

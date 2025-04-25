@@ -28,6 +28,12 @@ class Farmer extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Add this accessor method
+    public function getFarmNameAttribute()
+    {
+        return $this->user->name;
+    }
+
     public function orchards()
     {
         return $this->belongsToMany(Orchard::class, 'farmer_orchard', 'farmer_id', 'orchard_id');
