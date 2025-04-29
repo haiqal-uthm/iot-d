@@ -6,7 +6,7 @@
     </x-slot>
 
     <!-- Add CSS Link -->
-    <link rel="stylesheet" href="{{ asset('css/admin-production.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-production.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <div class="py-12">

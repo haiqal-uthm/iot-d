@@ -9,10 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    // In the form tag, add enctype:
-                    // Change form action
                     <form method="POST" action="{{ route('admin.users.store') }}" enctype="multipart/form-data">
-                    // Add this section before the role selection:
                     <div class="mb-4">
                         <label for="profile_image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Profile Picture</label>
                         <input type="file" name="profile_image" id="profile_image" 

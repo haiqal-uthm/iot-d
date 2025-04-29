@@ -2,9 +2,12 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Orchard Management for ') }} {{ $user->name }}
+                <span class="flex items-center">
+                    <i class="fas fa-user-cog mr-2 text-blue-500"></i>
+                    {{ __('Orchard Management for ') }} <span class="ml-1 text-blue-600 dark:text-blue-400">{{ $user->name }}</span>
+                </span>
             </h2>
-            <a href="{{ route('admin.users.index') }}" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center">
+            <a href="{{ route('admin.users.index') }}" class="btn-back flex items-center transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -15,14 +18,14 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg overflow-hidden">
                 <div class="p-6 orchard-management-container">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <!-- Orchard Selection Card -->
                         <div class="lg:col-span-2">
                             <div class="orchard-selection-card">
                                 <div class="orchard-card-header">
-                                    <i class="fas fa-tree"></i>
+                                    <i class="fas fa-tree text-green-500"></i>
                                     <h3 class="orchard-card-title">Assign Orchards</h3>
                                 </div>
                                 <div class="orchard-card-body">
@@ -32,20 +35,23 @@
 
                                         <div class="mb-6">
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                                <i class="fas fa-search mr-1 text-gray-500"></i>
                                                 Select Orchards
                                             </label>
-                                            <select name="orchards[]" multiple 
-                                                class="orchards-select w-full rounded-md border-gray-300 shadow-sm"
-                                                data-placeholder="Search and select orchards...">
-                                                @foreach($orchards as $orchard)
-                                                    <option value="{{ $orchard->id }}" 
-                                                        {{ in_array($orchard->id, old('orchards', $selectedOrchards)) ? 'selected' : '' }}
-                                                        data-size="{{ $orchard->orchardSize }}"
-                                                        data-location="{{ $orchard->location }}">
-                                                        {{ $orchard->orchardName }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <div class="select-wrapper">
+                                                <select name="orchards[]" multiple 
+                                                    class="orchards-select w-full rounded-md border-gray-300 shadow-sm"
+                                                    data-placeholder="Search and select orchards...">
+                                                    @foreach($orchards as $orchard)
+                                                        <option value="{{ $orchard->id }}" 
+                                                            {{ in_array($orchard->id, old('orchards', $selectedOrchards)) ? 'selected' : '' }}
+                                                            data-size="{{ $orchard->orchardSize }}"
+                                                            data-location="{{ $orchard->location }}">
+                                                            {{ $orchard->orchardName }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                             @error('orchards')
                                                 <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
                                             @enderror
@@ -84,40 +90,43 @@
                         <!-- User Summary Card -->
                         <div class="orchard-selection-card h-fit">
                             <div class="orchard-card-header">
-                                <i class="fas fa-user"></i>
+                                <i class="fas fa-user text-blue-500"></i>
                                 <h3 class="orchard-card-title">User Information</h3>
                             </div>
                             <div class="orchard-card-body">
                                 <div class="space-y-4">
-                                    <div class="flex items-center">
-                                        <span class="text-gray-600 dark:text-gray-400 w-24">Name:</span>
-                                        <span class="font-medium text-gray-800 dark:text-gray-200">{{ $user->name }}</span>
+                                    <div class="user-info-item">
+                                        <span class="user-info-label"><i class="fas fa-id-card mr-2"></i>Name:</span>
+                                        <span class="user-info-value">{{ $user->name }}</span>
                                     </div>
-                                    <div class="flex items-center">
-                                        <span class="text-gray-600 dark:text-gray-400 w-24">Email:</span>
-                                        <span class="font-medium text-gray-800 dark:text-gray-200">{{ $user->email }}</span>
+                                    <div class="user-info-item">
+                                        <span class="user-info-label"><i class="fas fa-envelope mr-2"></i>Email:</span>
+                                        <span class="user-info-value">{{ $user->email }}</span>
                                     </div>
-                                    <div class="flex items-center">
-                                        <span class="text-gray-600 dark:text-gray-400 w-24">Role:</span>
-                                        <span class="px-2 py-1 rounded-full text-sm font-medium 
-                                            {{ $user->role === 'admin' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 
-                                               ($user->role === 'manager' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200') }}">
+                                    <div class="user-info-item">
+                                        <span class="user-info-label"><i class="fas fa-user-tag mr-2"></i>Role:</span>
+                                        <span class="role-badge 
+                                            {{ $user->role === 'admin' ? 'role-admin' : 
+                                               ($user->role === 'manager' ? 'role-manager' : 'role-farmer') }}">
                                             {{ ucfirst($user->role) }}
                                         </span>
                                     </div>
-                                    <div class="flex items-center">
-                                        <span class="text-gray-600 dark:text-gray-400 w-24">Created:</span>
-                                        <span class="font-medium text-gray-800 dark:text-gray-200">
+                                    <div class="user-info-item">
+                                        <span class="user-info-label"><i class="fas fa-calendar-alt mr-2"></i>Created:</span>
+                                        <span class="user-info-value">
                                             {{ $user->created_at->format('M j, Y') }}
                                         </span>
                                     </div>
                                     
                                     <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-                                        <div class="text-gray-600 dark:text-gray-400 mb-2">Current Assignments:</div>
+                                        <div class="text-gray-600 dark:text-gray-400 mb-2">
+                                            <i class="fas fa-link mr-1"></i> Current Assignments:
+                                        </div>
                                         <div id="current-orchards" class="flex flex-wrap gap-2">
                                             @if(count($selectedOrchards) > 0)
                                                 @foreach($orchards->whereIn('id', $selectedOrchards) as $orchard)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                    <span class="orchard-badge">
+                                                        <i class="fas fa-tree mr-1"></i>
                                                         {{ $orchard->orchardName }}
                                                     </span>
                                                 @endforeach
@@ -138,6 +147,7 @@
     @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ asset('css/admin/admin-users.css') }}" rel="stylesheet">
     @endpush
 
     @push('scripts')

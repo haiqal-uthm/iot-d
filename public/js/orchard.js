@@ -78,11 +78,12 @@ function updateTotalDurianFalls() {
         let totalFalls = 0;
         const fallElements = document.querySelectorAll('[id^="vibration-count-sensor-"]');
         
+        // Clear loading state
+        totalElement.innerHTML = ''; 
+        
         fallElements.forEach(el => {
-            const count = parseInt(el.innerText, 10);
-            if (!isNaN(count)) {
-                totalFalls += count;
-            }
+            const count = parseInt(el.innerText, 10) || 0;
+            totalFalls += count;
         });
         
         totalElement.innerText = totalFalls;

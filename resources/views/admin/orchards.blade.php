@@ -50,7 +50,11 @@
                     </svg>
                 </div>
                 <div class="summary-title">Total Durian Falls</div>
-                <div class="summary-value" id="total-durian-falls">Loading...</div>
+                <div class="summary-value">
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400" id="total-durian-falls">
+                        <div class="loading-indicator"></div> Loading...
+                    </div>
+                </div>
             </div>
 
             <div class="summary-card">
