@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class VibrationLog extends Model
 {
+    const LOG_TYPE_DURIAN_FALL = 1;
+    const LOG_TYPE_ANIMAL_THREAT = 2;
+    
     protected $table = 'vibration_logs';
 
     public $timestamps = false;
@@ -19,12 +22,14 @@ class VibrationLog extends Model
 
     public function orchard()
     {
+        // Fix the relationship to ensure it matches correctly
         return $this->belongsTo(Orchard::class, 'device_id', 'device_id');
     }
     
     public function device()
     {
-        return $this->belongsTo(Device::class, 'device_id', 'id'); // Changed to reference 'id' as owner key
+        // Fix the device relationship to match on device_id
+        return $this->belongsTo(Device::class, 'device_id', 'device_id');
     }
     
     // Add an accessor to get farm name through relationships
@@ -41,5 +46,20 @@ class VibrationLog extends Model
     public function getFallCountAttribute()
     {
         return $this->vibration_count ?? 0;
+    }
+    
+    // Add a helper method to get orchard name safely
+    public function getOrchardNameAttribute()
+    {
+        return $this->orchard->orchardName ?? 'Unknown Orchard';
+    }
+    
+    public function getLogTypeNameAttribute()
+    {
+        return match($this->log_type) {
+            self::LOG_TYPE_DURIAN_FALL => 'Durian Fall',
+            self::LOG_TYPE_ANIMAL_THREAT => 'Animal Threat',
+            default => 'Other Alert'
+        };
     }
 }

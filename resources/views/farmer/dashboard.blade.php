@@ -1,23 +1,32 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <div class="flex items-center">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Dashboard') }}
+            </h2>
+        </div>
     </x-slot>
 
     <!-- Add this in your <head> section -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/farmer/farmer-dashboard.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" >
+            @auth
+            <div class="ml-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Hi {{ ucfirst(Auth::user()->role) }}
+                </p>
+            </div>
+            @endauth
             <!-- Main Layout -->
             <div class="grid grid-cols-2 lg:grid-cols-2 gap-6">
-                <!-- Overview Box -->
-                <div
-                    class="col-span-2 bg-gradient-to-r from-purple-500 to-indigo-500 p-6 rounded-lg text-black custom-shadow">
+                <!-- Overview Box - Changed from gradient to white -->
+                <div class="col-span-2 bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
                     <h3 class="text-lg font-bold">Durian Production</h3>
                     <div style="max-width: 250px; margin: auto;">
                         <canvas id="pieChart"></canvas>
@@ -26,16 +35,8 @@
 
                 <!-- Daily Logging Boxes -->
                 <div>
-                    <div class="bg-gradient-to-r from-pink-500 to-red-500 p-6 rounded-lg text-black custom-shadow mb-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-lg font-bold">Current Weather</h3>
-                            <a href="{{ route('weather') }}" class="arrow-icon">➔</a>
-                        </div>
-                        <div class="text-center">
-                            <div id="weather-info">Loading weather...</div>
-                        </div>
-                    </div>
-                    <div class="bg-gradient-to-r from-pink-500 to-red-500 p-6 rounded-lg text-black custom-shadow">
+                    <!-- Changed from gradient to white -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-bold">Durian Fall Count</h3>
                             <a href="{{ route('durian') }}" class="arrow-icon">➔</a>
@@ -46,33 +47,63 @@
                             <p>Total Durian Fall: <span id="vibration-count">Loading...</span></p>
                         </div>
                     </div>
+                    
+                    <!-- Notifications - Moved inside the first column like admin dashboard -->
+                    <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow mt-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold">Notifications</h3>
+                            <span class="arrow-icon">➔</span>
+                        </div>
+                        <ul class="notification-list mt-4">
+                            @if ($logs->isNotEmpty())
+                                @foreach ($logs as $log) 
+                                    <li class="notification-item mt-2 flex items-center">
+                                        <span
+                                            class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
+                                        <div>
+                                            <p class="text-sm">
+                                                {{ $log->orchard ? $log->orchard->orchardName : 'Unknown Orchard' }} - 
+                                                {{ $log->log_type == 1 ? 'Fall detected' : 'Animal Detected' }} - 
+                                                {{ $log->timestamp->format('g:i A') }}
+                                            </p>
+                                            <p class="timestamp text-xs text-gray-500">{{ $log->timestamp->diffForHumans() }}</p>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @else
+                                <li class="text-sm text-gray-500">No notifications found</li>
+                            @endif
+                        </ul>
+                    </div>
                 </div>
+                
+                <!-- Weather Section - Moved to second column to align with lower layout -->
             </div>
 
             <!-- Lower Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                <!-- Orchard Monitoring Box -->
+                <!-- Total Harvest Summary Box (Previously Orchard Monitoring) -->
                 <div class="bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-lg font-bold">Orchard Monitoring</h3>
+                        <h3 class="text-lg font-bold">Total Harvest Summary</h3>
                         <a href="{{ route('orchards') }}" class="arrow-icon">➔</a>
                     </div>
                     <div class="text-center mt-2">
                         <img style="width: 50px; margin-left: auto; margin-right: auto; display: block;"
-                            src="{{ asset('images/orchard.png') }}" alt="IoT Icon" class="w-8 h-8 mr-2">
-                        <p>Orchards: {{ $totalOrchards }}</p>
+                            src="{{ asset('images/orchard.png') }}" alt="Harvest Icon" class="w-8 h-8 mr-2">
+                        <p>Total Harvest: {{ $totalHarvest ?? 0 }} kg</p>
                     </div>
                 </div>
-                <!-- Device Controller Box -->
+                <!-- Orchard Assignment Box (Previously Device Management) -->
                 <div class="bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-bold">Device Management</h3>
+                        <h3 class="text-lg font-bold">Orchard Assignment</h3>
                         <a href="{{ route('devices') }}" class="arrow-icon">➔</a>
                     </div>
                     <div class="text-center mt-2">
                         <img style="width: 50px; margin-left: auto; margin-right: auto; display: block;"
-                            src="{{ asset('images/iot.png') }}" alt="IoT Icon" class="w-8 h-8 mr-2">
-                        <p>Devices: {{ $totalDevice }}</p>
+                            src="{{ asset('images/iot.png') }}" alt="Orchard Icon" class="w-8 h-8 mr-2">
+                        <p>Orchards: {{ $totalOrchards }}</p>
                     </div>
                 </div>
                 <!-- Harvest Production Box -->
@@ -120,36 +151,22 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Notifications -->
-            <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow mt-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-bold">Notifications</h3>
-                    <span class="arrow-icon">➔</span>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-bold">Current Weather</h3>
+                        <a href="{{ route('weather') }}" class="arrow-icon">➔</a>
+                    </div>
+                    <div class="text-center">
+                        <div id="weather-info">Loading weather...</div>
+                    </div>
                 </div>
-                <ul class="notification-list mt-4">
-                    @if ($logs->isNotEmpty())
-                        @foreach ($logs as $log)
-                            <li class="notification-item mt-2 flex items-center">
-                                <span
-                                    class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
-                                <div>
-                                    <p class="text-sm">
-                                        Device: {{ $log->device_id }} |
-                                        {{ $log->log_type == 1 ? 'Durian Fall' : 'Animal Detected' }}
-                                    </p>
-                                    <p class="timestamp text-xs text-gray-500">{{ $log->timestamp }}</p>
-                                </div>
-                            </li>
-                        @endforeach
-                    @else
-                        <li class="text-sm text-gray-500">No Vibration Logs Found</li>
-                    @endif
-                </ul>
             </div>
         </div>
     </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
 </x-app-layout>
 <script src="/js/dashboard.js?v=<?= time() ?>"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>

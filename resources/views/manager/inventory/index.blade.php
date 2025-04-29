@@ -5,34 +5,85 @@
         </h2>
     </x-slot>
 
+    <!-- Add CSS Link -->
+    <link rel="stylesheet" href="{{ asset('css/manager/manager-inventory.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="summary-card animate-fade-in">
+                    <div class="summary-icon">
+                        <i class="fas fa-weight-hanging"></i>
+                    </div>
+                    <div class="summary-title">Total Stock</div>
+                    <div class="summary-value">
+                        @php
+                            $totalStock = 0;
+                            foreach($durianStocks as $durian) {
+                                $totalStock += $durian->current_stock ?? 0;
+                            }
+                        @endphp
+                        {{ number_format($totalStock, 1) }} kg
+                    </div>
+                </div>
+                
+                <div class="summary-card animate-fade-in delay-100">
+                    <div class="summary-icon" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <div class="summary-title">Storage Locations</div>
+                    <div class="summary-value">{{ count($storageLocations) }}</div>
+                </div>
+                
+                <div class="summary-card animate-fade-in delay-200">
+                    <div class="summary-icon" style="background-color: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <div class="summary-title">Durian Varieties</div>
+                    <div class="summary-value">{{ count($durianStocks) }}</div>
+                </div>
+                
+                <div class="summary-card animate-fade-in delay-300">
+                    <div class="summary-icon" style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="summary-title">Recent Transactions</div>
+                    <div class="summary-value">{{ $transactions->count() }}</div>
+                </div>
+            </div>
+            
             <!-- Durian Stock Overview -->
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Durian Stock Levels</h3>
+                    <div class="dashboard-header">
+                        <h3 class="dashboard-title">
+                            <i class="fas fa-apple-alt"></i> Durian Stock Levels
+                        </h3>
+                    </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @forelse($durianStocks as $durian)
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow">
-                                <div class="flex justify-between items-center mb-2">
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200">{{ $durian->name }}</h4>
-                                    <span class="text-sm font-semibold {{ $durian->current_stock > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                        {{ $durian->current_stock ?? 0 }}/kg in stock
+                            <div class="stock-card">
+                                <div class="stock-card-header">
+                                    <h4 class="stock-card-title">{{ $durian->name }}</h4>
+                                    <span class="stock-card-value {{ $durian->current_stock > 0 ? 'positive' : 'negative' }}">
+                                        {{ $durian->current_stock ?? 0 }} kg
                                     </span>
                                 </div>
                                 
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mb-2">
+                                <div class="progress-container">
                                     @php
                                         $percentage = $durian->total > 0 ? min(100, ($durian->current_stock / $durian->total) * 100) : 0;
-                                        $colorClass = $percentage > 66 ? 'bg-green-600' : ($percentage > 33 ? 'bg-yellow-400' : 'bg-red-600');
+                                        $colorClass = $percentage > 66 ? 'success' : ($percentage > 33 ? 'warning' : 'danger');
                                     @endphp
-                                    <div class="{{ $colorClass }} h-2.5 rounded-full" style="width: {{ $percentage }}%"></div>
+                                    <div class="progress-bar {{ $colorClass }}" style="width: {{ $percentage }}%"></div>
                                 </div>
                                 
-                                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                                    <span>Total</span>
-                                    <span>{{ $durian->total }}</span>
+                                <div class="stock-card-footer">
+                                    <span>Total Capacity</span>
+                                    <span>{{ $durian->total }} kg</span>
                                 </div>
                             </div>
                         @empty
@@ -47,31 +98,35 @@
             <!-- Storage Locations -->
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Storage Locations</h3>
+                    <div class="dashboard-header">
+                        <h3 class="dashboard-title">
+                            <i class="fas fa-warehouse"></i> Storage Locations
+                        </h3>
+                    </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @forelse($storageLocations as $storage)
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow">
-                                <div class="flex justify-between items-center mb-2">
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200">{{ $storage->name }}</h4>
-                                    <span class="text-sm font-semibold {{ $storage->capacity_percentage < 80 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                        {{ $storage->current_stock }} / {{ $storage->capacity }}/kg
+                            <div class="stock-card">
+                                <div class="stock-card-header">
+                                    <h4 class="stock-card-title">{{ $storage->name }}</h4>
+                                    <span class="stock-card-value {{ $storage->capacity_percentage < 80 ? 'positive' : 'negative' }}">
+                                        {{ $storage->current_stock }} / {{ $storage->capacity }} kg
                                     </span>
                                 </div>
                                 
-                                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mb-2">
+                                <div class="progress-container">
                                     @php
-                                        $colorClass = $storage->capacity_percentage < 50 ? 'bg-green-600' : 
-                                                     ($storage->capacity_percentage < 80 ? 'bg-yellow-400' : 'bg-red-600');
+                                        $colorClass = $storage->capacity_percentage < 50 ? 'success' : 
+                                                     ($storage->capacity_percentage < 80 ? 'warning' : 'danger');
                                     @endphp
-                                    <div class="{{ $colorClass }} h-2.5 rounded-full" style="width: {{ $storage->capacity_percentage }}%"></div>
+                                    <div class="progress-bar {{ $colorClass }}" style="width: {{ $storage->capacity_percentage }}%"></div>
                                 </div>
                                 
                                 <div class="mt-2 text-xs text-gray-600 dark:text-gray-400">
                                     {{ $storage->description }}
                                     @if($storage->temperature_control)
-                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                            Temperature Controlled
+                                        <span class="badge badge-blue ml-2">
+                                            <i class="fas fa-temperature-low mr-1"></i> Temperature Controlled
                                         </span>
                                     @endif
                                 </div>
@@ -88,14 +143,16 @@
             <!-- Recent Transactions -->
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Recent Inventory Transactions</h3>
-                        <a href="{{ route('manager.inventory.transactions') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            View All Transactions
+                    <div class="dashboard-header">
+                        <h3 class="dashboard-title">
+                            <i class="fas fa-history"></i> Recent Inventory Transactions
+                        </h3>
+                        <a href="{{ route('manager.inventory.transactions') }}" class="btn-primary">
+                            <i class="fas fa-eye"></i> View All Transactions
                         </a>
                     </div>
                     
-                    <div id="transactions-container">
+                    <div id="transactions-container" class="transactions-table-container">
                         @include('manager.inventory.partials.transactions-table')
                     </div>
                     

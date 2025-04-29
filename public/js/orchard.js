@@ -168,12 +168,55 @@ function showNotification(message, type) {
 ============================== */
 function openViewModal(orchardId) {
     // Redirect to the orchard details page
-    window.location.href = `/orchards/${orchardId}`;
+    const role = document.body.dataset.userRole || 'farmer'; // Default to farmer if not set
+    const baseUrl = role === 'farmer' ? '/farmer' : '';
+    window.location.href = `${baseUrl}/orchards/${orchardId}`;
 }
 
+/* ===========================
+   Modal Functions
+============================== */
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
     document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+}
+
+function closeViewModal() {
+    // Close all modals
+    const modals = document.querySelectorAll('[id$="Modal"]');
+    modals.forEach(modal => {
+        modal.classList.add('hidden');
+    });
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+function openViewModal(orchardId) {
+    // Find the orchard data
+    const orchard = orchards.find(o => o.id === orchardId);
+    
+    if (orchard) {
+        // Populate the modal with orchard data
+        document.getElementById('nameOrchard').textContent = orchard.orchardName || 'N/A';
+        document.getElementById('numTrees').textContent = orchard.numTree || 'N/A';
+        document.getElementById('deviceName').textContent = orchard.device ? orchard.device.name : 'No Device Assigned';
+        document.getElementById('durianName').textContent = orchard.durian ? orchard.durian.name : 'No Durian Assigned';
+        
+        // Set a placeholder image or actual orchard image if available
+        const imgElement = document.getElementById('orchardImage');
+        if (orchard.image_url) {
+            imgElement.src = orchard.image_url;
+            imgElement.alt = `${orchard.orchardName} Image`;
+        } else {
+            imgElement.src = '/images/orchard-placeholder.jpg';
+            imgElement.alt = 'Orchard Placeholder Image';
+        }
+        
+        // Show the modal
+        openModal('viewModal');
+    } else {
+        console.error('Orchard not found:', orchardId);
+        showResponseModal('error', 'Error', 'Orchard information could not be loaded.');
+    }
 }
 
 function closeModal(modalId) {

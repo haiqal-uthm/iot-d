@@ -37,8 +37,11 @@ class DashboardController extends Controller
         $totalOrchards = Orchard::count();
         $durianData = DB::table('durians')->select('name', DB::raw('SUM(total) as total'))->groupBy('name')->get();
 
-        // Retrieve Vibration Logs (Latest 10 logs)
-        $logs = VibrationLog::orderBy('timestamp', 'desc')->take(4)->get();
+        // Retrieve Vibration Logs with orchard information (Latest 4 logs)
+        $logs = VibrationLog::with('orchard')
+            ->orderBy('timestamp', 'desc')
+            ->take(4)
+            ->get();
         
         // Get production statistics
         $totalRecordFall = VibrationLog::where('log_type', 1)->count();

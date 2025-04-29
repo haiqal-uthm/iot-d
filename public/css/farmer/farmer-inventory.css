@@ -1,0 +1,295 @@
+/* Farmer Inventory Management Styles */
+.inventory-container {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Stock Level Cards */
+.stock-level-container {
+    margin-bottom: 2rem;
+}
+
+.stock-level-title {
+    color: #2d3748;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.stock-level-title i {
+    margin-right: 0.5rem;
+    color: #38a169;
+}
+
+.stock-card {
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s ease-in-out;
+    border-left: 4px solid #38a169;
+    height: 100%;
+}
+
+.stock-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.stock-card h4 {
+    color: #4a5568;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.stock-card p.positive {
+    color: #38a169;
+}
+
+.stock-card p.negative {
+    color: #e53e3e;
+}
+
+/* Form Section */
+.form-section {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-left: 4px solid #4299e1;
+}
+
+.form-title {
+    color: #2d3748;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+}
+
+.form-title i {
+    margin-right: 0.5rem;
+    color: #4299e1;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    background-color: #f8fafc;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
+    outline: none;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.btn-stock-in {
+    background-color: #38a169;
+    color: white;
+    border: none;
+}
+
+.btn-stock-in:hover {
+    background-color: #2f855a;
+}
+
+.btn-stock-out {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+}
+
+.btn-stock-out:hover {
+    background-color: #c53030;
+}
+
+.btn i {
+    margin-right: 0.5rem;
+}
+
+/* Transactions Table */
+.table-section {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    overflow: hidden;
+}
+
+.table-title {
+    color: #2d3748;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.table-title i {
+    margin-right: 0.5rem;
+    color: #805ad5;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.inventory-table th {
+    background-color: #f7fafc;
+    color: #4a5568;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.inventory-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #4a5568;
+}
+
+.inventory-table tr:hover {
+    background-color: #f7fafc;
+}
+
+.transaction-type {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.transaction-in {
+    background-color: rgba(56, 161, 105, 0.1);
+    color: #38a169;
+}
+
+.transaction-out {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: #e53e3e;
+}
+
+/* Dark Mode Styles */
+.dark .stock-level-title,
+.dark .form-title,
+.dark .table-title {
+    color: #e2e8f0;
+}
+
+.dark .stock-card {
+    background: linear-gradient(to right, #2d3748, #1a202c);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .stock-card h4 {
+    color: #e2e8f0;
+}
+
+.dark .form-section,
+.dark .table-section {
+    background-color: #2d3748;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .form-label {
+    color: #e2e8f0;
+}
+
+.dark .form-control {
+    background-color: #4a5568;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+.dark .form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
+}
+
+.dark .inventory-table th {
+    background-color: #4a5568;
+    color: #e2e8f0;
+    border-bottom: 2px solid #1a202c;
+}
+
+.dark .inventory-table td {
+    border-bottom: 1px solid #4a5568;
+    color: #e2e8f0;
+}
+
+.dark .inventory-table tr:hover {
+    background-color: #4a5568;
+}
+
+.dark .form-title {
+    border-bottom: 1px solid #4a5568;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 0;
+    color: #a0aec0;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}

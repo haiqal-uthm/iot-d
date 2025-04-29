@@ -28,6 +28,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:farmer'])->name('farmer.')->prefix('farmer')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/orchards', [OrchardController::class, 'index'])->name('orchards');
+    Route::get('/orchards/{id}', [OrchardController::class, 'show'])->name('orchards.show');
     Route::get('/inventory', [FarmerInventoryController::class, 'index'])->name('inventory.index');
     Route::post('/inventory', [FarmerInventoryController::class, 'store'])->name('inventory.store');
     Route::get('/harvest', [HarvestController::class, 'index'])->name('harvest');

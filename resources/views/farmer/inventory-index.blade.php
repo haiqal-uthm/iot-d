@@ -5,8 +5,12 @@
         </h2>
     </x-slot>
 
+    <!-- Add CSS Link -->
+    <link rel="stylesheet" href="{{ asset('css/farmer/farmer-inventory.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 inventory-container">
             <!-- Display success message if any -->
             @if (session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
@@ -21,89 +25,101 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                <!-- Current Stock Levels -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-semibold mb-4">Current Stock Levels</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        @foreach ($stockLevels as $location => $quantity)
-                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow">
-                                <h4 class="font-medium">{{ $storageNames[$location] ?? 'Storage '.$location }}</h4>
-                                <p class="text-2xl font-bold {{ $quantity < 0 ? 'text-red-600' : 'text-green-600' }}">
-                                    {{ number_format($quantity, 2) }} kg
-                                </p>
-                            </div>
-                        @endforeach
-                    </div>
+            <!-- Current Stock Levels -->
+            <div class="stock-level-container">
+                <h3 class="stock-level-title">
+                    <i class="fas fa-warehouse"></i>
+                    Current Stock Levels
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @foreach ($stockLevels as $location => $quantity)
+                        <div class="stock-card">
+                            <h4>{{ $storageNames[$location] ?? 'Storage '.$location }}</h4>
+                            <p class="text-2xl font-bold {{ $quantity < 0 ? 'negative' : 'positive' }}">
+                                {{ number_format($quantity, 2) }} kg
+                            </p>
+                        </div>
+                    @endforeach
                 </div>
-                <!-- Add Stock Form -->
-                <div class="mb-8 border-b pb-6">
-                    <h3 class="text-lg font-semibold mb-4">Record Stock Movement</h3>
-                    <form method="POST" action="{{ route('farmer.inventory.store') }}">
-                        @csrf
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Durian Type</label>
-                                <select name="durian_id" class="w-full border rounded p-2" required>
-                                    @foreach ($durianTypes as $durian)
-                                        <option value="{{ $durian->id }}">{{ $durian->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Storage Location</label>
-                                <select name="storage_location" class="w-full border rounded p-2" required>
-                                    @foreach ($storageLocations as $location)
-                                        <option value="{{ $location }}">{{ $storageNames[$location] ?? 'Storage '.$location }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Quantity (kg)</label>
-                                <input type="number" name="quantity" class="w-full border rounded p-2" min="1"
-                                    step="0.1" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Remarks</label>
-                                <input type="text" name="remarks" class="w-full border rounded p-2"
-                                    placeholder="Additional notes...">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Type</label>
-                                <div class="flex gap-4 mt-2">
-                                    <button type="submit" name="type" value="in"
-                                        class="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600">
-                                        Stock In
-                                    </button>
-                                    <button type="submit" name="type" value="out"
-                                        class="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-600">
-                                        Stock Out
-                                    </button>
-                                </div>
+            </div>
+            
+            <!-- Add Stock Form -->
+            <div class="form-section">
+                <h3 class="form-title">
+                    <i class="fas fa-exchange-alt"></i>
+                    Record Stock Movement
+                </h3>
+                <form method="POST" action="{{ route('farmer.inventory.store') }}">
+                    @csrf
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Durian Type</label>
+                            <select name="durian_id" class="form-control" required>
+                                @foreach ($durianTypes as $durian)
+                                    <option value="{{ $durian->id }}">{{ $durian->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Storage Location</label>
+                            <select name="storage_location" class="form-control" required>
+                                @foreach ($storageLocations as $location)
+                                    <option value="{{ $location }}">{{ $storageNames[$location] ?? 'Storage '.$location }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Quantity (kg)</label>
+                            <input type="number" name="quantity" class="form-control" min="1"
+                                step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Remarks</label>
+                            <input type="text" name="remarks" class="form-control"
+                                placeholder="Additional notes...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Type</label>
+                            <div class="btn-group">
+                                <button type="submit" name="type" value="in"
+                                    class="btn btn-stock-in">
+                                    <i class="fas fa-arrow-down"></i>
+                                    Stock In
+                                </button>
+                                <button type="submit" name="type" value="out"
+                                    class="btn btn-stock-out">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Stock Out
+                                </button>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <!-- Inventory Table -->
-                <h3 class="text-lg font-semibold mb-4">Recent Transactions</h3>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Inventory Table -->
+            <div class="table-section">
+                <h3 class="table-title">
+                    <i class="fas fa-history"></i>
+                    Recent Transactions
+                </h3>
                 <div class="overflow-x-auto">
-                    <table class="w-full">
+                    <table class="inventory-table">
                         <thead>
-                            <tr class="border-b">
-                                <th class="pb-2 text-left">Type</th>
-                                <th class="pb-2 text-left">Durian Type</th>
-                                <th class="pb-2 text-left">Storage Location</th>
-                                <th class="pb-2 text-left">Quantity</th>
-                                <th class="pb-2 text-left">Date</th>
-                                <th class="pb-2 text-left">Remarks</th>
+                            <tr>
+                                <th>Type</th>
+                                <th>Durian Type</th>
+                                <th>Storage Location</th>
+                                <th>Quantity</th>
+                                <th>Date</th>
+                                <th>Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($inventoryTransactions as $transaction)
-                                <tr class="border-b">
-                                    <td class="py-4">
-                                        <span
-                                            class="px-2 py-1 rounded {{ $transaction->type == 'in' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                <tr>
+                                    <td>
+                                        <span class="transaction-type {{ $transaction->type == 'in' ? 'transaction-in' : 'transaction-out' }}">
                                             {{ strtoupper($transaction->type) }}
                                         </span>
                                     </td>
@@ -115,7 +131,12 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="py-4 text-center">No inventory transactions found</td>
+                                    <td colspan="6" class="empty-state">
+                                        <div>
+                                            <i class="fas fa-box-open"></i>
+                                            <p>No inventory transactions found</p>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>

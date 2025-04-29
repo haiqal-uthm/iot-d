@@ -1,0 +1,504 @@
+/* Manager Farmer Performance Styles */
+:root {
+  --primary-color: #4f46e5;
+  --secondary-color: #818cf8;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --dark-color: #1f2937;
+  --light-color: #f9fafb;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-light: #9ca3af;
+  --border-color: #e5e7eb;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.performance-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Header Section */
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.section-header i {
+  margin-right: 0.75rem;
+  color: var(--primary-color);
+  font-size: 1.25rem;
+}
+
+/* Farmer Card */
+.farmer-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.farmer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+}
+
+.farmer-header {
+  padding: 1.25rem;
+  background: linear-gradient(to right, #f9fafb, #f3f4f6);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.farmer-avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
+}
+
+.farmer-avatar-placeholder {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #c7d2fe, #a5b4fc);
+  color: #4338ca;
+  font-weight: 600;
+  font-size: 1.25rem;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
+}
+
+.farmer-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.farmer-farm {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.farmer-content {
+  padding: 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.orchard-section {
+  margin-bottom: 1.25rem;
+  flex-grow: 1;
+}
+
+.orchard-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.orchard-title i {
+  margin-right: 0.5rem;
+  color: var(--success-color);
+}
+
+.orchard-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #d1fae5;
+  color: #065f46;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.orchard-tag:hover {
+  background-color: #a7f3d0;
+}
+
+.farmer-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  background-color: #f9fafb;
+}
+
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: var(--primary-color);
+  color: white;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.view-btn:hover {
+  background-color: #4338ca;
+  transform: translateY(-1px);
+}
+
+.view-btn i {
+  margin-right: 0.5rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-light);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Dark Mode Support */
+.dark .farmer-card {
+  background-color: var(--dark-color);
+  border-color: #374151;
+}
+
+.dark .farmer-header {
+  background: linear-gradient(to right, #1f2937, #111827);
+  border-color: #374151;
+}
+
+.dark .farmer-name {
+  color: #f9fafb;
+}
+
+.dark .farmer-farm {
+  color: #d1d5db;
+}
+
+.dark .orchard-title {
+  color: #d1d5db;
+}
+
+.dark .orchard-tag {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.dark .orchard-tag:hover {
+  background-color: rgba(16, 185, 129, 0.3);
+}
+
+.dark .farmer-footer {
+  background-color: #111827;
+  border-color: #374151;
+}
+
+.dark .empty-state {
+  color: #9ca3af;
+}
+
+/* Performance Detail Page Styles */
+.performance-detail-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.profile-card {
+  background: linear-gradient(to right, #f9fafb, #f3f4f6);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.profile-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.profile-header {
+  position: relative;
+  padding: 2rem 1.5rem 1.5rem;
+}
+
+.profile-image {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+}
+
+.profile-image-placeholder {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #c7d2fe, #a5b4fc);
+  color: #4338ca;
+  font-weight: 600;
+  font-size: 2.5rem;
+  border: 4px solid white;
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+}
+
+.profile-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.profile-farm {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.info-item {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.info-value {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.section-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.section-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.section-card-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+}
+
+.section-card-header i {
+  margin-right: 0.75rem;
+  color: var(--primary-color);
+  font-size: 1.25rem;
+}
+
+.section-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.section-card-body {
+  padding: 1.25rem;
+}
+
+.orchard-card {
+  background-color: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.orchard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-color: var(--primary-color);
+}
+
+.orchard-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.orchard-detail {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.chart-container {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+}
+
+.harvest-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.harvest-table th {
+  background-color: #f3f4f6;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.harvest-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.harvest-table tr:hover td {
+  background-color: #f9fafb;
+}
+
+/* Dark Mode Support for Performance Detail */
+.dark .profile-card {
+  background: linear-gradient(to right, #1f2937, #111827);
+  border-color: #374151;
+}
+
+.dark .profile-image {
+  border-color: #1f2937;
+}
+
+.dark .profile-image-placeholder {
+  border-color: #1f2937;
+}
+
+.dark .profile-name {
+  color: #f9fafb;
+}
+
+.dark .profile-farm {
+  color: #d1d5db;
+}
+
+.dark .info-item {
+  background-color: rgba(31, 41, 55, 0.7);
+}
+
+.dark .info-label {
+  color: #9ca3af;
+}
+
+.dark .info-value {
+  color: #f3f4f6;
+}
+
+.dark .section-card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.dark .section-card-header {
+  border-color: #374151;
+}
+
+.dark .section-card-title {
+  color: #f9fafb;
+}
+
+.dark .orchard-card {
+  background-color: #111827;
+  border-color: #374151;
+}
+
+.dark .orchard-name {
+  color: #f9fafb;
+}
+
+.dark .orchard-detail {
+  color: #d1d5db;
+}
+
+.dark .chart-container {
+  background-color: #111827;
+}
+
+.dark .harvest-table th {
+  background-color: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+.dark .harvest-table td {
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .harvest-table tr:hover td {
+  background-color: #374151;
+}

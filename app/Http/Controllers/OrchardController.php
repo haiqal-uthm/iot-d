@@ -117,6 +117,11 @@ class OrchardController extends Controller
             ->orderBy('timestamp', 'desc')
             ->take(20)
             ->get();
+        
+        // Check if the user is a farmer and use the appropriate view
+        if (auth()->user()->role === 'farmer') {
+            return view('farmer.orchard-details', compact('orchard', 'vibrationLogs'));
+        }
             
         return view('orchards.show', compact('orchard', 'vibrationLogs'));
     }

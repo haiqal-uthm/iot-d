@@ -115,10 +115,9 @@ s    class="bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-
                         <x-responsive-nav-link :href="route('farmer.dashboard')" :active="request()->routeIs('farmer.dashboard')"
                             class="block px-3 py-2 rounded-md text-base font-medium">
                             <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" <path
-                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                                    </path>
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                                 </svg>
                                 {{ __('Dashboard') }}
                             </div>
@@ -132,7 +131,7 @@ s    class="bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-
                                         d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
                                     </path>
                                 </svg>
-                                {{ __('Orchard Monitoring') }}
+                                {{ __('Orchard') }}
                             </div>
                         </x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('farmer.harvestEntry')" :active="request()->routeIs('farmer.harvestEntry')"
@@ -191,7 +190,7 @@ s    class="bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                 </svg>
-                                {{ __('Farmer Performance') }}
+                                {{ __('Farmer') }}
                             </div>
                         </x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('manager.inventory.index')" :active="request()->routeIs('manager.inventory.index')">
