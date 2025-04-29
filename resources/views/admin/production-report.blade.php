@@ -5,8 +5,12 @@
         </h2>
     </x-slot>
 
+    <!-- Add CSS Link -->
+    <link rel="stylesheet" href="{{ asset('css/admin-production.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" style="margin-left: 290px;" x-data="{
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{
             showModal: false,
             selectedReport: null,
             harvestId: null,
@@ -50,10 +54,10 @@
                     </div>
                     <select name="orchard" class="border rounded p-2">
                         <option value="">All Orchards</option>
-                        @foreach ($harvestReports->unique('orchard') as $report)
-                            <option value="{{ $report->orchard }}"
-                                {{ request('orchard') == $report->orchard ? 'selected' : '' }}>
-                                {{ $report->orchard }}
+                        @foreach ($orchards as $orchard)
+                            <option value="{{ $orchard }}"
+                                {{ request('orchard') == $orchard ? 'selected' : '' }}>
+                                {{ $orchard }}
                             </option>
                         @endforeach
                     </select>
@@ -98,46 +102,67 @@
             </div>
 
             <div class="mb-6">
-                <button onclick="showTable('recordFall')" class="bg-blue-500 text-black rounded p-2">Record
-                    Fall</button>
-                <button onclick="showTable('harvestReport')" class="bg-green-500 text-black rounded p-2">Harvest
-                    Report</button>
-                <button onclick="showTable('inventoryReport')" class="bg-yellow-500 text-black rounded p-2">Inventory
-                    Report</button>
+                <button onclick="showTable('recordFall')" class="bg-blue-500 rounded-md">
+                    Record Fall
+                </button>
+                <button onclick="showTable('harvestReport')" class="bg-green-500 rounded-md">
+                    Harvest Report
+                </button>
+                <button onclick="showTable('inventoryReport')" class="bg-yellow-500 rounded-md">
+                    Inventory Report
+                </button>
             </div>
 
             <!-- Record Fall Section with Chart -->
             <div id="recordFall" class="table-container">
-                <h3 class="text-lg font-bold mb-4">Record Fall</h3>
+                <h3 class="text-lg font-bold mb-4">
+                    </i> Record Fall
+                </h3>
                 <!-- Add Chart Canvas -->
                 <div class="chart-container" style="overflow-x: auto; position: relative;">
                     <canvas id="fallChart" style="min-width: 700px; width: 100%; height: 400px;"></canvas>
                 </div>
-                <table class="w-full mb-8 min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden shadow-sm rounded-lg">
+                <table
+                    class="w-full mb-8 min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden shadow-sm rounded-lg">
                     <thead class="bg-gray-50 dark:bg-gray-800">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Device ID</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Durian Fall</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Log Type</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Timestamp</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Device ID</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Durian Fall</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Log Type</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Timestamp</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($vibrationLogs as $index => $log)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $log->device_id }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $log->vibration_count }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $log->device_id }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $log->vibration_count }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $log->log_type == 1 ? 'text-green-600 bg-green-100 border border-green-300' : 'text-red-600 bg-red-100 border border-red-300' }}">
-                                        <span class="w-2 h-2 mr-2 rounded-full {{ $log->log_type == 1 ? 'bg-green-500' : 'bg-red-500' }}"></span>
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $log->log_type == 1 ? 'text-green-600 bg-green-100 border border-green-300' : 'text-red-600 bg-red-100 border border-red-300' }}">
+                                        <span
+                                            class="w-2 h-2 mr-2 rounded-full {{ $log->log_type == 1 ? 'bg-green-500' : 'bg-red-500' }}"></span>
                                         {{ $log->log_type == 1 ? 'Fall' : 'Other' }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $log->timestamp->format('Y-m-d H:i:s') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    {{ $log->timestamp->format('Y-m-d H:i:s') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">No Vibration Data</td>
+                                <td colspan="5"
+                                    class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">No Vibration
+                                    Data</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -154,30 +179,52 @@
                 <div class="chart-container" style="overflow-x: auto; position: relative; max-height: 300px;">
                     <canvas id="harvestChart" style="min-width: 700px; width: 100%; max-height: 300px;"></canvas>
                 </div>
-            </br>
-                <table class="w-full mb-8 min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden shadow-sm rounded-lg">
+                </br>
+                <table
+                    class="w-full mb-8 min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden shadow-sm rounded-lg">
                     <thead class="bg-gray-50 dark:bg-gray-800">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Farmer</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Orchard</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Durian Type</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Harvest Date</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Total Harvested</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Action</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Farmer</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Orchard</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Durian Type</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Harvest Date</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Total Harvested</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Status</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Action</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($harvestReports as $index => $report)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->farmer->user->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->orchard->orchardName }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->durian->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->harvest_date->format('Y-m-d') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->total_harvested }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $report->farmer->user->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $report->orchard->orchardName }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $report->durian->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $report->harvest_date->format('Y-m-d') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $report->total_harvested }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $report->status == 'Completed' ? 'text-green-600 bg-green-100 border border-green-300' : 'text-orange-600 bg-orange-100 border border-orange-300' }}">
-                                        <span class="w-2 h-2 mr-2 rounded-full {{ $report->status == 'Completed' ? 'bg-green-500' : 'bg-orange-500' }}"></span>
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $report->status == 'Completed' ? 'text-green-600 bg-green-100 border border-green-300' : 'text-orange-600 bg-orange-100 border border-orange-300' }}">
+                                        <span
+                                            class="w-2 h-2 mr-2 rounded-full {{ $report->status == 'Completed' ? 'bg-green-500' : 'bg-orange-500' }}"></span>
                                         {{ $report->status }}
                                     </span>
                                 </td>
@@ -208,7 +255,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">No Harvest Report Data</td>
+                                <td colspan="7"
+                                    class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">No Harvest
+                                    Report Data</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -387,26 +436,37 @@
                 <div class="chart-container mb-6" style="height: 400px;">
                     <canvas id="inventoryChart"></canvas>
                 </div>
-                <table class="w-full mb-8 min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden shadow-sm rounded-lg">
+                <table
+                    class="w-full mb-8 min-w-full divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden shadow-sm rounded-lg">
                     <thead class="bg-gray-50 dark:bg-gray-800">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Storage Location</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Total Quantity</th>
-                            <th scope="col" class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">Last Updated</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Storage Location</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Total Quantity</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-sm font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                                Last Updated</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($storageReports as $report)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">Storage {{ $report->storage_location }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $report->total_quantity }} kg</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    Storage {{ $report->storage_location }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ $report->total_quantity }} kg</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $report->updated_at ? $report->updated_at->format('Y-m-d H:i:s') : 'Not Available' }}
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">No Storage Data</td>
+                                <td colspan="3"
+                                    class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">No Storage
+                                    Data</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -424,7 +484,8 @@
                 var chartData = @json($chartData);
                 var harvestChartData = @json($harvestChartData);
                 var inventoryData = @json($inventoryChartData);
-s            </script>
+                s
+            </script>
             <script src="{{ asset('js/production.js') }}"></script>
             <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <!-- Add this at the bottom of the file before closing x-app-layout -->

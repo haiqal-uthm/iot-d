@@ -52,17 +52,25 @@ class OrchardController extends Controller
             'location' => 'required|string|max:255',
             'device_id' => 'nullable|exists:devices,id',
             'durian_id' => 'nullable|exists:durians,id',
-            'user_id' => 'required|exists:users,id'  // Add user_id validation
         ]);
-
+    
+        // Create orchard without user_id
         $orchard = Orchard::create($validated);
         
-        // Attach to farmer if farmer is creating
+        // Attach to farmer if farmer is creating (using a pivot table instead of user_id column)
         if (auth()->user()->role === 'farmer') {
             auth()->user()->farmer->orchards()->attach($orchard->id);
         }
-
-        return redirect()->route('farmer.orchards')->with('success', 'Orchard added successfully!');
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Orchard added successfully!',
+                'orchard' => $orchard
+            ]);
+        }
+        
+        return redirect()->route('orchards')->with('success', 'Orchard added successfully!');
     }
 
     public function updateTotalDurianFall(Request $request, $orchardId)
@@ -81,13 +89,91 @@ class OrchardController extends Controller
         $orchard->total_durian_fall = $validated['total_durian_fall'];
         $orchard->save();
 
-        return response()->json(['status' => 'success']);
+        return response()->json(['status' => 'success', 'message' => 'Durian fall count updated successfully']);
     }
 
     public function destroy($id)
     {
         $orchard = Orchard::findOrFail($id);
+        $orchardName = $orchard->orchardName;
         $orchard->delete();
+        
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Orchard '{$orchardName}' deleted successfully!"
+            ]);
+        }
+        
         return redirect()->route('orchards')->with('success', 'Orchard deleted successfully!');
+    }
+
+    public function show($id)
+    {
+        $orchard = Orchard::with(['durian', 'device'])->findOrFail($id);
+        
+        // Get vibration logs for this orchard
+        $vibrationLogs = VibrationLog::where('device_id', $orchard->device_id)
+            ->orderBy('timestamp', 'desc')
+            ->take(20)
+            ->get();
+            
+        return view('orchards.show', compact('orchard', 'vibrationLogs'));
+    }
+    
+    public function getTotalFalls()
+    {
+        $orchards = Orchard::with(['device'])->get();
+        $totalFalls = 0;
+        
+        foreach ($orchards as $orchard) {
+            if ($orchard->device) {
+                $totalFalls += VibrationLog::where('device_id', $orchard->device_id)->sum('vibration_count');
+            }
+        }
+        
+        return response()->json(['total_falls' => $totalFalls]);
+    }
+    
+    public function create()
+    {
+        $devices = Device::all();
+        $durians = Durian::all();
+        
+        return view('admin.orchards.create', compact('devices', 'durians'));
+    }
+    
+    public function edit($id)
+    {
+        $orchard = Orchard::findOrFail($id);
+        $devices = Device::all();
+        $durians = Durian::all();
+        
+        return view('orchards.edit', compact('orchard', 'devices', 'durians'));
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'orchardName' => 'required|string|max:255',
+            'numTree' => 'required|integer|min:1',
+            'orchardSize' => 'required|numeric|min:0.1',
+            'location' => 'required|string|max:255',
+            'device_id' => 'nullable|exists:devices,id',
+            'durian_id' => 'nullable|exists:durians,id',
+        ]);
+        
+        $orchard = Orchard::findOrFail($id);
+        $orchard->update($validated);
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Orchard updated successfully!',
+                'orchard' => $orchard
+            ]);
+        }
+        
+        return redirect()->route('orchards')->with('success', 'Orchard updated successfully!');
     }
 }

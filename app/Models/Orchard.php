@@ -13,10 +13,10 @@ class Orchard extends Model
         'orchardName', 
         'numTree', 
         'device_id', 
-        'user_id', 
         'durian_id',
-        'orchardSize', // Add if missing in migration
-        'location'     // Add if missing in migration
+        'orchardSize',
+        'location'
+        // user_id removed as it's not in the database
     ];
     // Each Orchard belongs to one Durian
     public function durian()

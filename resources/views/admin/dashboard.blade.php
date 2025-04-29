@@ -15,7 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" style="margin-left: 300px;">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" >
             @auth
             <div class="ml-4">
                 <p class="text-sm text-gray-500 dark:text-gray-400">

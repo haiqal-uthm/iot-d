@@ -1,14 +1,18 @@
-<nav x-data="{ open: false }"
-    class="bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 w-64 h-screen flex-shrink-0 fixed left-0 top-0">
-    <div class="h-full flex flex-col" style="position: relative; height: 100vh;">
+<nav x-data="{ open: false, collapsed: false }"
+s    class="bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 w-64 h-screen flex-shrink-0 fixed left-0 top-0 z-30 transition-all duration-300"
+    :class="{ 'sidebar-hidden': open, 'w-64': !collapsed, 'w-20': collapsed }">
+    <div class="h-full flex flex-col" style="position: relative; height: 100vh; padding-right: 2rem;">
         <!-- Logo and Title -->
-        <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+        <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
             <div class="flex items-center justify-center space-x-2">
-                <!-- Custom Logo -->
+                <!-- Logo (Add your logo here)
+                <img src=" alt="IOT-D Logo" class="h-8 w-auto" x-show="!collapsed">-->
+
                 <!-- Title -->
-                <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex justify-center items-center w-full" x-show="!collapsed">
                     IOT-D
                 </h1>
+
             </div>
         </div>
 
@@ -17,9 +21,11 @@
             <div class="px-2 space-y-1">
                 @auth
                     @if (Auth::user()->role === 'admin')
-                        <div class="px-3 pt-2 pb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div class="px-3 pt-2 pb-1 text-sm font-medium text-gray-500 dark:text-gray-400"
+                            x-show="!collapsed">
                             Admin Panel
                         </div>
+                        <!-- Admin Links -->
                         <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
                             class="block px-3 py-2 rounded-md text-base font-medium">
                             <div class="flex items-center">
@@ -85,7 +91,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                                 </svg>
-                                {{ __('Inventory Management') }}
+                                {{ __('Inventory') }}
                             </div>
                         </x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('admin.production-report')" :active="request()->routeIs('admin.production-report')"
@@ -101,16 +107,18 @@
                             </div>
                         </x-responsive-nav-link>
                     @elseif(Auth::user()->role === 'farmer')
-                        <div class="px-3 pt-2 pb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                        <div class="px-3 pt-2 pb-1 text-sm font-medium text-gray-500 dark:text-gray-400"
+                            x-show="!collapsed">
                             Farmer Panel
                         </div>
                         <!-- Regular User Links -->
                         <x-responsive-nav-link :href="route('farmer.dashboard')" :active="request()->routeIs('farmer.dashboard')"
                             class="block px-3 py-2 rounded-md text-base font-medium">
                             <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" <path
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                    </path>
                                 </svg>
                                 {{ __('Dashboard') }}
                             </div>
@@ -157,7 +165,7 @@
                                 {{ __('Inventory') }}
                             </div>
                         </x-responsive-nav-link>
-                        @elseif(Auth::user()->role === 'manager')
+                    @elseif(Auth::user()->role === 'manager')
                         <x-responsive-nav-link :href="route('manager.durian-fall.index')" :active="request()->routeIs('manager.durian-fall.index')">
                             <div class="flex items-center">
                                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -210,10 +218,10 @@
         </div>
 
         <!-- User Profile Section -->
-        <div class="border-t border-gray-100 dark:border-gray-700 p-4" style="position: absolute; bottom: 0;">
+        <div class="border-t border-gray-100 dark:border-gray-700 p-4">
             <div class="space-y-1">
                 <!-- User Name Display -->
-                <div class="px-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <div class="px-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-300" x-show="!collapsed">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
@@ -228,7 +236,7 @@
 
                 <!-- Profile Link -->
                 <a href="{{ route('profile.edit') }}"
-                    class="block px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    class="block px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors duration-200">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
@@ -238,7 +246,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        {{ __('Profile') }}
+                        <span x-show="!collapsed">{{ __('Profile') }}</span>
                     </div>
                 </a>
 
@@ -246,7 +254,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
-                        class="w-full text-left px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                        class="w-full text-left px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors duration-200">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -254,7 +262,7 @@
                                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
                                 </path>
                             </svg>
-                            {{ __('Log Out') }}
+                            <span x-show="!collapsed">{{ __('Log Out') }}</span>
                         </div>
                     </button>
                 </form>
@@ -262,18 +270,6 @@
         </div>
     </div>
 
-    <!-- Mobile menu button - only visible on small screens -->
-    <div class="md:hidden absolute top-0 right-0 p-4">
-        <button @click="open = !open"
-            class="text-gray-500 hover:text-gray-600 focus:outline-none focus:text-gray-600">
-            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round"
-                    stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
-                    stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
-    </div>
 </nav>
 
 <!-- Inside the admin section -->

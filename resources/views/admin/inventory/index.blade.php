@@ -5,6 +5,10 @@
         </h2>
     </x-slot>
 
+    <!-- Add CSS Link -->
+    <link rel="stylesheet" href="{{ asset('css/admin-inventory.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Success/Error Messages -->
@@ -20,14 +24,48 @@
                 </div>
             @endif
 
+            <!-- Summary Cards -->
+            <div class="summary-grid mb-6">
+                <div class="summary-card">
+                    <div class="summary-title">Total Stock</div>
+                    <div class="summary-value">
+                        @php
+                            $totalStock = 0;
+                            foreach($farmers as $farmer) {
+                                foreach($storageLocations as $location) {
+                                    $totalStock += $stockLevels[$farmer->id][$location] ?? 0;
+                                }
+                            }
+                        @endphp
+                        {{ $totalStock }} kg
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">Storage Locations</div>
+                    <div class="summary-value">{{ count($storageLocations) }}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">Farmers</div>
+                    <div class="summary-value">{{ count($farmers) }}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">Durian Varieties</div>
+                    <div class="summary-value">{{ count($durianTypes) }}</div>
+                </div>
+            </div>
+
             <!-- Filters -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-medium mb-3">Filter Transactions</h3>
-                    <form action="{{ route('admin.inventory.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label for="farmer_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Farmer</label>
-                            <select name="farmer_id" id="farmer_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <div class="inventory-card mb-6">
+                <div class="inventory-card-header">
+                    <h3 class="inventory-card-title">
+                        <i class="fas fa-filter"></i> Filter Transactions
+                    </h3>
+                </div>
+                <div class="inventory-card-body filter-container">
+                    <form action="{{ route('admin.inventory.index') }}" method="GET" class="filter-form">
+                        <div class="form-control">
+                            <label for="farmer_id" class="form-label">Farmer</label>
+                            <select name="farmer_id" id="farmer_id" class="form-select">
                                 <option value="">All Farmers</option>
                                 @foreach($farmers as $farmer)
                                     <option value="{{ $farmer->id }}" {{ request('farmer_id') == $farmer->id ? 'selected' : '' }}>
@@ -37,9 +75,9 @@
                             </select>
                         </div>
                         
-                        <div>
-                            <label for="durian_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Durian Type</label>
-                            <select name="durian_id" id="durian_id" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="durian_id" class="form-label">Durian Type</label>
+                            <select name="durian_id" id="durian_id" class="form-select">
                                 <option value="">All Types</option>
                                 @foreach($durianTypes as $durian)
                                     <option value="{{ $durian->id }}" {{ request('durian_id') == $durian->id ? 'selected' : '' }}>
@@ -49,9 +87,9 @@
                             </select>
                         </div>
                         
-                        <div>
-                            <label for="storage_location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Storage Location</label>
-                            <select name="storage_location" id="storage_location" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="storage_location" class="form-label">Storage Location</label>
+                            <select name="storage_location" id="storage_location" class="form-select">
                                 <option value="">All Locations</option>
                                 @foreach($storageLocations as $location)
                                     <option value="{{ $location }}" {{ request('storage_location') == $location ? 'selected' : '' }}>
@@ -61,31 +99,31 @@
                             </select>
                         </div>
                         
-                        <div>
-                            <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Transaction Type</label>
-                            <select name="type" id="type" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="type" class="form-label">Transaction Type</label>
+                            <select name="type" id="type" class="form-select">
                                 <option value="">All Types</option>
                                 <option value="in" {{ request('type') == 'in' ? 'selected' : '' }}>Stock In</option>
                                 <option value="out" {{ request('type') == 'out' ? 'selected' : '' }}>Stock Out</option>
                             </select>
                         </div>
                         
-                        <div>
-                            <label for="date_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date From</label>
-                            <input type="date" name="date_from" id="date_from" value="{{ request('date_from') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="date_from" class="form-label">Date From</label>
+                            <input type="date" name="date_from" id="date_from" value="{{ request('date_from') }}" class="form-input">
                         </div>
                         
-                        <div>
-                            <label for="date_to" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date To</label>
-                            <input type="date" name="date_to" id="date_to" value="{{ request('date_to') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="date_to" class="form-label">Date To</label>
+                            <input type="date" name="date_to" id="date_to" value="{{ request('date_to') }}" class="form-input">
                         </div>
                         
-                        <div class="md:col-span-3 flex justify-end">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                Filter
+                        <div class="filter-buttons-container">
+                            <button type="submit" class="btn btn-primary btn-mini">
+                                <i class="fas fa-search btn-icon"></i> Filter
                             </button>
-                            <a href="{{ route('admin.inventory.index') }}" class="ml-3 inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-gray-700 dark:text-gray-200 uppercase tracking-widest hover:bg-gray-400 dark:hover:bg-gray-500 focus:bg-gray-400 dark:focus:bg-gray-500 active:bg-gray-500 dark:active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                Reset
+                            <a href="{{ route('admin.inventory.index') }}" class="btn btn-danger btn-mini">
+                                <i class="fas fa-times btn-icon"></i> Reset
                             </a>
                         </div>
                     </form>
@@ -93,28 +131,30 @@
             </div>
 
             <!-- Stock Levels Summary -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-medium mb-3">Current Stock Levels</h3>
+            <div class="inventory-card mb-6">
+                <div class="inventory-card-header">
+                    <h3 class="inventory-card-title">
+                        <i class="fas fa-chart-pie"></i> Current Stock Levels
+                    </h3>
+                </div>
+                <div class="inventory-card-body">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
+                        <table class="inventory-table">
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Farmer</th>
+                                    <th>Farmer</th>
                                     @foreach($storageLocations as $location)
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th>
                                             {{ $storageNames[$location] ?? ucfirst(str_replace('_', ' ', $location)) }}
                                         </th>
                                     @endforeach
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Total
-                                    </th>
+                                    <th>Total</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody>
                                 @foreach($farmers as $farmer)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        <td class="font-medium">
                                             {{ $farmer->user->name }}
                                         </td>
                                         @php
@@ -125,11 +165,11 @@
                                                 $locationStock = $stockLevels[$farmer->id][$location] ?? 0;
                                                 $farmerTotal += $locationStock;
                                             @endphp
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                            <td>
                                                 {{ $locationStock }} kg
                                             </td>
                                         @endforeach
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        <td class="font-medium">
                                             {{ $farmerTotal }} kg
                                         </td>
                                     </tr>
@@ -141,19 +181,21 @@
             </div>
 
             <!-- Add New Inventory Transaction -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-medium mb-3">Add New Inventory Transaction</h3>
-                    <div class="md:col-span-3 mb-4">
-                        <a href="{{ route('admin.storage.index') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            Add New Inventory
-                        </a>
-                    </div>
-                    <form action="{{ route('admin.inventory.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="inventory-card mb-6">
+                <div class="inventory-card-header">
+                    <h3 class="inventory-card-title">
+                        <i class="fas fa-plus-circle"></i> Add New Inventory Transaction
+                    </h3>
+                    <a href="{{ route('admin.storage.index') }}" class="btn btn-success">
+                        <i class="fas fa-warehouse btn-icon"></i> Manage Storage
+                    </a>
+                </div>
+                <div class="inventory-card-body transaction-form-container">
+                    <form action="{{ route('admin.inventory.store') }}" method="POST" class="filter-form">
                         @csrf
-                        <div>
-                            <label for="farmer_id_new" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Farmer</label>
-                            <select name="farmer_id" id="farmer_id_new" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="farmer_id_new" class="form-label">Farmer</label>
+                            <select name="farmer_id" id="farmer_id_new" required class="form-select">
                                 <option value="">Select Farmer</option>
                                 @foreach($farmers as $farmer)
                                     <option value="{{ $farmer->id }}">{{ $farmer->user->name }}</option>
@@ -161,9 +203,9 @@
                             </select>
                         </div>
                         
-                        <div>
-                            <label for="durian_id_new" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Durian Type</label>
-                            <select name="durian_id" id="durian_id_new" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="durian_id_new" class="form-label">Durian Type</label>
+                            <select name="durian_id" id="durian_id_new" required class="form-select">
                                 <option value="">Select Type</option>
                                 @foreach($durianTypes as $durian)
                                     <option value="{{ $durian->id }}">{{ $durian->name }}</option>
@@ -171,10 +213,9 @@
                             </select>
                         </div>
                         
-                        <!-- Updated storage location dropdown -->
-                        <div>
-                            <label for="storage_location_new" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Storage Location</label>
-                            <select name="storage_location" id="storage_location_new" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="storage_location_new" class="form-label">Storage Location</label>
+                            <select name="storage_location" id="storage_location_new" required class="form-select">
                                 <option value="">Select Location</option>
                                 @foreach($storageLocations as $location)
                                 <option value="{{ $location }}" {{ request('storage_location') == $location ? 'selected' : '' }}>
@@ -184,29 +225,27 @@
                             </select>
                         </div>
                         
-                        <!-- Removed the new_location_container div -->
-                        
-                        <div>
-                            <label for="type_new" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Transaction Type</label>
-                            <select name="type" id="type_new" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="type_new" class="form-label">Transaction Type</label>
+                            <select name="type" id="type_new" required class="form-select">
                                 <option value="in">Stock In</option>
                                 <option value="out">Stock Out</option>
                             </select>
                         </div>
                         
-                        <div>
-                            <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Quantity (kg)</label>
-                            <input type="number" name="quantity" id="quantity" required min="0.1" step="0.1" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <div class="form-control">
+                            <label for="quantity" class="form-label">Quantity (kg)</label>
+                            <input type="number" name="quantity" id="quantity" required min="0.1" step="0.1" class="form-input">
                         </div>
                         
-                        <div class="md:col-span-3">
-                            <label for="remarks" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Remarks</label>
-                            <textarea name="remarks" id="remarks" rows="2" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <div class="form-control col-span-full">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea name="remarks" id="remarks" rows="2" class="form-input"></textarea>
                         </div>
                         
-                        <div class="md:col-span-3">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                Add Transaction
+                        <div class="transaction-button-container">
+                            <button type="submit" class="btn btn-success btn-mini">
+                                <i class="fas fa-plus btn-icon"></i> Add Transaction
                             </button>
                         </div>
                     </form>
@@ -214,50 +253,54 @@
             </div>
 
             <!-- Inventory Transactions Table -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-medium mb-3">Inventory Transactions</h3>
+            <div class="inventory-card">
+                <div class="inventory-card-header">
+                    <h3 class="inventory-card-title">
+                        <i class="fas fa-exchange-alt"></i> Inventory Transactions
+                    </h3>
+                </div>
+                <div class="inventory-card-body">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
+                        <table class="inventory-table">
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Farmer</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Durian Type</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Location</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Type</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Remarks</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                    <th>Date</th>
+                                    <th>Farmer</th>
+                                    <th>Durian Type</th>
+                                    <th>Location</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Remarks</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody>
                                 @forelse($inventoryTransactions as $transaction)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        <td>
                                             {{ $transaction->created_at->format('Y-m-d H:i') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        <td>
                                             {{ $transaction->farmer->user->name }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        <td>
                                             {{ $transaction->durian->name }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        <td>
                                             {{ ucfirst(str_replace('_', ' ', $transaction->storage_location)) }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $transaction->type === 'in' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        <td>
+                                            <span class="status-badge {{ $transaction->type === 'in' ? 'status-in' : 'status-out' }}">
                                                 {{ ucfirst($transaction->type) }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        <td>
                                             {{ abs($transaction->quantity) }} kg
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        <td>
                                             {{ $transaction->remarks ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <td>
                                             <form action="{{ route('admin.inventory.destroy', $transaction->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this transaction? This will update the inventory levels.')">
                                                 @csrf
                                                 @method('DELETE')
@@ -267,37 +310,14 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
-                                            No inventory transactions found
-                                        </td>
+                                        <td colspan="8" class="text-center py-4">No transactions found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                    
-                    <!-- Pagination -->
-                    <div class="mt-4">
-                        {{ $inventoryTransactions->links() }}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // Show/hide new location input based on selection
-        document.addEventListener('DOMContentLoaded', function() {
-            const storageLocationSelect = document.getElementById('storage_location_new');
-            const newLocationContainer = document.getElementById('new_location_container');
-            
-            storageLocationSelect.addEventListener('change', function() {
-                if (this.value === 'new_location') {
-                    newLocationContainer.classList.remove('hidden');
-                } else {
-                    newLocationContainer.classList.add('hidden');
-                }
-            });
-        });
-    </script>
 </x-app-layout>

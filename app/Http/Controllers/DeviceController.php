@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Device;
 use Google\Cloud\Firestore\FirestoreClient;
+use App\Models\VibrationLog;
+
 
 
 class DeviceController extends Controller
@@ -22,7 +24,7 @@ class DeviceController extends Controller
     public function index()
     {
         $devices = Device::all();
-        return view('devices', compact('devices'));
+        return view('admin.devices', compact('devices'));
     }
 
     public function store(Request $request)
@@ -39,6 +41,11 @@ class DeviceController extends Controller
             'status' => $request->status,
         ]);
 
+        // Check if the request is coming from admin routes
+        if (request()->is('admin/*')) {
+            return redirect()->route('admin.devices')->with('success', 'Device added successfully!');
+        }
+        
         return redirect()->route('devices')->with('success', 'Device added successfully!');
     }
 
@@ -49,15 +56,19 @@ class DeviceController extends Controller
             'name' => 'required|string|max:255',
             'status' => 'required|string|in:active,inactive,maintenance',
         ]);
-
+    
         // Find and update the device
         $device = Device::findOrFail($id);
         $device->update([
             'name' => $request->name,
             'status' => $request->status,
         ]);
-
-        // Redirect back to devices page with success message
+    
+        // Check if the request is coming from admin routes
+        if (request()->is('admin/*')) {
+            return redirect()->route('admin.devices')->with('success', 'Device updated successfully!');
+        }
+        
         return redirect()->route('devices')->with('success', 'Device updated successfully!');
     }
 
@@ -65,7 +76,12 @@ class DeviceController extends Controller
     {
         $device = Device::findOrFail($id);
         $device->delete();
-
+        
+        // Check if the request is coming from admin routes
+        if (request()->is('admin/*')) {
+            return redirect()->route('admin.devices')->with('success', 'Device deleted successfully!');
+        }
+        
         return redirect()->route('devices')->with('success', 'Device deleted successfully!');
     }
 
@@ -117,5 +133,39 @@ class DeviceController extends Controller
         return response()->json([
             'total_devices' => $totalDevices,
         ]);
+    }
+
+    /**
+     * Show the form for creating a new device.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('devices.create');
+    }
+
+    /**
+     * Show the form for editing the specified device.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $device = Device::findOrFail($id);
+        return view('devices.edit', compact('device'));
+    }
+
+    /**
+     * Display the specified device.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $device = Device::findOrFail($id);
+        return view('devices.show', compact('device'));
     }
 }

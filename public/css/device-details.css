@@ -1,0 +1,55 @@
+/* Device Details Page Styles */
+
+.device-icon-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+}
+
+/* Activity Log Styling */
+.activity-log {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Enhanced Status Badges */
+.device-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 1rem;
+    border-radius: 9999px;
+    font-weight: 500;
+}
+
+/* Responsive Grid Layout */
+@media (max-width: 768px) {
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card Hover Effects */
+.bg-gray-50:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Control Panel Item Styling */
+.control-panel-item {
+    transition: transform 0.2s;
+}
+
+.control-panel-item:hover {
+    transform: translateY(-2px);
+}
+
+/* Dark Mode Enhancements */
+.dark .bg-gray-50 {
+    background-color: #1F2937;
+}
+
+.dark .bg-white {
+    background-color: #111827;
+}

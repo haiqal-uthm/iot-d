@@ -54,6 +54,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
     Route::get('/orchards', [OrchardController::class, 'index'])->name('orchards');
+    Route::get('/orchards/create', [OrchardController::class, 'create'])->name('orchards.create'); // Add this line
     
     // Durian routes
     Route::get('/durian', [DurianController::class, 'index'])->name('durian');
@@ -62,6 +63,14 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->grou
     Route::get('/durian/{id}/edit', [DurianController::class, 'edit'])->name('durian.edit');
     
     Route::get('/devices', [DeviceController::class, 'index'])->name('devices');
+    Route::get('/devices/create', [DeviceController::class, 'create'])->name('devices.create');
+    Route::get('/devices/{device}/edit', [DeviceController::class, 'edit'])->name('devices.edit');
+    Route::get('/devices/{device}', [DeviceController::class, 'show'])->name('devices.show');
+    Route::post('/devices/toggle', [DeviceController::class, 'toggleLed'])->name('devices.toggle');
+    Route::post('/devices', [DeviceController::class, 'store'])->name('devices.store');
+    Route::get('/total-devices', [DeviceController::class, 'getTotalDevices']);
+    Route::put('/devices/{deviceId}', [DeviceController::class, 'update'])->name('devices.update');
+    Route::delete('/devices/{deviceId}', [DeviceController::class, 'destroy'])->name('devices.destroy');
     Route::get('/production-report', [ProductionReportController::class, 'index'])->name('production-report');
     
     // Add inventory management routes
@@ -104,6 +113,7 @@ Route::middleware(['auth', 'role:manager'])->prefix('manager')->name('manager.')
     Route::get('/reports/inventory', [App\Http\Controllers\Manager\ReportController::class, 'inventoryReport'])->name('report.inventory');
 });
 
+// Add these routes to the auth middleware group
 Route::middleware('auth')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -128,9 +138,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/orchards/create', [OrchardController::class, 'create'])->name('orchards.create');
     Route::post('/orchards', [OrchardController::class, 'store'])->name('orchards.store');
     Route::delete('/orchards/{orchard}', [OrchardController::class, 'destroy'])->name('orchards.destroy');
+    Route::get('/orchards/{orchard}', [OrchardController::class, 'show'])->name('orchards.show');
+    Route::get('/orchards/total-falls', [OrchardController::class, 'getTotalFalls'])->name('orchards.total-falls');
 
     //devices routes
     Route::get('/devices', [DeviceController::class, 'index'])->name('devices');
+    Route::get('/devices/create', [DeviceController::class, 'create'])->name('devices.create');
+    Route::get('/devices/{device}/edit', [DeviceController::class, 'edit'])->name('devices.edit');
+    Route::get('/devices/{device}', [DeviceController::class, 'show'])->name('devices.show');
     Route::post('/devices/toggle', [DeviceController::class, 'toggleLed'])->name('devices.toggle');
     Route::post('/devices', [DeviceController::class, 'store'])->name('devices.store');
     Route::get('/total-devices', [DeviceController::class, 'getTotalDevices']);

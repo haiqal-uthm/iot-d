@@ -15,6 +15,26 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link rel="icon" type="image/png" href="{{ asset('images/durian.png') }}">
 
+        <!-- Styles -->
+        <style>
+            .sidebar-hidden {
+                transform: translateX(-100%);
+            }
+            
+            @media (min-width: 768px) {
+                main, header {
+                    transition: margin-left 0.3s ease;
+                }
+            }
+            
+            @media (max-width: 767px) {
+                main, header {
+                    margin-left: 0;
+                    transition: margin-left 0.3s ease;
+                }
+            }
+        </style>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -24,9 +44,9 @@
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
+                <header class="bg-white dark:bg-gray-800 shadow transition-all duration-300">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        <div class="font-poppins text-xl font-semibold tracking-wide text-gray-800 dark:text-gray-200" style="margin-left: 15px;">
+                        <div class="font-poppins text-xl font-semibold tracking-wide text-gray-800 dark:text-gray-200">
                             {{ $header }}
                         </div>
                     </div>
@@ -34,9 +54,12 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="transition-all duration-300" style="margin-left: 12rem;">
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Custom JavaScript -->
+        <script src="{{ asset('js/navbar.js') }}"></script>
     </body>
 </html>
