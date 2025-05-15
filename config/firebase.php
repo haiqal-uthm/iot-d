@@ -3,7 +3,6 @@
 return [
 'credentials' => [
     'file' => storage_path('app/firebase/' . env('FIREBASE_CREDENTIALS')),
-    ],
 ],
 
 
