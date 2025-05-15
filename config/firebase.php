@@ -2,7 +2,8 @@
 
 return [
 'credentials' => [
-    'file' => env('FIREBASE_CREDENTIALS'),  // Path to Firebase JSON credentials
+    'file' => storage_path('app/firebase/' . env('FIREBASE_CREDENTIALS')),
+    ],
 ],
 
 
