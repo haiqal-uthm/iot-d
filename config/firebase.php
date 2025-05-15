@@ -2,7 +2,7 @@
 
 return [
 'credentials' => [
-    'file' => storage_path('app/firebase/' . env('FIREBASE_CREDENTIALS')),
+    'json' => json_decode(env('FIREBASE_CREDENTIALS'), true),
 ],
 
 
