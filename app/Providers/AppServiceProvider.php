@@ -24,5 +24,9 @@ class AppServiceProvider extends ServiceProvider
         VerifyCsrfToken::except([
             '/vibration-log', // API kau tadi
         ]);
+
+        if($this->app->environment('production')) {
+            \URL::forceScheme('https');
+        }
     }
 }
