@@ -26,10 +26,10 @@ class FirebaseService
         return $this->database->getReference('deviceControl')->getValue();
     }
 
-    public function getWeatherData()
-    {
-        return $this->database->getReference('weather_data')->getValue();
-    }
+    //public function getWeatherData()
+    //{
+    //    return $this->database->getReference('weather_data')->getValue();
+    //}
 
     public function getTotalGarden()
     {
