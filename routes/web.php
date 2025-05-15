@@ -24,6 +24,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/firebase-test', function () {
+    $service = app(\App\Services\FirebaseService::class);
+    return $service->getDurianCount();
+});
+
+
 // Add farmer routes group
 Route::middleware(['auth', 'role:farmer'])->name('farmer.')->prefix('farmer')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
