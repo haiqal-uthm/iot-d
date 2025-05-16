@@ -2,31 +2,36 @@
 
 return [
 'credentials' => [
-        'json' => function () {
-            $base64 = env('FIREBASE_BASE64_CREDENTIALS');
+    'json' => function () {
+        $base64 = env('FIREBASE_BASE64_CREDENTIALS');
 
-            if (!$base64) {
-                throw new \Exception('FIREBASE_BASE64_CREDENTIALS is not set');
-            }
+        if (!$base64) {
+            throw new \Exception('FIREBASE_BASE64_CREDENTIALS is not set');
+        }
 
-            // Optional decryption (if you encrypted before saving to .env)
-            // $base64 = Crypt::decryptString($base64);
+        // Optional decryption (if encrypted)
+        // $base64 = Crypt::decryptString($base64);
 
-            $jsonString = base64_decode($base64);
+        $jsonString = base64_decode($base64);
 
-            if (!$jsonString) {
-                throw new \Exception('Invalid base64 FIREBASE_BASE64_CREDENTIALS');
-            }
+        if (!$jsonString) {
+            throw new \Exception('Invalid base64 FIREBASE_BASE64_CREDENTIALS');
+        }
 
-            $json = json_decode($jsonString, true);
+        $json = json_decode($jsonString, true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Invalid JSON in Firebase credentials: ' . json_last_error_msg());
-            }
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('Invalid JSON in Firebase credentials: ' . json_last_error_msg());
+        }
 
-            return $json;
-        },
-    ],
+        if (isset($json['private_key'])) {
+            $json['private_key'] = str_replace('\\n', "\n", $json['private_key']);
+        }
+
+        return $json;
+    },
+],
+
 
 
     'database' => [
