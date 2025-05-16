@@ -32,7 +32,7 @@ class AdminController extends Controller
     public function index()
     {
         // Retrieve data from Firebase
-        $weather = $this->firebaseService->getWeatherData();
+        //$weather = $this->firebaseService->getWeatherData();
         $totalDurian = $this->firebaseService->getDurianCount();
         $totalDevice = Device::count();
         $totalOrchards = Orchard::count();
