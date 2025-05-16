@@ -66,7 +66,9 @@
                                                 {{ $log->log_type == 1 ? 'Fall detected' : 'Animal Detected' }} - 
                                                 {{ $log->timestamp ? $log->timestamp->format('g:i A') : 'N/A' }}
                                             </p>
-                                            <p class="timestamp text-xs text-gray-500">{{ $log->timestamp->diffForHumans() }}</p>
+                                            <p class="timestamp text-xs text-gray-500">
+                                                {{ $log->timestamp ? $log->timestamp->diffForHumans() : 'No timestamp' }}
+                                            </p>
                                         </div>
                                     </li>
                                 @endforeach
