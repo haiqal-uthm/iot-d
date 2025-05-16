@@ -18,6 +18,12 @@ return [
             throw new \Exception('Invalid base64 FIREBASE_BASE64_CREDENTIALS');
         }
 
+         try {
+            $jsonString = Crypt::decryptString($jsonString);
+        } catch (\Exception $e) {
+            throw new \Exception('Decryption failed: ' . $e->getMessage());
+        }
+
         $json = json_decode($jsonString, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
