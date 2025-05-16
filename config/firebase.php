@@ -2,19 +2,30 @@
 
 return [
 'credentials' => [
-        'json' => [
-            'type'                        => env('FIREBASE_TYPE'),
-            'project_id'                  => env('FIREBASE_PROJECT_ID'),
-            'private_key_id'              => env('FIREBASE_PRIVATE_KEY_ID'),
-            // Turn the “\n” sequences back into real newlines:
-            'private_key'                 => str_replace('\\n', "\n", env('FIREBASE_PRIVATE_KEY')),
-            'client_email'                => env('FIREBASE_CLIENT_EMAIL'),
-            'client_id'                   => env('FIREBASE_CLIENT_ID'),
-            'auth_uri'                    => 'https://accounts.google.com/o/oauth2/auth',
-            'token_uri'                   => 'https://oauth2.googleapis.com/token',
-            'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
-            'client_x509_cert_url'        => 'https://www.googleapis.com/robot/v1/metadata/x509/' . rawurlencode(env('FIREBASE_CLIENT_EMAIL')),
-        ],
+        'json' => function () {
+            $base64 = env('FIREBASE_BASE64_CREDENTIALS');
+
+            if (!$base64) {
+                throw new \Exception('FIREBASE_BASE64_CREDENTIALS is not set');
+            }
+
+            // Optional decryption (if you encrypted before saving to .env)
+            // $base64 = Crypt::decryptString($base64);
+
+            $jsonString = base64_decode($base64);
+
+            if (!$jsonString) {
+                throw new \Exception('Invalid base64 FIREBASE_BASE64_CREDENTIALS');
+            }
+
+            $json = json_decode($jsonString, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('Invalid JSON in Firebase credentials: ' . json_last_error_msg());
+            }
+
+            return $json;
+        },
     ],
 
 
