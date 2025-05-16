@@ -52,7 +52,6 @@ class DashboardController extends Controller
         return view(
             'farmer.dashboard',
             compact(
-                'weather',
                 'totalDurian',
                 'totalDevice',
                 'totalOrchards',
