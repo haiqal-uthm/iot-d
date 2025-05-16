@@ -11,7 +11,7 @@ class FirebaseService
     public function __construct()
     {
         $this->database = (new Factory)
-            ->withServiceAccount(config('firebase.credentials.json'))
+            ->withServiceAccount((config('firebase.credentials.json'))())
             ->withDatabaseUri(config('firebase.database.url'))
             ->createDatabase();
     }
