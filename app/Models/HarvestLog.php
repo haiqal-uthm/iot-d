@@ -17,20 +17,17 @@ class HarvestLog extends Model
     ];
 
     protected $fillable = [
-        'farmer_id',
         'orchard_id',
         'durian_id',
-        'durian_type',
         'harvest_date',
         'total_harvested',
         'status',
-        'estimated_weight',
+        'farmer_id',
         'grade',
         'condition',
         'storage_location',
-        'remarks',
-        'harvester_signature'
     ];
+
 
     // Relationships
     public function orchard()
