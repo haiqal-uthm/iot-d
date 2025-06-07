@@ -18,6 +18,7 @@ class VibrationLogController extends Controller
         ]);
 
         \App\Models\VibrationLog::create([
+            'id' => $someId,
             'device_id' => $validatedData['deviceID'],
             'vibration_count' => $validatedData['vibrationCount'],
             'log_type' => $validatedData['logType'],
