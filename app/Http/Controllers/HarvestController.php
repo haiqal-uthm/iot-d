@@ -10,74 +10,70 @@ use Illuminate\Support\Facades\DB;
 class HarvestController extends Controller
 {
     public function store(Request $request)
-    {
-        if ($request->isJson()) {
-            $data = $request->json()->all();
-        } else {
-            $data = $request->all(); // ✅ Accept both JSON & form data
-        }
+{
+    if ($request->isJson()) {
+        $data = $request->json()->all();
+    } else {
+        $data = $request->all();
+    }
 
-        $request->replace($data); // ✅ Ensure data is accessible
+    $request->replace($data);
 
-        $request->validate([
-            'orchard' => 'required|string|max:100',
-            'durian_type' => 'required|string|max:50',
-            'total_harvested' => 'required|integer|min:1',
-            'status' => 'required|string|max:50',
+    $request->validate([
+        'orchard' => 'required|string|max:100',
+        'durian_type' => 'required|string|max:50',
+        'total_harvested' => 'required|integer|min:1',
+        'status' => 'required|string|max:50',
+    ]);
+
+    DB::beginTransaction(); // 🔥 Add this to actually start the transaction!
+
+    try {
+        $orchardId = $this->getOrchardId($request->orchard);
+
+        $harvestLog = HarvestLog::create([
+            'orchard' => $request->orchard,
+            'durian_type' => $request->durian_type,
+            'harvest_date' => now()->toDateString(),
+            'total_harvested' => $request->total_harvested,
+            'status' => $request->status,
         ]);
 
-        try {
-            // Convert orchard name ('A', 'B', etc.) into an integer ID
-            $orchardId = $this->getOrchardId($request->orchard);
-
-            // Insert into `harvestDurianLog`
-            $harvestLog = HarvestLog::create([
-                'orchard' => $request->orchard,
-                'durian_type' => $request->durian_type,
-                'harvest_date' => now()->toDateString(),
-                'total_harvested' => $request->total_harvested,
-                'status' => $request->status,
-            ]);
-
-            // Ensure the orchard_id is correct before updating durians
-            if ($orchardId === null) {
-                throw new \Exception('Invalid orchard ID');
-            }
-
-            // Find existing durian record
-            $durian = Durian::lockForUpdate()->where('name', $request->durian_type)->where('orchard_id', $orchardId)->first();
-
-            if ($durian) {
-                // Update existing total
-                $durian->increment('total', $request->total_harvested);
-            } else {
-                // Insert a new durian entry
-                Durian::create([
-                    'name' => $request->durian_type,
-                    'total' => $request->total_harvested,
-                    'orchard_id' => $orchardId,
-                ]);
-            }
-
-            DB::commit(); // Commit changes
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Harvest log recorded successfully',
-                'data' => $harvestLog,
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack(); // Rollback if error
-
-            return response()->json(
-                [
-                    'status' => 'error',
-                    'message' => 'Database error: ' . $e->getMessage(),
-                ],
-                500,
-            );
+        if ($orchardId === null) {
+            throw new \Exception('Invalid orchard ID');
         }
+
+        $durian = Durian::lockForUpdate()
+            ->where('name', $request->durian_type)
+            ->where('orchard_id', $orchardId)
+            ->first();
+
+        if ($durian) {
+            $durian->increment('total', $request->total_harvested);
+        } else {
+            Durian::create([
+                'name' => $request->durian_type,
+                'total' => $request->total_harvested,
+                'orchard_id' => $orchardId,
+            ]);
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Harvest log recorded successfully',
+            'data' => $harvestLog,
+        ]);
+    } catch (\Exception $e) {
+        DB::rollBack(); // rollback if any exception
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Database error: ' . $e->getMessage(),
+        ], 500);
     }
+}
 
     public function save(Request $request)
     {
