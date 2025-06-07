@@ -11,6 +11,8 @@ class VibrationLogController extends Controller
 {
     public function store(Request $request)
     {
+
+        $someId = 123;
         $validatedData = $request->validate([
             'deviceID' => 'required|string|max:50',
             'vibrationCount' => 'required|integer|min:1',
