@@ -50,7 +50,6 @@ class AdminController extends Controller
         return view(
             'admin.dashboard',
             compact(
-                'weather',
                 'totalDurian',
                 'totalDevice',
                 'totalOrchards',
