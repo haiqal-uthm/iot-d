@@ -2,7 +2,7 @@ flask
 Werkzeug==2.2.2
 # YOLOv5 requirements
 # Usage: pip install -r requirements.txt
-
+opencv-python-headless
 # Base ------------------------------------------------------------------------
 gitpython>=3.1.30
 matplotlib>=3.3
