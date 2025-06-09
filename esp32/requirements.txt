@@ -11,3 +11,4 @@ PyYAML>=5.3.1
 tqdm
 seaborn
 pandas
+ultralytics
