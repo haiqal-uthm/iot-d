@@ -106,7 +106,7 @@ async function logToMysqlAPI(sensorName, detectCount, logType = 1, orchardId = 1
 
   try {
     const res = await axios.post(
-      'http://192.168.1.21:8000/api/vibration-log',
+      'https://iot-d-jopkt.ondigitalocean.app/api/vibration-log',
       params
     );
     console.log(`✅ MySQL API updated for deviceID ${deviceID}:`, res.data);
