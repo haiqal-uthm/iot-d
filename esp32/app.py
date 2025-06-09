@@ -4,6 +4,8 @@ import time
 import subprocess
 import shutil
 import requests
+from PIL import Image
+import io
 from flask import Flask, request, send_from_directory, jsonify, render_template_string
 
 # --- Configuration ---
@@ -235,14 +237,19 @@ def upload():
     filename = f"image_{timestamp}.jpg"
     filepath = os.path.join(ORIGINAL_DIR, filename)
     try:
-        # Save raw image binary
-        with open(filepath, 'wb') as f:
-            f.write(request.data)
+        # Load the image from the POSTed data
+        image = Image.open(io.BytesIO(request.data))
+        # Convert to RGB if not already (JPEG does not support alpha channel)
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        # Resave as JPEG to ensure format
+        image.save(filepath, format='JPEG', quality=95)
+
         # Classify asynchronously
         threading.Thread(target=classify_image, args=(filename,)).start()
-        return "Image uploaded successfully", 200
+        return "Image uploaded and re-saved as JPEG successfully", 200
     except Exception as e:
-        return f"Error saving image: {str(e)}", 500
+        return f"Error processing image: {str(e)}", 500
 
 # --- Background Thread for Periodic Processing ---
 def start_background_processor():
