@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { classifyImage } = require('./classify');
 const app = express();
-const port = 3000;
+const port = 8080;
 
 // Create directories if they don't exist
 const originalDir = path.join(__dirname, 'uploads', 'original');
