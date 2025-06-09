@@ -111,7 +111,8 @@
                 "phpstan/phpstan-strict-rules": "^1.4.4",
                 "phpunit/phpunit": "^9.5.26",
                 "psalm/plugin-phpunit": "^0.16.1",
-                "vimeo/psalm": "^4.29"
+                "vimeo/psalm": "^4.29",
+		"heroku/heroku-buildpack-php" : "dev-master"
             },
             "type": "library",
             "autoload": {
