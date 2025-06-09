@@ -11,4 +11,5 @@ tqdm
 seaborn
 pandas
 ultralytics
-opencv-python-headless
+opencv-python-headless==4.8.1.78
+opencv-contrib-python==4.8.1.78
