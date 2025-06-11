@@ -28,7 +28,7 @@ class VibrationLog extends Model
     
     public function device()
     {
-        return $this->belongsTo(Device::class, 'device_id', 'device_id');
+        return $this->belongsTo(Device::class);
     }
     
     // Add an accessor to get farm name through relationships
