@@ -36,9 +36,6 @@
 
                 <!-- Daily Logging Boxes -->
                 <div>
-                    <!-- Changed from gradient to white -->
-
-                    <!-- Changed from gradient to white -->
                     <div
                         class="bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
                         <div class="flex items-center justify-between">

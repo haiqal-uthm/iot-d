@@ -13,6 +13,7 @@ class Device extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'device_id';
     protected $fillable = [
         'name',
         'device_id',

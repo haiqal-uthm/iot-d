@@ -61,4 +61,9 @@ class VibrationLog extends Model
             default => 'Other Alert'
         };
     }
+    
+    public function getDeviceNameAttribute()
+    {
+        return $this->device->name ?? 'Device Not Found';
+    }
 }

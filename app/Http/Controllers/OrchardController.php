@@ -112,10 +112,11 @@ class OrchardController extends Controller
     public function show($id)
     {
         $orchard = Orchard::with(['durian', 'device'])->findOrFail($id);
-        
-        // Get vibration logs for this orchard
+
         $vibrationLogs = VibrationLog::where('device_id', $orchard->device_id)
-            ->with('device') // Add this line
+            ->with(['device' => function($query) {
+                $query->withTrashed();
+            }])
             ->orderBy('timestamp', 'desc')
             ->take(20)
             ->get();
