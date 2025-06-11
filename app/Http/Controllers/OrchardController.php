@@ -26,9 +26,10 @@ class OrchardController extends Controller
         if (auth()->user()->role === 'farmer') {
             // For farmers, only show logs from their assigned orchards
             $vibrationLogs = VibrationLog::whereIn('device_id', $orchardDeviceIds)
+                ->whereIn('device_id', $orchardDeviceIds)
                 ->orderBy('timestamp', 'desc')
                 ->take(10)
-                ->get();
+                ->get();    
         } else {
             // For admins, show all logs
             $vibrationLogs = VibrationLog::orderBy('timestamp', 'desc')
