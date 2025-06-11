@@ -7,6 +7,9 @@
     border-radius: 8px;
     padding: 16px;
     color: #1f2937;
+    height: 100%;
+    overflow-y: auto;
+    max-height: 400px;
 }
 
 .notification-box .arrow-icon {
