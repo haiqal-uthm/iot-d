@@ -44,7 +44,7 @@
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow transition-all duration-300">
+                <header class="bg-white dark:bg-gray-800 shadow transition-all duration-300" style="margin-left: 34vh;">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         <div class="font-poppins text-xl font-semibold tracking-wide text-gray-800 dark:text-gray-200">
                             {{ $header }}
@@ -54,7 +54,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="transition-all duration-300" style="margin-left: 12rem;">
+            <main class="transition-all duration-300" style="margin-left: 34vh;">
                 {{ $slot }}
             </main>
         </div>
