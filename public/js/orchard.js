@@ -96,7 +96,7 @@ function saveVibrationCount(orchardId, vibrationCount) {
     // Get the full orchard data including durian relationship
     const orchard = orchards.find(o => o.id === parseInt(orchardId));
     
-    if (!orchard?.durian?.id) {
+    if (!orchard || !orchard.durian || !orchard.durian.id) {
         showResponseModal('error', 'Error!', 'No durian type assigned to this orchard.');
         return;
     }
