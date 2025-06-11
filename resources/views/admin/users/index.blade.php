@@ -121,13 +121,17 @@
 
                                                 <!-- Delete -->
                                                 @if ($user->id !== auth()->id())
-                                                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
-                                                        onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
+                                                    <button type="button" 
+                                                        onclick="confirmDelete('{{ $user->id }}', '{{ $user->name }}')"
+                                                        class="btn btn-danger">
+                                                        <i class="fas fa-trash-alt btn-icon"></i>Delete
+                                                    </button>
+                                                    <form id="delete-form-{{ $user->id }}" 
+                                                        action="{{ route('admin.users.destroy', $user) }}" 
+                                                        method="POST" 
+                                                        class="hidden">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">
-                                                            <i class="fas fa-trash-alt btn-icon"></i>Delete
-                                                        </button>
                                                     </form>
                                                 @endif
                                             </div>
@@ -145,4 +149,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Delete User</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500" id="deleteModalText"></p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="deleteConfirmButton" class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 mb-2">
+                        Delete
+                    </button>
+                    <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-100 text-gray-700 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>
+
+<script>
+function confirmDelete(userId, userName) {
+    const modal = document.getElementById('deleteModal');
+    const modalText = document.getElementById('deleteModalText');
+    const confirmButton = document.getElementById('deleteConfirmButton');
+    
+    modalText.textContent = `Are you sure you want to delete ${userName}? This action cannot be undone.`;
+    
+    confirmButton.onclick = function() {
+        document.getElementById(`delete-form-${userId}`).submit();
+    };
+    
+    modal.classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+</script>
