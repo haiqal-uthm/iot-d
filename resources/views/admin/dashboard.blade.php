@@ -65,8 +65,9 @@
                                             class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
                                         <div>
                                             <p class="text-sm">
-                                                Device: {{ $log->device_id }} |
-                                                {{ $log->log_type == 1 ? 'Durian Fall' : 'Animal Detected' }}
+                                                {{ $log->orchard ? 'Orchard ' . $log->orchard->orchardName : 'Unknown Orchard' }} - 
+                                                {{ $log->log_type == 1 ? 'Durian Fall detected' : 'Animal Detected' }} - 
+                                                {{ $log->timestamp ? $log->timestamp->format('g:i A') : 'N/A' }}
                                             </p>
                                             <p class="timestamp text-xs text-gray-500">{{ $log->timestamp }}</p>
                                         </div>
