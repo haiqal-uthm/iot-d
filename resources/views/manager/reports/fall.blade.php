@@ -152,7 +152,7 @@
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             <span class="font-medium">{{ $log->timestamp ? \Carbon\Carbon::parse($log->timestamp)->format('Y-m-d H:i:s') : 'No Date' }}</span>
-                                            <span class="text-xs text-gray-400 dark:text-gray-500 ml-2">{{ $log->timestamp->format('H:i:s') }}</span>
+                                            <span class="text-xs text-gray-400 dark:text-gray-500 ml-2">{{ $log->timestamp ? \Carbon\Carbon::parse($log->timestamp)->format('Y-m-d H:i:s') : 'No Date' }}</span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             {{ $log->orchard->orchardName }}
