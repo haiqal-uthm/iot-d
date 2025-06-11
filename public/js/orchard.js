@@ -94,6 +94,15 @@ function saveVibrationCount(orchardId, vibrationCount) {
     // Get the CSRF token from the meta tag
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
+    // Find the orchard's durian ID from the orchards array
+    const orchard = orchards.find(o => o.id === parseInt(orchardId));
+    const durianId = orchard?.durian?.id;
+    
+    if (!durianId) {
+        showResponseModal('error', 'Error!', 'No durian type assigned to this orchard.');
+        return;
+    }
+    
     fetch("/durian/save-vibration", {
         method: 'POST',
         headers: {
@@ -102,7 +111,8 @@ function saveVibrationCount(orchardId, vibrationCount) {
         },
         body: JSON.stringify({
             orchard_id: orchardId,
-            vibration_count: parseInt(vibrationCount, 10)
+            vibration_count: parseInt(vibrationCount, 10),
+            durian_id: durianId
         })
     })
     .then(response => response.json())
