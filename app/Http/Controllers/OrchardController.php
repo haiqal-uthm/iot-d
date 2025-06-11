@@ -115,6 +115,7 @@ class OrchardController extends Controller
         
         // Get vibration logs for this orchard
         $vibrationLogs = VibrationLog::where('device_id', $orchard->device_id)
+            ->with('device') // Add this line
             ->orderBy('timestamp', 'desc')
             ->take(20)
             ->get();
