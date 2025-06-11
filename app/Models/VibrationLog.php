@@ -28,7 +28,6 @@ class VibrationLog extends Model
     
     public function device()
     {
-        // Fix the device relationship to match on device_id
         return $this->belongsTo(Device::class, 'device_id', 'device_id');
     }
     
