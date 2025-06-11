@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Orchard;
 use App\Models\VibrationLog;
 use App\Models\HarvestLog;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Device extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
 
-    protected $primaryKey = 'device_id';
     protected $fillable = [
         'name',
         'device_id',

@@ -28,7 +28,8 @@ class VibrationLog extends Model
     
     public function device()
     {
-        return $this->belongsTo(Device::class);
+        // Fix the device relationship to match on device_id
+        return $this->belongsTo(Device::class, 'device_id', 'device_id');
     }
     
     // Add an accessor to get farm name through relationships
@@ -60,10 +61,5 @@ class VibrationLog extends Model
             self::LOG_TYPE_ANIMAL_THREAT => 'Animal Threat',
             default => 'Other Alert'
         };
-    }
-    
-    public function getDeviceNameAttribute()
-    {
-        return $this->device->name ?? 'Device Not Found';
     }
 }
