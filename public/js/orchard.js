@@ -91,18 +91,16 @@ function updateTotalDurianFalls() {
 }
 
 function saveVibrationCount(orchardId, vibrationCount) {
-    // Get the CSRF token from the meta tag
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
-    // Find the orchard's durian ID from the orchards array
+    // Get the full orchard data including durian relationship
     const orchard = orchards.find(o => o.id === parseInt(orchardId));
-    const durianId = orchard?.durian?.id;
     
-    if (!durianId) {
+    if (!orchard?.durian?.id) {
         showResponseModal('error', 'Error!', 'No durian type assigned to this orchard.');
         return;
     }
-    
+
     fetch("/durian/save-vibration", {
         method: 'POST',
         headers: {
@@ -110,9 +108,9 @@ function saveVibrationCount(orchardId, vibrationCount) {
             'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify({
-            orchard_id: orchardId,
+            orchard_id: parseInt(orchardId),
             vibration_count: parseInt(vibrationCount, 10),
-            durian_id: durianId
+            durian_id: orchard.durian.id
         })
     })
     .then(response => response.json())
