@@ -12,17 +12,21 @@ class DurianFallController extends Controller
     public function index()
     {
         $vibrationLogs = VibrationLog::with('orchard')->paginate(10);
-        
-        
+
         // Prepare data for the line chart
         $chartData = VibrationLog::orderBy('timestamp')
+            ->whereNotNull('timestamp')  // Add this line
             ->get()
             ->groupBy(function($date) {
-                return Carbon::parse($date->timestamp)->format('Y-m-d');
+                return $date->timestamp 
+                    ? Carbon::parse($date->timestamp)->format('Y-m-d')
+                    : 'no-date';
             })
             ->map(function($group) {
                 return [
-                    'date' => $group->first()->timestamp->format('Y-m-d'),
+                    'date' => optional($group->first())->timestamp
+                        ? $group->first()->timestamp->format('Y-m-d')
+                        : 'Date Not Available',
                     'count' => $group->sum('vibration_count')
                 ];
             })
