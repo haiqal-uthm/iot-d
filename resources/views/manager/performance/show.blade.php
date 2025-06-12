@@ -138,9 +138,6 @@
                                         <td>
                                             <span class="font-medium">{{ $harvest->total_harvested }}</span>
                                         </td>
-                                        <td>
-                                            <span class="font-medium">{{ $harvest->estimated_weight }}</span> kg
-                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
