@@ -101,6 +101,7 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->grou
 
 // Add these routes to your web.php file
 Route::middleware(['auth', 'role:manager'])->prefix('manager')->name('manager.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/durian-fall', [App\Http\Controllers\Manager\DurianFallController::class, 'index'])->name('durian-fall.index');
     Route::get('/manager/durian-fall/data', [DurianFallController::class, 'getData'])->name('durian-fall.data');
     Route::get('/notifications', [App\Http\Controllers\Manager\NotificationController::class, 'index'])->name('notification.index');
