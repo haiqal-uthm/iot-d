@@ -22,7 +22,7 @@
                         <div class="lg:col-span-1">
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md">
                                 <video id="orchardVideo" class="w-full h-64 object-cover" controls autoplay>
-                                    <source src="http://192.168.1.34/{{ $orchard->id }}" type="video/mp4">
+                                    <source src="http://192.168.1.34:81/{{ $orchard->id }}" type="video/mp4">
                                     Your browser does not support the video element.
                                 </video>
                                 <div class="p-4">
