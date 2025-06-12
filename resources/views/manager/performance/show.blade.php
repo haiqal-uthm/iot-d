@@ -113,7 +113,6 @@
                                     <th><i class="fas fa-tree mr-1"></i> Orchard</th>
                                     <th><i class="fas fa-leaf mr-1"></i> Durian Type</th>
                                     <th><i class="fas fa-sort-amount-up mr-1"></i> Total Harvested</th>
-                                    <th><i class="fas fa-weight mr-1"></i> Est. Weight</th>
                                 </tr>
                             </thead>
                             <tbody>
