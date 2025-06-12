@@ -21,7 +21,7 @@
                         <!-- Orchard Image and Basic Info -->
                         <div class="lg:col-span-1">
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md">
-                                <img src="http://192.168.1.34:81/{{ $orchard->id }}">
+                                <img src="https://192.168.1.34:81/{{ $orchard->id }}">
                                 <div class="p-4">
                                     <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{ $orchard->orchardName }}</h3>
                                     <div class="flex items-center mb-2">
