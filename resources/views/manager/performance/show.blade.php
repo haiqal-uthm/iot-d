@@ -134,7 +134,7 @@
                                             {{ $harvest->orchard->orchardName ?? 'Unknown' }}
                                         </td>
                                         <td>
-                                            {{ $harvest->durian_type ?? 'Not specified' }}
+                                            {{ $harvest->durian->name ?? 'Not specified' }}
                                         </td>
                                         <td>
                                             <span class="font-medium">{{ $harvest->total_harvested }}</span>
