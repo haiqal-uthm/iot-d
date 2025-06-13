@@ -26,6 +26,7 @@ class HarvestLog extends Model
         'grade',
         'condition',
         'storage_location',
+        'remarks' // Add this line
     ];
 
 

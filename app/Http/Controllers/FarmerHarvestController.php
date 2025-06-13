@@ -126,24 +126,28 @@ class FarmerHarvestController extends Controller
         }
         
         $validated = $request->validate([
-            'durian_id' => 'required|exists:durians,id', // Changed from durian_type
+            'durian_id' => 'required|exists:durians,id',
             'harvest_date' => 'required|date',
+            'total_harvested' => 'required|integer|min:0', // Add this line
             'grade' => 'required|string',
             'condition' => 'required|string',
-            'storage' => 'nullable|string', // Changed from array
+            'storage' => 'nullable|string',
             'status' => 'nullable|string',
+            'remarks' => 'nullable|string|max:1000', // Add this line
         ]);
         
         // Set status to 'complete' if not provided
         $status = $validated['status'] ?? 'complete';
         
         $harvestLog->update([
-            'durian_id' => $validated['durian_id'], // Store the ID reference
+            'durian_id' => $validated['durian_id'],
             'harvest_date' => $validated['harvest_date'],
+            'total_harvested' => $validated['total_harvested'], // Add this line
             'grade' => $validated['grade'],
             'condition' => $validated['condition'],
             'storage_location' => $validated['storage'] ?? null,
-            'status' => $status
+            'status' => $status,
+            'remarks' => $validated['remarks'] // Add this line
         ]);
         
         // If status is complete and storage location is provided, create inventory transaction

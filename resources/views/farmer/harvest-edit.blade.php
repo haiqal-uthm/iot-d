@@ -104,6 +104,26 @@
                             </div>
                         </div>
 
+                        <!-- After the Harvest Date field and before the Checklist Section -->
+                        <!-- Total Harvested Count -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Total Harvested Count</label>
+                            <input type="number" name="total_harvested"
+                                value="{{ $harvestLog->total_harvested }}"
+                                class="w-full border rounded p-2"
+                                min="0"
+                                required>
+                        </div>
+
+                        <!-- Add Remarks field before the buttons -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Remarks (for defective durians)</label>
+                            <textarea name="remarks"
+                                class="w-full border rounded p-2"
+                                rows="3"
+                                placeholder="Add any notes about defective durians here...">{{ $harvestLog->remarks }}</textarea>
+                        </div>
+
                         <div class="flex space-x-4">
                             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                                 Update Harvest
