@@ -25,7 +25,7 @@
                                     <img 
                                         id="orchardImage" 
                                         class="w-full h-full object-cover" 
-                                        src="https://b585-2001-e68-5470-6c1-2570-7ac3-7cd7-3259.ngrok-free.app/{{ $orchard->id }}" 
+                                        src="https://just-mature-starfish.ngrok-free.app/1{{ $orchard->id }}" 
                                         alt="{{ $orchard->orchardName }}"
                                     >
                                     <div class="device-status absolute top-4 right-4">
