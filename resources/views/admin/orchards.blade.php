@@ -121,14 +121,14 @@
                     <div class="orchard-card-footer">
                         <div class="flex space-x-2">
                             <button
-                                onclick="saveVibrationCount('{{ $orchard->id }}', document.getElementById('vibration-count-sensor-{{ $orchard->id }}').innerText)"
+                                onclick="resetFirebaseCounter('{{ $orchard->id }}')"
                                 class="btn-primary flex-1 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
-                                Collect & Reset
+                                Reset Counter
                             </button>
                             <a href="{{ route('orchards.show', $orchard->id) }}"
                                 class="btn-secondary flex-1 flex items-center justify-center">

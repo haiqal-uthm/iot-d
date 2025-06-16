@@ -90,48 +90,47 @@ function updateTotalDurianFalls() {
     }
 }
 
-function saveVibrationCount(orchardId, vibrationCount) {
+function resetFirebaseCounter(orchardId) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
-    // Get the full orchard data including durian relationship
-    const orchard = orchards.find(o => o.id === parseInt(orchardId));
-    
-    if (!orchard || !orchard.durian || !orchard.durian.id) {
-        showResponseModal('error', 'Error!', 'No durian type assigned to this orchard.');
-        return;
-    }
-
-    fetch("/durian/save-vibration", {
+    fetch("/durian/reset-counter", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify({
-            orchard_id: parseInt(orchardId),
-            vibration_count: parseInt(vibrationCount, 10),
-            durian_id: orchard.durian.id
+            orchard_id: parseInt(orchardId)
         })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showResponseModal('success', 'Success!', 'Vibration count saved successfully!');
-            resetVibrationCount(orchardId);
+            showResponseModal('success', 'Success!', 'Counter reset successfully!');
+            // Reset the display counter to 0
+            document.getElementById(`vibration-count-sensor-${orchardId}`).innerText = '0';
         } else {
             showResponseModal('error', 'Error!', 'Error: ' + data.message);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showResponseModal('error', 'Error!', 'An error occurred while saving the vibration count.');
+        showResponseModal('error', 'Error!', 'An error occurred while resetting the counter.');
     });
 }
 
 function resetVibrationCount(orchardId) {
     const database = initializeFirebase();
     const sensorRef = database.ref(`sensors/sensor${orchardId}/vibrationCount`);
-    sensorRef.set(0);
+    
+    sensorRef.set(0)
+        .then(() => {
+            showNotification('Vibration count reset successfully', 'success');
+        })
+        .catch(error => {
+            console.error('Error resetting vibration count:', error);
+            showNotification('Failed to reset vibration count', 'error');
+        });
 }
 
 function showNotification(message, type) {
