@@ -36,7 +36,7 @@
                         <div class="stock-card">
                             <h4>{{ $storageNames[$location] ?? 'Storage '.$location }}</h4>
                             <p class="text-2xl font-bold {{ $quantity < 0 ? 'negative' : 'positive' }}">
-                                {{ number_format($quantity, 2) }} kg
+                                {{ number_format($quantity, 2) }} Durian
                             </p>
                         </div>
                     @endforeach
@@ -69,7 +69,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Quantity (kg)</label>
+                            <label class="form-label">Quantity (Durian)</label>
                             <input type="number" name="quantity" class="form-control" min="1"
                                 step="0.1" required>
                         </div>
@@ -125,7 +125,7 @@
                                     </td>
                                     <td>{{ $transaction->durian->name ?? 'Unknown' }}</td>
                                     <td>{{ $storageNames[$transaction->storage_location] ?? 'Storage '.$transaction->storage_location }}</td>
-                                    <td>{{ abs($transaction->quantity) }} kg</td>
+                                    <td>{{ abs($transaction->quantity) }} Durian</td>
                                     <td>{{ $transaction->created_at->format('M d, Y H:i') }}</td>
                                     <td>{{ $transaction->remarks ?? '-' }}</td>
                                 </tr>

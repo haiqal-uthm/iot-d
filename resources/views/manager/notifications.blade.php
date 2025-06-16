@@ -72,19 +72,18 @@
                                 @foreach($notifications['animal_threat_alerts'] as $log)
                                     <div class="notification-card animal-notification">
                                         <div class="notification-icon">
-                                            <i class="fas fa-exclamation-triangle text-red-500"></i>
+                                            <i class="fas fa-exclamation-triangle"></i>
                                         </div>
-                                        <div class="notification-content flex-1">
-                                            <div class="notification-title font-semibold text-red-600 mb-1">
+                                        <div class="notification-content">
+                                            <div class="notification-title">
                                                 Animal Threat Alert
                                             </div>
-                                            <div class="notification-message text-gray-700 dark:text-gray-300">
+                                            <div class="notification-message">
                                                 Device {{ $log->device_id ?? 'Unknown' }} at {{ $log->orchard->orchardName ?? 'Unknown Orchard' }} reported an issue
                                             </div>
-                                            <div class="notification-meta mt-2 text-sm text-gray-500">
-                                                <div class="notification-meta-item inline-flex items-center">
-                                                    <i class="fas fa-clock mr-1"></i>
-                                                    {{ optional($log->timestamp)->diffForHumans() ?? 'Time not available' }}
+                                            <div class="notification-meta">
+                                                <div class="notification-meta-item">
+                                                    <i class="fas fa-clock"></i> {{ $log->timestamp->diffForHumans() }}
                                                 </div>
                                             </div>
                                         </div>

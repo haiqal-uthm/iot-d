@@ -31,8 +31,9 @@ class FarmerHarvestController extends Controller
             'total_harvested' => 'required|integer|min:1',
             'grade' => 'required|string',
             'condition' => 'required|string',
-            'storage' => 'nullable|string', // Changed from array to string
+            'storage' => 'nullable|string',
             'status' => 'nullable|string',
+            'remarks' => 'nullable|string|max:1000', // Add this line
         ]);
 
         try {
@@ -52,7 +53,8 @@ class FarmerHarvestController extends Controller
                 'grade' => $validated['grade'],
                 'condition' => $validated['condition'],
                 'storage_location' => $validated['storage'],
-                'status' => $status
+                'status' => $status,
+                'remarks' => $validated['remarks'] // Add this line
             ]);
             
             // If status is complete and storage location is provided, create inventory transaction

@@ -21,7 +21,7 @@
                         <!-- Orchard Image and Basic Info -->
                         <div class="lg:col-span-1">
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md">
-                                <img id="orchardImage" class="w-full h-64 object-cover" src="{{ $orchard->imageUrl ?? 'https://grocycle.com/wp-content/uploads/2020/01/What-Is-A-Permaculture-Orchard.jpg' }}" alt="{{ $orchard->orchardName }}">
+                                <img id="orchardImage" class="w-full h-64 object-cover" src=" https://b585-2001-e68-5470-6c1-2570-7ac3-7cd7-3259.ngrok-free.app/stream" alt="{{ $orchard->orchardName }}">
                                 <div class="p-4">
                                     <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{ $orchard->orchardName }}</h3>
                                     <div class="flex items-center mb-2">

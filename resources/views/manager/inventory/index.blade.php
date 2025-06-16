@@ -25,7 +25,7 @@
                                 $totalStock += $durian->current_stock ?? 0;
                             }
                         @endphp
-                        {{ number_format($totalStock, 1) }} kg
+                        {{ number_format($totalStock, 1) }} Durian
                     </div>
                 </div>
                 
@@ -69,7 +69,7 @@
                                 <div class="stock-card-header">
                                     <h4 class="stock-card-title">{{ $durian->name }}</h4>
                                     <span class="stock-card-value {{ $durian->current_stock > 0 ? 'positive' : 'negative' }}">
-                                        {{ $durian->current_stock ?? 0 }} kg
+                                        {{ $durian->current_stock ?? 0 }} Durian
                                     </span>
                                 </div>
                                 
@@ -83,7 +83,7 @@
                                 
                                 <div class="stock-card-footer">
                                     <span>Total Capacity</span>
-                                    <span>{{ $durian->total }} kg</span>
+                                    <span>{{ $durian->total }} Durian</span>
                                 </div>
                             </div>
                         @empty
@@ -110,7 +110,7 @@
                                 <div class="stock-card-header">
                                     <h4 class="stock-card-title">{{ $storage->name }}</h4>
                                     <span class="stock-card-value {{ $storage->capacity_percentage < 80 ? 'positive' : 'negative' }}">
-                                        {{ $storage->current_stock }} / {{ $storage->capacity }} kg
+                                        {{ $storage->current_stock }} / {{ $storage->capacity }} Durian
                                     </span>
                                 </div>
                                 

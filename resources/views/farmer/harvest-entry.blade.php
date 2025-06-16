@@ -87,7 +87,7 @@
                                     <!-- Total Harvested -->
                                     <div class="form-col form-col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">Total Harvested (kg)</label>
+                                            <label class="form-label">Total Harvested (Durian)</label>
                                             <input type="number" name="total_harvested" class="form-control" required min="1" value="{{ old('total_harvested', 1) }}">
                                         </div>
                                     </div>
@@ -143,10 +143,19 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn-submit">
-                                <i class="fas fa-save mr-2"></i>Submit Harvest
-                            </button>
-                        </form>
+                            <!-- Add Remarks field for defective durians -->
+                            <div class="form-group mt-4">
+                                <label class="form-label">Remarks (for defective durians)</label>
+                                <textarea name="remarks" class="form-control" rows="3" 
+                                    placeholder="Enter any notes about defective durians here...">
+                                    {{ old('remarks') }}
+                                </textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save mr-2"></i>Submit Harvest
+                        </button>
                     </div>
                 </div>
             </div>

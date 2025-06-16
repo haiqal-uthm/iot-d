@@ -140,7 +140,7 @@
                                 <div class="flex items-center gap-2">
                                     <i class="fa-solid fa-warehouse"></i>
                                     <span class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Inventory
-                                        (kg)</span>
+                                        (Durian)</span>
                                 </div>
                                 <span
                                     class="text-sm font-bold text-yellow-800 dark:text-yellow-100">{{ $totalInventory ?? 0 }}</span>

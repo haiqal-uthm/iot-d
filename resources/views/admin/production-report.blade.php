@@ -91,10 +91,10 @@
                     <select name="quantity_range" class="border rounded p-2">
                         <option value="">All Quantities</option>
                         <option value="0-100" {{ request('quantity_range') == '0-100' ? 'selected' : '' }}>0-100
-                            kg</option>
+                            Durian</option>
                         <option value="101-500" {{ request('quantity_range') == '101-500' ? 'selected' : '' }}>
-                            101-500 kg</option>
-                        <option value="501+" {{ request('quantity_range') == '501+' ? 'selected' : '' }}>>500 kg
+                            101-500 Durian</option>
+                        <option value="501+" {{ request('quantity_range') == '501+' ? 'selected' : '' }}>>500 Durian
                         </option>
                     </select>
                     <button type="submit" class="bg-blue-500 text-black rounded p-2">Filter</button>
@@ -296,8 +296,8 @@
                                         <div class="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label for="estimated_weight"
-                                                    class="block text-sm font-medium mb-1">Estimated Weight
-                                                    (kg)</label>
+                                                    class="block text-sm font-medium mb-1">Estimated Quantity
+                                                    (Durian)</label>
                                                 <input type="number" id="estimated_weight" name="estimated_weight"
                                                     class="w-full border rounded p-2" step="0.01" required
                                                     x-bind:value="selectedReport.estimated_weight">
@@ -457,7 +457,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                     Storage {{ $report->storage_location }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                    {{ $report->total_quantity }} kg</td>
+                                    {{ $report->total_quantity }} Durian</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $report->updated_at ? $report->updated_at->format('Y-m-d H:i:s') : 'Not Available' }}
                                 </td>

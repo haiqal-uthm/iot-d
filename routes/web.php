@@ -62,6 +62,8 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('admin')->grou
     Route::get('/dashboard', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
     Route::get('/orchards', [OrchardController::class, 'index'])->name('orchards');
     Route::get('/orchards/create', [OrchardController::class, 'create'])->name('orchards.create'); // Add this line
+    Route::get('/orchards/{id}/edit', [OrchardController::class, 'edit'])->name('orchards.edit');
+    Route::put('/orchards/{id}', [OrchardController::class, 'update'])->name('orchards.update');
     
     // Durian routes
     Route::get('/durian', [DurianController::class, 'index'])->name('durian');

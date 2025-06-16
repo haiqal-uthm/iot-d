@@ -21,7 +21,7 @@
                     </div>
                     <div class="summary-title">Incoming</div>
                     <div class="summary-value">
-                        {{ $transactions->where('type', 'in')->sum('quantity') ?? 0 }} kg
+                        {{ $transactions->where('type', 'in')->sum('quantity') ?? 0 }} Durian
                     </div>
                 </div>
                 
@@ -31,7 +31,7 @@
                     </div>
                     <div class="summary-title">Outgoing</div>
                     <div class="summary-value">
-                        {{ $transactions->where('type', 'out')->sum('quantity') ?? 0 }} kg
+                        {{ $transactions->where('type', 'out')->sum('quantity') ?? 0 }} Durian
                     </div>
                 </div>
                 
@@ -41,7 +41,7 @@
                     </div>
                     <div class="summary-title">Adjustments</div>
                     <div class="summary-value">
-                        {{ $transactions->where('type', 'adjustment')->sum('quantity') ?? 0 }} kg
+                        {{ $transactions->where('type', 'adjustment')->sum('quantity') ?? 0 }} Durian
                     </div>
                 </div>
                 

@@ -37,7 +37,7 @@
                                 }
                             }
                         @endphp
-                        {{ $totalStock }} kg
+                        {{ $totalStock }} Durian
                     </div>
                 </div>
                 <div class="summary-card">
@@ -166,11 +166,11 @@
                                                 $farmerTotal += $locationStock;
                                             @endphp
                                             <td>
-                                                {{ $locationStock }} kg
+                                                {{ $locationStock }} Durian
                                             </td>
                                         @endforeach
                                         <td class="font-medium">
-                                            {{ $farmerTotal }} kg
+                                            {{ $farmerTotal }} Durian
                                         </td>
                                     </tr>
                                 @endforeach
@@ -234,7 +234,7 @@
                         </div>
                         
                         <div class="form-control">
-                            <label for="quantity" class="form-label">Quantity (kg)</label>
+                            <label for="quantity" class="form-label">Quantity (Durian)</label>
                             <input type="number" name="quantity" id="quantity" required min="0.1" step="0.1" class="form-input">
                         </div>
                         
@@ -295,7 +295,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            {{ abs($transaction->quantity) }} kg
+                                            {{ abs($transaction->quantity) }} Durian
                                         </td>
                                         <td>
                                             {{ $transaction->remarks ?? '-' }}

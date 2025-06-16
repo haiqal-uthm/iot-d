@@ -93,7 +93,7 @@
                     <div class="text-center mt-2">
                         <img style="width: 50px; margin-left: auto; margin-right: auto; display: block;"
                             src="{{ asset('images/orchard.png') }}" alt="Harvest Icon" class="w-8 h-8 mr-2">
-                        <p>Total Harvest: {{ $totalHarvest ?? 0 }} kg</p>
+                        <p>Total Harvest: {{ $totalHarvest ?? 0 }} Durian</p>
                     </div>
                 </div>
                 <!-- Orchard Assignment Box (Previously Device Management) -->
@@ -145,7 +145,7 @@
                                 <div class="flex items-center gap-2">
                                     <i class="fa-solid fa-warehouse"></i>
                                     <span class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Inventory
-                                        (kg)</span>
+                                        (Durian)</span>
                                 </div>
                                 <span
                                     class="text-sm font-bold text-yellow-800 dark:text-yellow-100">{{ $totalInventory ?? 0 }}</span>

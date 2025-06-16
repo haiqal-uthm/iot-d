@@ -25,7 +25,7 @@
                         <i class="fas fa-boxes"></i> Total Inventory
                     </div>
                     <div class="inventory-stat-value">
-                        {{ number_format($transactions->sum('quantity'), 1) }} kg
+                        {{ number_format($transactions->sum('quantity'), 1) }} Durian
                     </div>
                     <div class="inventory-stat-subtitle">Current total weight</div>
                 </div>
@@ -35,7 +35,7 @@
                         <i class="fas fa-arrow-circle-down"></i> Incoming
                     </div>
                     <div class="inventory-stat-value">
-                        {{ number_format($transactions->where('type', 'in')->sum('quantity'), 1) }} kg
+                        {{ number_format($transactions->where('type', 'in')->sum('quantity'), 1) }} Durian
                     </div>
                     <div class="inventory-stat-subtitle">Total incoming inventory</div>
                 </div>
@@ -45,7 +45,7 @@
                         <i class="fas fa-arrow-circle-up"></i> Outgoing
                     </div>
                     <div class="inventory-stat-value">
-                        {{ number_format($transactions->where('type', 'out')->sum('quantity'), 1) }} kg
+                        {{ number_format($transactions->where('type', 'out')->sum('quantity'), 1) }} Durian
                     </div>
                     <div class="inventory-stat-subtitle">Total outgoing inventory</div>
                 </div>
@@ -55,7 +55,7 @@
                         <i class="fas fa-balance-scale"></i> Adjustments
                     </div>
                     <div class="inventory-stat-value">
-                        {{ number_format($transactions->where('type', 'adjustment')->sum('quantity'), 1) }} kg
+                        {{ number_format($transactions->where('type', 'adjustment')->sum('quantity'), 1) }} Durian
                     </div>
                     <div class="inventory-stat-subtitle">Total inventory adjustments</div>
                 </div>
@@ -164,7 +164,7 @@
                                             {{ $transaction->durian->name ?? 'N/A' }}
                                         </td>
                                         <td>
-                                            <span class="font-medium">{{ $transaction->quantity }}</span> kg
+                                            <span class="font-medium">{{ $transaction->quantity }}</span> Durian
                                         </td>
                                         <td>
                                             @if($transaction->type == 'in')
