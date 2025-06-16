@@ -21,15 +21,28 @@
                         <!-- Orchard Image and Basic Info -->
                         <div class="lg:col-span-1">
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md">
-                                <img id="orchardImage" class="w-full h-64 object-cover" src=" https://b585-2001-e68-5470-6c1-2570-7ac3-7cd7-3259.ngrok-free.app/stream" alt="{{ $orchard->orchardName }}">
-                                <div class="p-4">
-                                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{ $orchard->orchardName }}</h3>
-                                    <div class="flex items-center mb-2">
+                                <div class="relative w-full h-64">
+                                    <img 
+                                        id="orchardImage" 
+                                        class="w-full h-full object-cover" 
+                                        src="https://b585-2001-e68-5470-6c1-2570-7ac3-7cd7-3259.ngrok-free.app/{{ $orchard->id }}" 
+                                        alt="{{ $orchard->orchardName }}"
+                                        onerror="this.onerror=null; this.src='{{ asset(\'images/device-offline.png\') }}'; this.classList.add('device-offline');"
+                                    >
+                                    <div class="device-status absolute top-4 right-4">
                                         <span class="badge {{ $orchard->device ? 'badge-success' : 'badge-warning' }} mr-2">
                                             {{ $orchard->device ? 'Connected' : 'No Device' }}
                                         </span>
                                     </div>
-                                    <p class="text-gray-600 dark:text-gray-400">{{ $orchard->location }}</p>
+                                </div>
+                                <div class="p-6 border-t border-gray-200 dark:border-gray-600">
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">{{ $orchard->orchardName }}</h3>
+                                    <div class="space-y-3">
+                                        <div class="info-section">
+                                            <div class="info-section-label">Location</div>
+                                            <div class="info-section-value">{{ $orchard->location }}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-/* Farmer Dashboard Styles */
+/* Admin Dashboard Styles */
 :root {
   --primary-color: #4f46e5;
   --secondary-color: #818cf8;
@@ -51,6 +51,9 @@ body {
 .dark\:bg-gray-800:hover {
   transform: translateY(-2px);
 }
+
+/* White Card Styles (replacing gradient cards) */
+/* Removed gradient card styles and replaced with white card styles */
 
 /* Card Headers */
 h3.text-lg.font-bold {
@@ -122,8 +125,6 @@ img {
 /* Notification Box */
 .notification-box {
   border-left: 4px solid var(--primary-color);
-  max-height: 400px;
-  overflow-y: auto;
 }
 
 /* Weather Info */
@@ -136,8 +137,6 @@ img {
 .notification-list {
   max-height: 300px;
   overflow-y: auto;
-  list-style-type: none;
-  padding: 0;
 }
 
 .notification-item {
@@ -171,10 +170,20 @@ img {
   transform: translateX(3px);
 }
 
-@media (min-width: 1024px) { 
-    .lg\:grid-cols-3 { 
-        grid-template-columns: repeat(4, minmax(0, 1fr)); 
-    } 
+/* Weather Info */
+#weather-info {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .max-w-7xl {
+    margin-left: 0 !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 /* Dark Mode Adjustments */
@@ -199,4 +208,39 @@ img {
 #vibration-count:contains("Loading..."), 
 #weather-info:contains("Loading weather...") {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Chart container */
+canvas#pieChart {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* User greeting */
+.ml-4 p {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Grid layout improvements */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Font Awesome icon styling */
+.fa-solid {
+  width: 1rem;
+  text-align: center;
+}
+
+
+/* Responsive Adjustments */
+@media (min-width: 1024px) { 
+    .lg\:grid-cols-3 { 
+        grid-template-columns: repeat(4, minmax(0, 1fr)); 
+    } 
 }
