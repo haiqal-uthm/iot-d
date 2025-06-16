@@ -30,7 +30,7 @@
                         <div class="lg:col-span-1">
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md">
                                 <div class="p-4">
-                                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">{{ $orchard->orchardName }}</h3>
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Orchard {{ $orchard->orchardName }}</h3>
                                     <div class="flex items-center mb-2">
                                         <span class="badge {{ $orchard->device ? 'badge-success' : 'badge-warning' }} mr-2">
                                             {{ $orchard->device ? 'Connected' : 'No Device' }}

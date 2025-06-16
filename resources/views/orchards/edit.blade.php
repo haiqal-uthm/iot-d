@@ -1,5 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
+        <!-- Add this line in the header slot -->
+        <link rel="stylesheet" href="{{ asset('css/admin/admin-orchards.css') }}">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Edit Orchard: {{ $orchard->orchardName }}

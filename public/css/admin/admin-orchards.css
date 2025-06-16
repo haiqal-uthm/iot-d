@@ -1,0 +1,117 @@
+/* Modern Card Styling */
+.bg-white {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+/* Form Elements Enhancement */
+.form-input,
+.form-select {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+    width: 100%;
+    background-color: #fff;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    outline: none;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #4f46e5;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+/* Label Styling */
+.block.text-sm {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #374151;
+}
+
+/* Grid Layout Enhancement */
+.grid.gap-6 {
+    gap: 1.5rem;
+}
+
+/* Dark Mode Enhancements */
+.dark .form-input,
+.dark .form-select {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f3f4f6;
+}
+
+.dark .form-input:focus,
+.dark .form-select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Responsive Padding */
+@media (min-width: 640px) {
+    .p-6 {
+        padding: 2rem;
+    }
+}
+
+/* Form Group Spacing */
+.space-y-6 > * + * {
+    margin-top: 1.5rem;
+}
+
+/* Header Section Enhancement */
+.font-semibold.text-xl {
+    color: #111827;
+    letter-spacing: -0.025em;
+}
+
+.dark .font-semibold.text-xl {
+    color: #f3f4f6;
+}
+
+/* Back Button Enhancement */
+.btn-secondary.flex.items-center svg {
+    transition: transform 0.2s ease;
+}
+
+.btn-secondary.flex.items-center:hover svg {
+    transform: translateX(-2px);
+}
+
+/* Required Field Indicator */
+[required] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Ccircle cx='4' cy='4' r='3' fill='%23ef4444'/%3E%3C/svg%3E");
+    background-position: right 0.5rem top 0.5rem;
+    background-repeat: no-repeat;
+    padding-right: 2rem;
+}
