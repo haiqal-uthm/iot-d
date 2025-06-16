@@ -48,7 +48,7 @@
                     </div>
                     
                     <!-- Notifications - Moved inside the first column like admin dashboard -->
-                    <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow mt-6">
+                    <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-bold">Notifications</h3>
                             <span class="arrow-icon">➔</span>
