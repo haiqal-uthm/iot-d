@@ -75,7 +75,7 @@
             @foreach ($orchards as $orchard)
                 <div class="orchard-card">
                     <div class="orchard-card-header">
-                        <h2 class="text-lg font-bold text-gray-800">{{ $orchard->orchardName }}</h2>
+                        <h2 class="text-lg font-bold text-gray-800">Orchard {{ $orchard->orchardName }}</h2>
                         <span class="badge {{ $orchard->device ? 'badge-success' : 'badge-warning' }}">
                             {{ $orchard->device ? 'Connected' : 'No Device' }}
                         </span>
