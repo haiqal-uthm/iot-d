@@ -6,6 +6,7 @@ import shutil
 import requests
 from PIL import Image
 import io
+from queue import Queue, Empty
 from flask import Flask, request, send_from_directory, jsonify, render_template_string
 
 # --- Configuration ---
@@ -31,7 +32,11 @@ os.makedirs(ORIGINAL_DIR, exist_ok=True)
 os.makedirs(CLASSIFIED_DIR, exist_ok=True)
 os.makedirs(YOLO_OUTPUT_DIR, exist_ok=True)
 
-# --- Utility Functions for Image Classification ---
+# --- Processing Queue ---
+processing_queue = Queue()
+queue_lock = threading.Lock()
+currently_processing = set()
+
 def classify_image(
     filename,
     original_dir=ORIGINAL_DIR,
@@ -42,7 +47,6 @@ def classify_image(
     input_path = os.path.join(original_dir, filename)
     output_dir = YOLO_OUTPUT_DIR
 
-    # 1. Run YOLOv5 detect.py synchronously
     yolo_cmd = [
         'python', os.path.join(YOLOV5_DIR, 'detect.py'),
         '--source', input_path,
@@ -60,7 +64,6 @@ def classify_image(
         print('YOLOv5 error:', proc.stderr.decode())
         return
 
-    # 2. Copy the detected image to classified_dir
     detected_img_path = os.path.join(output_dir, 'result', filename)
     classified_img_path = os.path.join(classified_dir, filename)
     try:
@@ -69,7 +72,6 @@ def classify_image(
     except Exception as e:
         print("Error copying classified image:", e)
 
-    # 3. Parse label file
     label_file = os.path.join(output_dir, 'result', 'labels', filename.rsplit('.', 1)[0] + '.txt')
     detection_count = 0
     has_animal = False
@@ -84,7 +86,6 @@ def classify_image(
     except Exception as e:
         print("Error reading label file:", e)
 
-    # 4. Logging logic for durian/animal
     if has_durian:
         log_to_mysql_api(sensor_name, detection_count, 1, orchard_id)
         save_firebase(sensor_name, detection_count)
@@ -127,17 +128,26 @@ def save_firebase(sensor_name, detection_count, add_to_harvest=None):
     except Exception as e:
         print(f"❌ Error updating Firebase for {sensor_name}:", e)
 
-def process_unclassified_images():
+# --- Worker Thread Function ---
+def process_queue():
     while True:
         try:
-            orig_files = set(f for f in os.listdir(ORIGINAL_DIR) if f.endswith('.jpg'))
-            class_files = set(f for f in os.listdir(CLASSIFIED_DIR) if f.endswith('.jpg'))
-            unclassified = orig_files - class_files
-            for filename in unclassified:
-                classify_image(filename)
+            filename = processing_queue.get(timeout=1)
+        except Empty:
+            continue
+        with queue_lock:
+            if filename in currently_processing:
+                processing_queue.task_done()
+                continue
+            currently_processing.add(filename)
+        try:
+            classify_image(filename)
         except Exception as e:
-            print("Error in periodic processing:", e)
-        time.sleep(30)
+            print("Error processing image from queue:", e)
+        finally:
+            with queue_lock:
+                currently_processing.discard(filename)
+            processing_queue.task_done()
 
 # --- Flask Routes ---
 @app.route('/images/<imgtype>/<filename>')
@@ -237,25 +247,20 @@ def upload():
     filename = f"image_{timestamp}.jpg"
     filepath = os.path.join(ORIGINAL_DIR, filename)
     try:
-        # Load the image from the POSTed data
         image = Image.open(io.BytesIO(request.data))
-        # Convert to RGB if not already (JPEG does not support alpha channel)
         if image.mode != 'RGB':
             image = image.convert('RGB')
-        # Resave as JPEG to ensure format
         image.save(filepath, format='JPEG', quality=95)
-
-        # Classify asynchronously
-        threading.Thread(target=classify_image, args=(filename,)).start()
-        return "Image uploaded and re-saved as JPEG successfully", 200
+        # Enqueue for processing
+        processing_queue.put(filename)
+        return "Image uploaded and queued for processing", 200
     except Exception as e:
         return f"Error processing image: {str(e)}", 500
 
-# --- Background Thread for Periodic Processing ---
-def start_background_processor():
-    t = threading.Thread(target=process_unclassified_images, daemon=True)
+def start_processing_worker():
+    t = threading.Thread(target=process_queue, daemon=True)
     t.start()
 
 if __name__ == '__main__':
-    start_background_processor()
+    start_processing_worker()
     app.run(host='0.0.0.0', port=8080)
