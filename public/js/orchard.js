@@ -90,35 +90,6 @@ function updateTotalDurianFalls() {
     }
 }
 
-function resetFirebaseCounter(orchardId) {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    
-    fetch("/durian/reset-counter", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken
-        },
-        body: JSON.stringify({
-            orchard_id: parseInt(orchardId)
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showResponseModal('success', 'Success!', 'Counter reset successfully!');
-            // Reset the display counter to 0
-            document.getElementById(`vibration-count-sensor-${orchardId}`).innerText = '0';
-        } else {
-            showResponseModal('error', 'Error!', 'Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showResponseModal('error', 'Error!', 'An error occurred while resetting the counter.');
-    });
-}
-
 function resetVibrationCount(orchardId) {
     const database = initializeFirebase();
     const sensorRef = database.ref(`sensors/sensor${orchardId}/vibrationCount`);
