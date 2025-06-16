@@ -27,7 +27,7 @@
                                         class="w-full h-full object-cover" 
                                         src="https://b585-2001-e68-5470-6c1-2570-7ac3-7cd7-3259.ngrok-free.app/{{ $orchard->id }}" 
                                         alt="{{ $orchard->orchardName }}"
-                                        onerror="this.onerror=null; this.src='{{ asset(\'images/device-offline.png\') }}'; this.classList.add('device-offline');"
+                                        onerror="this.onerror=null; this.src='{{ asset('images/offline.png') }}'; this.classList.add('device-offline');"
                                     >
                                     <div class="device-status absolute top-4 right-4">
                                         <span class="badge {{ $orchard->device ? 'badge-success' : 'badge-warning' }} mr-2">
