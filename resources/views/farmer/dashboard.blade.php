@@ -9,7 +9,7 @@
 
     <!-- Add this in your <head> section -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/farmer/farmer-dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-dashboard.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -48,7 +48,7 @@
                     </div>
                     
                     <!-- Notifications - Moved inside the first column like admin dashboard -->
-                    <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow">
+                    <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow mt-6">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-bold">Notifications</h3>
                             <span class="arrow-icon">➔</span>
