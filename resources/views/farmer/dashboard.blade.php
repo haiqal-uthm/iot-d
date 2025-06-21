@@ -23,62 +23,56 @@
             </div>
             @endauth
             <!-- Main Layout -->
-            <div class="grid grid-cols-2 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Overview Box - Changed from gradient to white -->
-                <div class="col-span-2 bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
+                <div class="col-span-1 lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
                     <h3 class="text-lg font-bold">Durian Production</h3>
                     <div style="max-width: 250px; margin: auto;">
                         <canvas id="pieChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Daily Logging Boxes -->
-                <div>
-                    <!-- Changed from gradient to white -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-bold">Durian Fall Count</h3>
-                            <a href="{{ route('durian') }}" class="arrow-icon">➔</a>
-                        </div>
-                        <div class="text-center mt-2">
-                            <img style="width: 50px; display: block; margin: auto;"
-                                src="{{ asset('images/durian.png') }}" alt="Tilt Sensor Icon">
-                            <p>Total Durian Fall: <span id="vibration-count">Loading...</span></p>
-                        </div>
+                <!-- Daily Logging Box -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg text-gray-800 dark:text-gray-200 custom-shadow">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-bold">Durian Fall Count</h3>
+                        <a href="{{ route('durian') }}" class="arrow-icon">➔</a>
                     </div>
-                    
-                    <!-- Notifications - Moved inside the first column like admin dashboard -->
-                    <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow mt-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-bold">Notifications</h3>
-                            <span class="arrow-icon">➔</span>
-                        </div>
-                        <ul class="notification-list mt-4">
-                            @if ($logs->isNotEmpty())
-                                @foreach ($logs as $log) 
-                                    <li class="notification-item mt-2 flex items-center">
-                                        <span
-                                            class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
-                                        <div>
-                                            <p class="text-sm">
-                                                {{ $log->orchard ? 'Orchard ' . $log->orchard->orchardName : 'Unknown Orchard' }} - 
-                                                {{ $log->log_type == 1 ? 'Durian Fall detected' : 'Animal Detected' }} - 
-                                                {{ $log->timestamp ? $log->timestamp->format('g:i A') : 'N/A' }}
-                                            </p>
-                                            <p class="timestamp text-xs text-gray-500">
-                                                {{ $log->timestamp ? $log->timestamp->diffForHumans() : 'No timestamp' }}
-                                            </p>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            @else
-                                <li class="text-sm text-gray-500">No notifications found</li>
-                            @endif
-                        </ul>
+                    <div class="text-center mt-2">
+                        <img style="width: 50px; display: block; margin: auto;"
+                            src="{{ asset('images/durian.png') }}" alt="Tilt Sensor Icon">
+                        <p>Total Durian Fall: <span id="vibration-count">Loading...</span></p>
                     </div>
                 </div>
-                
-                <!-- Weather Section - Moved to second column to align with lower layout -->
+                    
+                <!-- Notifications - Moved to right side -->
+                <div class="notification-box bg-white dark:bg-gray-800 p-4 rounded-lg custom-shadow">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-bold">Notifications</h3>
+                        <span class="arrow-icon">➔</span>
+                    </div>
+                    <ul class="notification-list mt-4">
+                        @if ($logs->isNotEmpty())
+                            @foreach ($logs as $log) 
+                                <li class="notification-item mt-2 flex items-center">
+                                    <span class="status-dot {{ $log->log_type == 1 ? 'green' : 'red' }} w-3 h-3 rounded-full inline-block mr-2"></span>
+                                    <div>
+                                        <p class="text-sm">
+                                            {{ $log->orchard ? 'Orchard ' . $log->orchard->orchardName : 'Unknown Orchard' }} - 
+                                            {{ $log->log_type == 1 ? 'Durian Fall detected' : 'Animal Detected' }} - 
+                                            {{ $log->timestamp ? $log->timestamp->format('g:i A') : 'N/A' }}
+                                        </p>
+                                        <p class="timestamp text-xs text-gray-500">
+                                            {{ $log->timestamp ? $log->timestamp->diffForHumans() : 'No timestamp' }}
+                                        </p>
+                                    </div>
+                                </li>
+                            @endforeach
+                        @else
+                            <li class="text-sm text-gray-500">No notifications found</li>
+                        @endif
+                    </ul>
+                </div>
             </div>
 
             <!-- Lower Layout -->
