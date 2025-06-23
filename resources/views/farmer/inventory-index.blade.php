@@ -34,7 +34,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach ($stockLevels as $location => $quantity)
                         <div class="stock-card">
-                            <h4>{{ $storageNames[$location] ?? 'Storage '.$location }}</h4>
+                            <h4>Storage {{ $storageNames[$location] ?? 'Storage '.$location }}</h4>
                             <p class="text-2xl font-bold {{ $quantity < 0 ? 'negative' : 'positive' }}">
                                 {{ number_format($quantity, 0) }} Durian
                             </p>
