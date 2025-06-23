@@ -36,7 +36,7 @@
                         <div class="stock-card">
                             <h4>{{ $storageNames[$location] ?? 'Storage '.$location }}</h4>
                             <p class="text-2xl font-bold {{ $quantity < 0 ? 'negative' : 'positive' }}">
-                                {{ number_format($quantity, 2) }} Durian
+                                {{ number_format($quantity, 0) }} Durian
                             </p>
                         </div>
                     @endforeach
