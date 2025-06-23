@@ -25,7 +25,7 @@
                                 $totalStock += $durian->current_stock ?? 0;
                             }
                         @endphp
-                        {{ number_format($totalStock, 1) }} Durian
+                        {{ number_format($totalStock, 0) }} Durian
                     </div>
                 </div>
                 
